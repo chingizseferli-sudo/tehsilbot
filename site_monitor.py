@@ -84,6 +84,7 @@ SITES = [
 
 CHECK_INTERVAL_SECONDS = 600
 MAX_SEND_PER_RUN = 20
+MAX_LINKS_PER_SITE = 30
 
 conn = sqlite3.connect("site_monitor.db")
 cursor = conn.cursor()
@@ -146,7 +147,37 @@ def save(link, title):
     conn.commit()
 
 
-def extract_links(page_url):
+def is_bad_link(title, link):
+    title_lower = title.lower()
+    link_lower = link.lower()
+
+    bad_words = [
+        "ana səhifə", "haqqımızda", "əlaqə", "reklam", "sitemap",
+        "facebook", "instagram", "youtube", "telegram", "twitter",
+        "linkedin", "login", "giriş", "qeydiyyat", "search"
+    ]
+
+    bad_domains = [
+        "facebook.com", "instagram.com", "youtube.com", "t.me",
+        "twitter.com", "x.com", "linkedin.com"
+    ]
+
+    if any(word in title_lower for word in bad_words):
+        return True
+
+    if any(domain in link_lower for domain in bad_domains):
+        return True
+
+    if len(title) < 12:
+        return True
+
+    return False
+
+
+def extract_links(site):
+    page_url = site["url"]
+    selector = site.get("selector", "a")
+
     headers = {
         "User-Agent": "Mozilla/5.0"
     }
@@ -166,21 +197,23 @@ def extract_links(page_url):
     soup = BeautifulSoup(response.text, "html.parser")
     items = []
 
-    for a in soup.find_all("a", href=True):
+    for a in soup.select(selector):
+        href = a.get("href")
+
+        if not href:
+            continue
+
         title = clean_title(a.get_text(strip=True))
-        link = urljoin(page_url, a["href"])
+        link = urljoin(page_url, href)
 
-        if not title:
-            continue
-
-        if len(title) < 12:
-            continue
+        if "#" in link:
+            link = link.split("#")[0]
 
         if not link.startswith("http"):
             continue
 
-        if "#" in link:
-            link = link.split("#")[0]
+        if is_bad_link(title, link):
+            continue
 
         items.append({
             "title": title,
@@ -198,10 +231,12 @@ def extract_links(page_url):
 def check_pages(first_run=False):
     sent_count = 0
 
-    for page_url in PAGES:
+    for site in SITES:
+        page_url = site["url"]
+
         print(f"Yoxlanır: {page_url}")
 
-        items = extract_links(page_url)
+        items = extract_links(site)
 
         print(f"{page_url} üçün tapılan link sayı: {len(items)}")
 
@@ -209,7 +244,7 @@ def check_pages(first_run=False):
             print(f"Link tapılmadı: {page_url}")
             continue
 
-        for item in items[:30]:
+        for item in items[:MAX_LINKS_PER_SITE]:
             title = item["title"]
             link = item["link"]
             source = item["source"]
