@@ -204,27 +204,27 @@ def check_pages(first_run=False):
 
         items = extract_links(page_url)
 
+        print(f"{page_url} üçün tapılan link sayı: {len(items)}")
+
         if not items:
             print(f"Link tapılmadı: {page_url}")
             continue
 
-        latest_item = items[0]
+        for item in items[:30]:
+            title = item["title"]
+            link = item["link"]
+            source = item["source"]
 
-        title = latest_item["title"]
-        link = latest_item["link"]
-        source = latest_item["source"]
+            if exists(link):
+                continue
 
-        if exists(link):
-            print(f"Artıq göndərilib: {title[:60]}")
-            continue
+            save(link, title)
 
-        save(link, title)
+            if first_run:
+                print(f"İlkin bazaya yazıldı: {title[:60]}")
+                continue
 
-        if first_run:
-            print(f"İlkin bazaya yazıldı: {title[:60]}")
-            continue
-
-        message = f"""
+            message = f"""
 🆕 Yeni paylaşım
 
 📌 Başlıq:
@@ -237,14 +237,15 @@ def check_pages(first_run=False):
 {link}
 """
 
-        send_telegram(message)
-        time.sleep(3)
+            send_telegram(message)
+            time.sleep(3)
 
-        sent_count += 1
+            sent_count += 1
+            print(f"Göndərildi: {title[:60]}")
 
-        if sent_count >= MAX_SEND_PER_RUN:
-            print("Bu dövr üçün göndərmə limiti tamamlandı.")
-            return
+            if sent_count >= MAX_SEND_PER_RUN:
+                print("Bu dövr üçün göndərmə limiti tamamlandı.")
+                return
 
 
 print("🚀 Sayt monitorinq botu işə düşdü.")
