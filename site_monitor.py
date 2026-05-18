@@ -84,7 +84,7 @@ PAGES = [
 ]
 
 CHECK_INTERVAL_SECONDS = 600
-MAX_SEND_PER_RUN = 5
+MAX_SEND_PER_RUN = 20
 
 conn = sqlite3.connect("site_monitor.db")
 cursor = conn.cursor()
