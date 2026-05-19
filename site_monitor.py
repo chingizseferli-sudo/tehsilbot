@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 from lxml import html
 from urllib.parse import urljoin, urlparse
+from datetime import datetime
 
 BOT_TOKEN = "8820784481:AAGMe9uWrD97Xh1nET-JU8AgZAqggZ234fg"
 CHAT_ID = "1271870098"
@@ -61,6 +62,47 @@ def clean_text(text):
 def get_domain(url):
     return urlparse(url).netloc.replace("www.", "")
 
+
+def extract_publish_time_from_article(article_url):
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        )
+    }
+
+    try:
+        response = requests.get(article_url, headers=headers, timeout=10)
+        response.encoding = response.apparent_encoding
+
+        tree = html.fromstring(response.text)
+
+        possible_xpaths = [
+            "//time/@datetime",
+            "//time/text()",
+            "//meta[@property='article:published_time']/@content",
+            "//meta[@name='article:published_time']/@content",
+            "//meta[@itemprop='datePublished']/@content",
+            "//meta[@name='pubdate']/@content",
+            "//span[contains(@class,'date')]/text()",
+            "//div[contains(@class,'date')]/text()"
+        ]
+
+        for xpath in possible_xpaths:
+            result = tree.xpath(xpath)
+
+            if result:
+                value = clean_text(str(result[0]))
+
+                if len(value) > 5:
+                    return value
+
+        return "Tarix tapılmadı"
+
+    except Exception as e:
+        print("Tarix çıxarma xətası:", e)
+        return "Tarix tapılmadı"
 
 def exists(link):
     cursor.execute("SELECT link FROM posts WHERE link=?", (link,))
@@ -307,6 +349,7 @@ def check_sites(first_run=False):
         title = latest_new_item["title"]
         link = latest_new_item["link"]
         source = latest_new_item["source"]
+        published_time = extract_publish_time_from_article(link)
 
         save(link, title, source)
 
@@ -322,6 +365,9 @@ def check_sites(first_run=False):
 
 🌐 Mənbə:
 {source}
+
+🕒 Tarix və saat:
+{published_time}
 
 🔗 Link:
 {link}
