@@ -154,7 +154,15 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
         print(f"XPath üzrə blok sayı: {len(blocks)}")
 
         for block in blocks:
-            links = block.xpath(".//a[@href]")
+
+    if hasattr(block, "tag") and block.tag == "a":
+        links = [block]
+    else:
+        links = block.xpath(".//a[@href]")
+
+    print(f"Blok daxilində link sayı: {len(links)}")
+
+    for a in links:
 
             for a in links:
                 href = a.get("href")
