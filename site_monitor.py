@@ -10,11 +10,11 @@ from urllib.parse import urljoin, urlparse
 BOT_TOKEN = "8820784481:AAGMe9uWrD97Xh1nET-JU8AgZAqggZ234fg"
 CHAT_ID = "1271870098"
 
-CONFIG_FILE = "courier_config.json"
+CONFIG_FILE = "courier_config_clean.json"
 
 CHECK_INTERVAL_SECONDS = 600
-MAX_SEND_PER_RUN = 20
-MAX_LINKS_PER_SITE = 30
+MAX_SEND_PER_RUN = 10
+MAX_LINKS_PER_SITE = 15
 
 conn = sqlite3.connect("site_monitor.db")
 cursor = conn.cursor()
@@ -59,10 +59,7 @@ def clean_text(text):
 
 
 def get_domain(url):
-    try:
-        return urlparse(url).netloc.replace("www.", "")
-    except:
-        return "Mənbə tapılmadı"
+    return urlparse(url).netloc.replace("www.", "")
 
 
 def exists(link):
@@ -78,59 +75,27 @@ def save(link, title, source):
     conn.commit()
 
 
-def extract_keywords(config):
-    keywords = set()
-
-    try:
-        rules = config.get("condition", {}).get("rules", [])
-
-        for rule in rules:
-            value = rule.get("value", "")
-
-            for part in re.split(r"[\r\n]+", value):
-                word = clean_text(part)
-                if word and len(word) > 1:
-                    keywords.add(word.lower())
-
-    except:
-        pass
-
-    return list(keywords)
-
-
 def load_sites():
     with open(CONFIG_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    sites = []
+    sites = data.get("sites", [])
 
-    for item in data.get("list", []):
-        config = item.get("config", {})
+    clean_sites = []
 
-        url = config.get("url")
-        title = config.get("title", "")
-        selectors = config.get("selectors", [])
-        keywords = extract_keywords(config)
-
-        if not url:
+    for site in sites:
+        if not site.get("enabled", True):
             continue
 
-        xpath_values = []
-
-        for selector in selectors:
-            if selector.get("type") == "xpath":
-                value = selector.get("value")
-                if value:
-                    xpath_values.append(value)
-
-        sites.append({
-            "url": url,
-            "title": title,
-            "xpaths": xpath_values,
-            "keywords": keywords
+        clean_sites.append({
+            "name": site.get("name") or get_domain(site.get("url", "")),
+            "url": site.get("url"),
+            "xpaths": site.get("xpaths", []),
+            "keywords": [k.lower() for k in site.get("keywords", [])],
+            "limit": site.get("limit", MAX_LINKS_PER_SITE)
         })
 
-    return sites
+    return [s for s in clean_sites if s["url"]]
 
 
 def keyword_match(title, keywords):
@@ -139,11 +104,7 @@ def keyword_match(title, keywords):
 
     title_lower = title.lower()
 
-    for keyword in keywords:
-        if keyword in title_lower:
-            return True
-
-    return False
+    return any(keyword in title_lower for keyword in keywords)
 
 
 def is_bad_link(title, link):
@@ -152,22 +113,17 @@ def is_bad_link(title, link):
 
     bad_words = [
         "ana səhifə", "haqqımızda", "əlaqə", "reklam",
-        "login", "giriş", "qeydiyyat", "axtarış",
+        "giriş", "qeydiyyat", "axtarış", "abunə",
         "facebook", "instagram", "youtube", "telegram",
-        "twitter", "linkedin", "abunə"
+        "twitter", "linkedin"
     ]
 
     bad_domains = [
-        "facebook.com",
-        "instagram.com",
-        "youtube.com",
-        "t.me",
-        "twitter.com",
-        "x.com",
-        "linkedin.com"
+        "facebook.com", "instagram.com", "youtube.com",
+        "t.me", "twitter.com", "x.com", "linkedin.com"
     ]
 
-    if len(title) < 10:
+    if len(title) < 12:
         return True
 
     if any(word in title_lower for word in bad_words):
@@ -192,14 +148,13 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
         try:
             blocks = tree.xpath(xpath)
         except Exception as e:
-            print("XPath xətası:", xpath, e)
+            print("XPath xətası:", e)
             continue
 
+        print(f"XPath üzrə blok sayı: {len(blocks)}")
+
         for block in blocks:
-            try:
-                links = block.xpath(".//a[@href]")
-            except:
-                continue
+            links = block.xpath(".//a[@href]")
 
             for a in links:
                 href = a.get("href")
@@ -208,10 +163,7 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
                 if not href or not title:
                     continue
 
-                link = urljoin(page_url, href)
-
-                if "#" in link:
-                    link = link.split("#")[0]
+                link = urljoin(page_url, href).split("#")[0]
 
                 if not link.startswith("http"):
                     continue
@@ -237,10 +189,7 @@ def extract_links_fallback(page_url, page_html, keywords):
 
     for a in soup.find_all("a", href=True):
         title = clean_text(a.get_text(strip=True))
-        link = urljoin(page_url, a["href"])
-
-        if "#" in link:
-            link = link.split("#")[0]
+        link = urljoin(page_url, a["href"]).split("#")[0]
 
         if not link.startswith("http"):
             continue
@@ -262,20 +211,30 @@ def extract_links_fallback(page_url, page_html, keywords):
 
 def fetch_site(site):
     page_url = site["url"]
-    xpaths = site["xpaths"]
-    keywords = site["keywords"]
 
     headers = {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0 Safari/537.36"
+        )
     }
 
     try:
-        response = requests.get(page_url, headers=headers, timeout=20)
-        response.encoding = "utf-8"
+        print(f"Sayt açılır: {page_url}")
+
+        response = requests.get(
+            page_url,
+            headers=headers,
+            timeout=10
+        )
+
+        print(f"Status: {response.status_code}")
 
         if response.status_code != 200:
-            print(f"Açılmadı: {page_url} | Status: {response.status_code}")
             return []
+
+        response.encoding = response.apparent_encoding
 
     except Exception as e:
         print(f"Sayt xətası: {page_url} | {e}")
@@ -283,13 +242,20 @@ def fetch_site(site):
 
     page_html = response.text
 
-    items = []
-
-    if xpaths:
-        items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
+    items = extract_links_from_xpath(
+        page_url,
+        page_html,
+        site["xpaths"],
+        site["keywords"]
+    )
 
     if not items:
-        items = extract_links_fallback(page_url, page_html, keywords)
+        print("XPath nəticə vermədi, fallback işləyir...")
+        items = extract_links_fallback(
+            page_url,
+            page_html,
+            site["keywords"]
+        )
 
     unique = {}
 
@@ -306,7 +272,7 @@ def check_sites(first_run=False):
     print(f"Yüklənən sayt sayı: {len(sites)}")
 
     for site in sites:
-        print(f"Yoxlanır: {site['url']}")
+        print(f"Yoxlanır: {site['name']} | {site['url']}")
 
         items = fetch_site(site)
 
@@ -315,7 +281,9 @@ def check_sites(first_run=False):
         if not items:
             continue
 
-        for item in items[:MAX_LINKS_PER_SITE]:
+        limit = site.get("limit", MAX_LINKS_PER_SITE)
+
+        for item in items[:limit]:
             title = item["title"]
             link = item["link"]
             source = item["source"]
@@ -326,7 +294,7 @@ def check_sites(first_run=False):
             save(link, title, source)
 
             if first_run:
-                print(f"İlkin bazaya yazıldı: {source} | {title[:60]}")
+                print(f"İlkin bazaya yazıldı: {source} | {title[:70]}")
                 continue
 
             message = f"""
@@ -347,15 +315,15 @@ def check_sites(first_run=False):
 
             sent_count += 1
 
-            print(f"Göndərildi: {source} | {title[:60]}")
+            print(f"Göndərildi: {source} | {title[:70]}")
 
             if sent_count >= MAX_SEND_PER_RUN:
                 print("Bu dövr üçün göndərmə limiti tamamlandı.")
                 return
 
 
-print("🚀 JSON əsaslı sayt monitorinq botu işə düşdü.")
-send_telegram("✅ JSON əsaslı sayt monitorinq botu işə düşdü.")
+print("🚀 Sayt monitorinq botu işə düşdü.")
+send_telegram("✅ Sayt monitorinq botu işə düşdü.")
 
 print("📦 İlk yoxlama: mövcud xəbərlər bazaya yazılır, Telegram-a göndərilmir.")
 check_sites(first_run=True)
