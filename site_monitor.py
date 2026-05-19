@@ -155,14 +155,16 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
 
         for block in blocks:
 
-    if hasattr(block, "tag") and block.tag == "a":
-        links = [block]
-    else:
-        links = block.xpath(".//a[@href]")
+            try:
+                if hasattr(block, "tag") and block.tag == "a":
+                    links = [block]
+                else:
+                    links = block.xpath(".//a[@href]")
+            except Exception as e:
+                print("Link çıxarma xətası:", e)
+                continue
 
-    print(f"Blok daxilində link sayı: {len(links)}")
-
-    for a in links:
+            print(f"Blok daxilində link sayı: {len(links)}")
 
             for a in links:
                 href = a.get("href")
@@ -189,7 +191,6 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
                 })
 
     return results
-
 
 def extract_links_fallback(page_url, page_html, keywords):
     soup = BeautifulSoup(page_html, "html.parser")
