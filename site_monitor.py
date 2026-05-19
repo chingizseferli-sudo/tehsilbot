@@ -13,7 +13,7 @@ CHAT_ID = "1271870098"
 CONFIG_FILE = "courier_config_clean.json"
 
 CHECK_INTERVAL_SECONDS = 600
-MAX_SEND_PER_RUN = 10
+MAX_SEND_PER_RUN = 20
 MAX_LINKS_PER_SITE = 15
 
 conn = sqlite3.connect("site_monitor.db")
@@ -80,7 +80,6 @@ def load_sites():
         data = json.load(f)
 
     sites = data.get("sites", [])
-
     clean_sites = []
 
     for site in sites:
@@ -103,7 +102,6 @@ def keyword_match(title, keywords):
         return True
 
     title_lower = title.lower()
-
     return any(keyword in title_lower for keyword in keywords)
 
 
@@ -154,7 +152,6 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
         print(f"XPath üzrə blok sayı: {len(blocks)}")
 
         for block in blocks:
-
             try:
                 if hasattr(block, "tag") and block.tag == "a":
                     links = [block]
@@ -192,6 +189,7 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
 
     return results
 
+
 def extract_links_fallback(page_url, page_html, keywords):
     soup = BeautifulSoup(page_html, "html.parser")
     results = []
@@ -222,16 +220,16 @@ def fetch_site(site):
     page_url = site["url"]
 
     headers = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/124.0.0.0 Safari/537.36"
-    ),
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-    "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Connection": "keep-alive",
-    "Referer": "https://www.google.com/"
-}
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        ),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Connection": "keep-alive",
+        "Referer": "https://www.google.com/"
+    }
 
     try:
         print(f"Sayt açılır: {page_url}")
@@ -295,23 +293,29 @@ def check_sites(first_run=False):
             continue
 
         limit = site.get("limit", MAX_LINKS_PER_SITE)
+        latest_new_item = None
 
         for item in items[:limit]:
-            title = item["title"]
-            link = item["link"]
-            source = item["source"]
+            if not exists(item["link"]):
+                latest_new_item = item
+                break
 
-            if exists(link):
-                continue
+        if not latest_new_item:
+            print("Bu saytda yeni uyğun xəbər yoxdur.")
+            continue
 
-            save(link, title, source)
+        title = latest_new_item["title"]
+        link = latest_new_item["link"]
+        source = latest_new_item["source"]
 
-            if first_run:
-                print(f"İlkin bazaya yazıldı: {source} | {title[:70]}")
-                continue
+        save(link, title, source)
 
-            message = f"""
-🆕 Yeni xəbər / paylaşım
+        if first_run:
+            print(f"İlkin bazaya yazıldı: {source} | {title[:70]}")
+            continue
+
+        message = f"""
+🆕 Yeni uyğun xəbər
 
 📌 Başlıq:
 {title}
@@ -323,16 +327,16 @@ def check_sites(first_run=False):
 {link}
 """
 
-            send_telegram(message)
-            time.sleep(3)
+        send_telegram(message)
+        time.sleep(3)
 
-            sent_count += 1
+        sent_count += 1
 
-            print(f"Göndərildi: {source} | {title[:70]}")
+        print(f"Göndərildi: {source} | {title[:70]}")
 
-            if sent_count >= MAX_SEND_PER_RUN:
-                print("Bu dövr üçün göndərmə limiti tamamlandı.")
-                return
+        if sent_count >= MAX_SEND_PER_RUN:
+            print("Bu dövr üçün göndərmə limiti tamamlandı.")
+            return
 
 
 print("🚀 Sayt monitorinq botu işə düşdü.")
