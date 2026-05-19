@@ -1,2704 +1,2880 @@
 {
-  "list": [
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://konkret.az/favicon.ico",
-        "id": "95b8c7b9256965cfd7e6361c9310eea3",
-        "interval": 15000,
-        "nextTime": 1706365653583,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 1997.203125,
-              "left": 94.5,
-              "right": 1254.5,
-              "scrollLeft": 0,
-              "scrollTop": 2327,
-              "top": 100
-            },
-            "type": "xpath",
-            "value": "id(\"main\")|//MAIN[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365638583,
-        "status": "all",
-        "tags": "",
-        "text": "SON XƏBƏRLƏR\nŞəmkirdə bazarda yanğın oldu - YENİLƏNİB + VİDEOGəncədə qadını döyən şəxs saxlanıldıSal",
-        "title": "KONKRET | Doğru xəbərin KONKRET ünvanı",
-        "unread": 0,
-        "url": "https://konkret.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://www.aznews.az/favicon.ico",
-        "id": "f34acaf1b50c7b9c5550bbd8ceb244e7",
-        "interval": 15000,
-        "nextTime": 1706365653583,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 3040,
-              "left": 90.5,
-              "right": 1258.5,
-              "scrollLeft": 0,
-              "scrollTop": 0,
-              "top": 278
-            },
-            "type": "xpath",
-            "value": "//DIV[1][@class=\"WaHFU\"]|//BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365638583,
-        "status": "all",
-        "tags": "",
-        "text": "ZƏFƏR SEÇKİSİ\n18:19\nDünya azərbaycanlılarından Prezidentə dəstək: “Qalib Azərbaycan İlham Əliyevin ə",
-        "title": "Xəbər lenti - Aznews.az",
-        "unread": 0,
-        "url": "https://www.aznews.az/latest/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://teleqraf.az/favicon.ico",
-        "id": "fa19f90d178a116b5ac895f690411be6",
-        "interval": 15000,
-        "nextTime": 1706365653583,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 2479.25,
-              "left": 706.5,
-              "right": 906.5,
-              "scrollLeft": 0,
-              "scrollTop": 184,
-              "top": 68
-            },
-            "type": "xpath",
-            "value": "id(\"denizdizayn-main\")/DIV[3]/DIV[1]/DIV[1][@class=\"denizdizayn-content-layout\"]/DIV[1][@class=\"denizdizayn-content-layout-row\"]/DIV[2]|//BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[2]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365638583,
-        "status": "all",
-        "tags": "",
-        "text": "Xəbər lenti\n26.08.2023 19:48\nBeton tökən qurğu Ordubad sakininin ölümünə səbəb olub\n19.07.2023 21:37",
-        "title": "www. TELEQRAF.az",
-        "unread": 0,
-        "url": "https://teleqraf.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://axar.az/favicon.ico",
-        "id": "356b165e6e67a716e2f802cebf1f5605",
-        "interval": 15000,
-        "nextTime": 1706365659585,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 220,
-              "left": 174.5,
-              "right": 1174.5,
-              "scrollLeft": 0,
-              "scrollTop": 532,
-              "top": -318
-            },
-            "type": "xpath",
-            "value": "//DIV[6][@class=\"wrapper\"]|//BODY/DIV[2]/DIV[6]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365644585,
-        "status": "all",
-        "tags": "",
-        "text": "Bütün manşetlər\nBakı bu nazirin səfər istəyini rədd etdi - XİN\nBütün manşetlər\nOrdumuzun zabiti hərb",
-        "title": "Axar.Az - Operativ xəbər portalı, son xəbərlər, yeni xəbərlər, ən son xəbərlər, xeber, xeberler, son xeberler, en son xeberler",
-        "unread": 0,
-        "url": "https://axar.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://publika.az/favicon.ico",
-        "id": "ac3aebd7ffc52761c0f088e40b19052c",
-        "interval": 15000,
-        "nextTime": 1706365659585,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 1170.328125,
-              "left": 954.5,
-              "right": 1274.5,
-              "scrollLeft": 0,
-              "scrollTop": 0,
-              "top": 155.734375
-            },
-            "type": "xpath",
-            "value": "id(\"mvp-feat1-wrap\")/DIV[1]/DIV[2]/DIV[1]|//BODY/DIV[3]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/SECTION[1]/DIV[1]/DIV[2]/DIV[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365644585,
-        "status": "all",
-        "tags": "",
-        "text": "Xəbər lenti\nGünlük\nHəftəlik\nAvropa18:16\nİsveçrədə azərbaycanlıların etiraz aksiyası zamanı təxribata",
-        "title": "Publika.az - Fasiləsiz xəbər",
-        "unread": 0,
-        "url": "https://publika.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://hit.az/favicon.ico",
-        "id": "f06fa29f88302fe5a71660234e27967e",
-        "interval": 15000,
-        "nextTime": 1706365649571,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 3313,
-              "left": 149.5,
-              "right": 1199.5,
-              "scrollLeft": 0,
-              "scrollTop": 1136,
-              "top": -442
-            },
-            "type": "xpath",
-            "value": "//DIV[1][@class=\"home-wrap sym\"]|//BODY/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365634571,
-        "status": "all",
-        "tags": "",
-        "text": "SON XƏBƏRLƏR\nBütün\nPaşinyanın konstitusiya planı: Məqsəd nədir?\n27.01.2024, 18:25\nDünyanın söz sahib",
-        "title": "Hit.az",
-        "unread": 0,
-        "url": "https://hit.az/az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://poliqon.info/favicon.ico",
-        "id": "23f99e9c644faa0a0b48e6bad50a0310",
-        "interval": 15000,
-        "nextTime": 1706365649571,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 991.5625,
-              "left": 882.828125,
-              "right": 1194.828125,
-              "scrollLeft": 0,
-              "scrollTop": 2100,
-              "top": 121.5625
-            },
-            "type": "xpath",
-            "value": "id(\"jnews_popular-2\")|//BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV/DIV/DIV[1]/DIV[1]/DIV[2]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365634571,
-        "status": "all",
-        "tags": "",
-        "text": "Xəbər lenti\nİsveçrədə azərbaycanlıların etiraz aksiyası zamanı təxribata əl atılıb\npaylaş\nShare\nTwee",
-        "title": "poliqon.info",
-        "unread": 0,
-        "url": "https://poliqon.info/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://sia.az/favicon.ico",
-        "id": "6c7c589b32f11b0decec686a4e02a19a",
-        "interval": 15000,
-        "nextTime": 1706365649571,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 906.234375,
-              "left": 981.25,
-              "right": 1235.5,
-              "scrollLeft": 0,
-              "scrollTop": 2260,
-              "top": 134.234375
-            },
-            "type": "xpath",
-            "value": "//DIV[5][@class=\"widget\"]|//BODY/DIV[2]/DIV[5]/DIV[4]/DIV[3]/DIV[5]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365634571,
-        "status": "all",
-        "tags": "",
-        "text": "Xəbər lenti\nAŞPA hazırda Fransanın əlində oyuncağa çevrilmiş bir qurumdur\nSiyasət\n18:26\n“Əvəzedici ə",
-        "title": "Sia.az",
-        "unread": 0,
-        "url": "https://sia.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://olke.az/favicon.ico",
-        "id": "4469ad093785d3ff7efc8308adf67c77",
-        "interval": 15000,
-        "nextTime": 1706365653583,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 2125,
-              "left": 89.5,
-              "right": 1259.5,
-              "scrollLeft": 0,
-              "scrollTop": 602,
-              "top": 131
-            },
-            "type": "xpath",
-            "value": "id(\"posts\")|//SECTION[2]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365638583,
-        "status": "all",
-        "tags": "",
-        "text": "Bütün xəbərlər\nHadisə\nŞirkət rəhbərinin içərisində 140 min manat olan maşını oğurlandı\n27.01.2024\n18",
-        "title": "Olke.az",
-        "unread": 0,
-        "url": "https://olke.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://lent.az/favicon.ico",
-        "id": "b465312eb63d9d2b094deda631199fca",
-        "interval": 15000,
-        "nextTime": 1706365659585,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 1725,
-              "left": 174.5,
-              "right": 504.5,
-              "scrollLeft": 0,
-              "scrollTop": 517,
-              "top": 242
-            },
-            "type": "xpath",
-            "value": "//DIV[2][@class=\"project_column new-flex_column\"]|//MAIN[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[2]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365644585,
-        "status": "all",
-        "tags": "",
-        "text": "XƏBƏR LENTİ\nTavaların təzə görünməsi üçün  SUYA BUNU QATIN\n18:21\n27 yanvar 2024\nŞəmkir  bazarında  y",
-        "title": "Lent.az – Azərbaycan və dünyadan ən son xəbərlər",
-        "unread": 0,
-        "url": "https://lent.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "müəllim"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "direktor"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "ali məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "imtahan"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Elm və Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://az.trend.az/favicon.ico",
-        "id": "182036af80a653e8e37044b6cd3a53ea",
-        "interval": 15000,
-        "nextTime": 1706365653583,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 3004.125,
-              "left": 130.5,
-              "right": 1218.5,
-              "scrollLeft": 0,
-              "scrollTop": 86,
-              "top": 114
-            },
-            "type": "xpath",
-            "value": "//BODY/DIV[2]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365638583,
-        "status": "all",
-        "tags": "",
-        "text": "Əsas səhifə\nXəbər lenti\nŞəmkirdə bazarda baş verən yanğın söndürülüb (YENİLƏNİB) (FOTO/VİDEO)\n18:04 ",
-        "title": "Trend - Azərbaycan xəbərləri, Gürcüstan, Qazaxıstan, Türkmənistan, Özbəkistan, İran, Türkiyə xəbərləri.",
-        "unread": 0,
-        "url": "https://az.trend.az/latest/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "müəllim"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "direktor"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "ali məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "imtahan"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Elm və Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://pravda.az/favicon.ico",
-        "id": "11bc012606497efff16c3b5176106f42",
-        "interval": 15000,
-        "nextTime": 1706365659585,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 12649.625,
-              "left": 844.5,
-              "right": 1134.5,
-              "scrollLeft": 0,
-              "scrollTop": 643,
-              "top": 167
-            },
-            "type": "xpath",
-            "value": "//DIV[1][@class=\"inner\"]/UL[1]|//BODY/DIV[3]/DIV[6]/DIV[1]/DIV[5]/DIV[2]/DIV[1]/DIV[1]/UL[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365644585,
-        "status": "all",
-        "tags": "",
-        "text": "Sosial yardım alanlara xoş xəbər\n27 Yanvar  18:25\nBakıda “Peugeot” yandı\n27 Yanvar  18:07\nAzərbaycan",
-        "title": "Pravda.az",
-        "unread": 0,
-        "url": "https://pravda.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "müəllim"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "ali məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "imtahan"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "direktor"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Elm və Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://apa.az/favicon.ico",
-        "id": "188121cdefe3a7fe237cb301a95563f7",
-        "interval": 15000,
-        "nextTime": 1706365659585,
-        "noDuplicate": true,
-        "once": false,
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 2510,
-              "left": 109.5,
-              "right": 1249.5,
-              "scrollLeft": 0,
-              "scrollTop": 0,
-              "top": 252
-            },
-            "type": "xpath",
-            "value": "//DIV[2][@class=\"container\"]|//MAIN[1]/DIV[2]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365644585,
-        "status": "all",
-        "tags": "",
-        "text": "Bütün xəbərlər\nAna səhifə\nBütün xəbərlər\nTürkiyə İnternet Media Assosiasiyası Azərbaycanda keçiriləc",
-        "title": "APA.AZ -Bütün xəbərlər- Günün son xeberleri,siyaset iqtisadiyyat xəbərləri",
-        "unread": 0,
-        "url": "https://apa.az/all-news",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "müəllim"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "direktor"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "ali məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "imtahan"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Elm və Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://qafqazinfo.az/favicon.ico",
-        "id": "ffed8b4d14b0d6e75bbc9d30a13e15bb",
-        "interval": 15000,
-        "nextTime": 1706365637621,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 1486.609375,
-              "left": 189.5,
-              "right": 351.15625,
-              "scrollLeft": 0,
-              "scrollTop": 629,
-              "top": 135.21875
-            },
-            "type": "xpath",
-            "value": "//DIV[4][@class=\"row\"]/DIV[1]/UL[1][@class=\"sonxeber\"]|//CONTENT[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/UL[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365622621,
-        "status": "all",
-        "tags": "",
-        "text": "27 Yanvar\n18:15\n18:15 |\nCenevrədə azərbaycanlılar etiraz aksiyası keçirirlər  - Video+Fotolar\n18:00\n",
-        "title": "Azərbaycandan və dünyadan xəbərlər - Qafqazinfo.az",
-        "unread": 0,
-        "url": "https://qafqazinfo.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "müəllim"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "direktor"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "ali məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "imtahan"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Elm və Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://news.milli.az/favicon.ico",
-        "id": "df4eacfa624650159625053aec3e4d28",
-        "interval": 15000,
-        "nextTime": 1706365649571,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 3549.140625,
-              "left": 154,
-              "right": 882,
-              "scrollLeft": 0,
-              "scrollTop": 0,
-              "top": 406.140625
-            },
-            "type": "xpath",
-            "value": "//DIV[1][@class=\"search-holder\"]|//BODY/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365634571,
-        "status": "all",
-        "tags": "",
-        "text": "XƏBƏR LENTİ\nCenevrədə azərbaycanlılar etiraz aksiyası keçirirlər\n18:24\nZəlzələ ilə bağlı AÇIQLAMA:  ",
-        "title": "Xəbər lenti - Milli.Az",
-        "unread": 0,
-        "url": "https://news.milli.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "müəllim"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "direktor"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "ali məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "imtahan"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Elm və Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://qaynarinfo.az/favicon.ico",
-        "id": "8652a679f8e0c39c65c8412e66fc76f7",
-        "interval": 15000,
-        "nextTime": 1706365649571,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 909,
-              "left": 1004.5,
-              "right": 1304.5,
-              "scrollLeft": 0,
-              "scrollTop": 764,
-              "top": 148
-            },
-            "type": "xpath",
-            "value": "//DIV[4][@class=\"section_wrap wrap_lent\"]/DIV[1]|//MAIN[1]/DIV[1]/DIV[2]/DIV[2]/DIV[4]/DIV[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365634571,
-        "status": "all",
-        "tags": "",
-        "text": "Xəbər lenti\nVACİB\n18:10\nSosial yardım alanlara şad xəbər - Rəsmi açıqlama\n17:50\nSenat Kiyevə yardımı",
-        "title": "Qaynarinfo.az",
-        "unread": 0,
-        "url": "https://qaynarinfo.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "müəllim"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "direktor"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "ali məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "imtahan"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Elm və Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "disableCookie": false,
-        "emails": "",
-        "errorPush": true,
-        "favicon": "https://anews.az/favicon.ico",
-        "id": "0dc3d7910f6443f3823e604aa81daa60",
-        "interval": 15000,
-        "nextTime": 1706365637621,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 521.90625,
-              "left": 166.5,
-              "right": 1182.5,
-              "scrollLeft": 0,
-              "scrollTop": 2878,
-              "top": -2379.609375
-            },
-            "type": "xpath",
-            "value": "//SECTION[1][@class=\"post-list clr\"]/DIV[1]|//BODY/DIV[2]/DIV[7]/DIV[1]/DIV[2]/DIV[3]/SECTION[1]/DIV[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365622621,
-        "status": "all",
-        "tags": "",
-        "text": "18:11 | 27.01.2024\nCəmiyyət\nŞəmkirdə bazarda baş verən yanğın söndürülüb - YENİLƏNİB\n16:56 | 27.01.2",
-        "title": "Anews.az Anews.az Azərbaycan xəbər portalı",
-        "unread": 0,
-        "url": "https://anews.az/",
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "cloud": false,
-        "archiveRss": false
-      }
-    },
-    {
-      "config": {
-        "actions": [],
-        "alarms": [
-          "notify",
-          "voice",
-          "webhook"
-        ],
-        "baseTime": 0,
-        "binding": "none",
-        "cloud": false,
-        "condition": {
-          "condition": "oneof",
-          "rules": [
-            {
-              "rule": "include",
-              "type": "added",
-              "value": "şagird"
-            },
-            {
-              "rule": "include",
-              "type": "added",
-              "value": "təhsil"
-            },
-            {
-              "rule": "include",
-              "type": "added",
-              "value": "məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "müəllim"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Emin Əmrullayev"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Elm və Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "Təhsil Nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "direktor"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "məktəbli"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "sinif"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "imtahan"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "universitet"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tələbə"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "ali məktəb"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinifi\r\nmtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs\r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "bağça\r\nməktəbli\r\nsinif\r\nimtahan\r\nali məktəb\r\nuniversitet\r\ntələbə\r\nEmin Əmrullayev\r\ntəhsil nazirliyi\r\nelm və təhsil nazirliyi\r\nmüəllim\r\nşagird\r\ntəhsil\r\nməktəb\r\ndərs \r\ntədris"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "elm və təhsil nazirliyi"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "dərs"
-            },
-            {
-              "rule": "regex",
-              "type": "added",
-              "value": "tədris"
-            }
-          ]
-        },
-        "delay": 0,
-        "deviceId": "d41d8c",
-        "emails": "",
-        "errorPush": true,
-        "ext": {
-          "dd": {
-            "at": {
-              "a": false,
-              "m": "",
-              "u": ""
-            },
-            "type": "markdown"
-          },
-          "discord": {
-            "at": {
-              "a": false,
-              "u": ""
-            }
-          },
-          "fs": {
-            "at": {
-              "a": false,
-              "u": ""
-            },
-            "type": "RICH"
-          },
-          "qw": {
-            "at": {
-              "a": false,
-              "m": "",
-              "u": ""
-            },
-            "type": "markdown"
-          },
-          "slack": {
-            "at": {
-              "a": false,
-              "u": ""
-            }
-          },
-          "tg": {
-            "at": {
-              "a": false,
-              "u": ""
-            }
-          }
-        },
-        "favicon": "https://report.az/favicon.ico",
-        "id": "48c8bb92e0f16e0f1c4385ad874def7a",
-        "interval": 15000,
-        "nextTime": 1706365639623,
-        "noDuplicate": true,
-        "nos": "",
-        "selectors": [
-          {
-            "rect": {
-              "bottom": 3357.65625,
-              "left": 34.5,
-              "right": 1314.5,
-              "scrollLeft": 0,
-              "scrollTop": 0,
-              "top": 226.46875
-            },
-            "type": "xpath",
-            "value": "//SECTION[1][@class=\"news-feed-page pt-20\"]/DIV[1][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[1][@class=\"col-12\"]|//SECTION[1]/DIV[1]/DIV[1]/DIV[1]"
-          }
-        ],
-        "silence": true,
-        "stamp": 1706365624623,
-        "status": "all",
-        "tags": "",
-        "text": "Son xəbərlər 0\nBu gün\nDünən\nBu həftə\nBu ay\nKeçən həftə\nKeçən ay\nFotoİsveçrədə azərbaycanlıların etir",
-        "title": "Son Xəbərlər (Xeberler) | Azərbaycan və dünya xəbərləri | Report.az",
-        "unread": 0,
-        "url": "https://report.az/son-xeberler/",
-        "watchLink": false,
-        "webhook": "",
-        "_id": 0,
-        "sid": 0,
-        "_me": false,
-        "archiveRss": false
-      }
-    }
+  "default_keywords": [
+    "məktəb",
+    "şagird",
+    "tələbə",
+    "dərs",
+    "universitet",
+    "lisey",
+    "direktor",
+    "rektor",
+    "kollec",
+    "alim",
+    "əmrullayev",
+    "tədris",
+    "təhsil",
+    "repetitor",
+    "imtahan",
+    "yeniyetmə",
+    "internat",
+    "TKTA",
+    "sertifikatlaşdırma",
+    "attestat",
+    "şəhadətnamə",
+    "fakültə",
+    "bağça",
+    "institut",
+    "gimnaziya",
+    "peşə",
+    "sertifikasiya",
+    "Azərbaycan müəllimi"
   ],
   "settings": {
-    "showAdd": true,
-    "onlyText": true,
-    "showDouble": true,
-    "shareRule": false,
-    "shareUrl": false,
-    "recommenRule": true,
-    "shareRuleSortby": "update_time",
-    "shareTask": false,
-    "parallel": 5,
-    "audioDuration": 8,
-    "audioUrl": "",
-    "baseTime": 0,
-    "emails": "",
-    "hooks": "",
-    "delay": 0,
-    "interval": 15000,
-    "addedColor": "rgba(66,185,131, 1)",
-    "removedColor": "rgba(255,0,0, 1)",
-    "keywordColor": "rgb(255, 0, 255)",
-    "selectionMode": "hover_mode",
-    "highlightKeyword": true,
-    "performanceMode": false,
-    "sync": true,
-    "speak": false,
-    "alarms": [
-      "notify",
-      "voice",
-      "webhook"
-    ],
-    "history": 10,
-    "ext": {
-      "dd": {
-        "at": {
-          "a": false,
-          "m": "",
-          "u": ""
-        },
-        "type": "markdown"
-      },
-      "discord": {
-        "at": {
-          "a": false,
-          "u": ""
-        }
-      },
-      "fs": {
-        "at": {
-          "a": false,
-          "u": ""
-        },
-        "type": "RICH"
-      },
-      "qw": {
-        "at": {
-          "a": false,
-          "m": "",
-          "u": ""
-        },
-        "type": "markdown"
-      },
-      "slack": {
-        "at": {
-          "a": false,
-          "u": ""
-        }
-      },
-      "tg": {
-        "at": {
-          "a": false,
-          "u": ""
-        }
-      }
-    },
-    "dark": false,
-    "nos": "",
-    "showDel": true,
-    "selectAll": true
+    "check_interval_seconds": 600,
+    "max_send_per_run": 20,
+    "max_links_per_site": 30,
+    "first_run_send": false
   },
-  "tags": []
+  "sites": [
+    {
+      "name": "Yeniavaz.com",
+      "url": "https://www.yeniavaz.com/az",
+      "xpaths": [
+        "id(\"sectionAfterSlide1\")|//SECTION[9]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "XƏBƏRLƏR - ADU",
+      "url": "https://adu.edu.az/az/xeberler/",
+      "xpaths": [
+        "id(\"inner-page\")|//BODY/DIV[1]/SECTION[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər | Azərbaycan Respublikasının Təhsil İnstitutu",
+      "url": "https://arti.edu.az/media/news/",
+      "xpaths": [
+        "//DIV[1][@class=\"position-relative bg-img-start\"]/DIV[1]|//BODY/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Editor.az - Azərbaycanın Onlayn Xəbər Portalı",
+      "url": "https://editor.az/",
+      "xpaths": [
+        "id(\"w_widget_lent-3\")|//BODY/DIV[3]/DIV[1]/DIV[1]/ASIDE[1]/DIV/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "XƏBƏRLƏR",
+      "url": "https://science.gov.az/az/news",
+      "xpaths": [
+        "//DIV[2][@class=\"row justify-content-between mt-lg-2\"]/DIV[1]|//BODY/DIV[3]/DIV[2]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Əlyazmalar İnstitutu",
+      "url": "https://www.manuscript.az/",
+      "xpaths": [
+        "id(\"blog\")|//BODY/DIV[1]/DIV[2]/DIV[2]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Millətin səsi",
+      "url": "https://milletinsesi.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"clean-grid-posts-container\"]|//BODY/DIV[2]/DIV[1]/DIV[6]/DIV[1]/DIV[2]/DIV[1]/DIV[3]/DIV[1]/DIV[2]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Sözcü - Ən son xəbərlər, operativ xəbər saytı, xəbərlər.",
+      "url": "https://sozcu.az/",
+      "xpaths": [
+        "//BODY"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "7Times.Az - Son Xəbərlər, Dünya Xəbərləri və Multimedia",
+      "url": "https://7times.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"scrolling\"]|//BODY/DIV[3]/DIV[1]/DIV[1]/ASIDE[1]/DIV/DIV[2]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "7news.az Azərbaycanda özəl xəbərlər, araşdırmalar, təhlillər və müsahibələrin tək ünvanı",
+      "url": "https://7news.az/index.php",
+      "xpaths": [
+        "//SECTION[@class=\"site-a\"]|//BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]/SECTION"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Ucnoqta.az",
+      "url": "https://ucnoqta.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"section-projects\"]/DIV[1][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[1]|//BODY/DIV[2]/DIV[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Paralel.az",
+      "url": "https://paralel.az/az",
+      "xpaths": [
+        "//DIV[1][@class=\"latest-news block color-red\"]|//SECTION[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Ayna.az - Ayna.az",
+      "url": "https://ayna.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"section-projects\"]/DIV[1][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[2]|//BODY/DIV[2]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Milliyol.az",
+      "url": "https://milliyol.az/",
+      "xpaths": [
+        "id(\"jeg_sidecontent\")|//BODY/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbər lenti - Milli.Az",
+      "url": "https://news.milli.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"search-holder\"]|//BODY/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Sitat.info",
+      "url": "https://sitat.info/",
+      "xpaths": [
+        "//DIV[2][@class=\"news\"]|//BODY/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xeber7.az",
+      "url": "https://xeber7.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"last-posts-list\"]|//BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "NUH informasiya agentliyi",
+      "url": "https://nuh.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"col-md-4 col-right col-sm-4\"]|//BODY/DIV[5]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "XalqXeber.Az | Son xeberler Azerbaycan xeberleri",
+      "url": "https://xalqxeber.az/lastnews/",
+      "xpaths": [
+        "//DIV[5][@class=\"section-news-lent\"]/DIV[1][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[2]|//BODY/DIV[5]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Sözçü qəzeti",
+      "url": "https://sozcu.info/",
+      "xpaths": [
+        "id(\"t3-mainbody\")/DIV[1][@class=\"row\"]/DIV[2]|//BODY/DIV[6]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Dialoq.az",
+      "url": "https://dialoq.az/",
+      "xpaths": [
+        "id(\"site_content\")/DIV[1]/DIV[2]|//MAIN[1]/DIV[2]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Busaat.az - Günün əsas və bu saata olan xəbərləri",
+      "url": "https://busaat.az/",
+      "xpaths": [
+        "id(\"class_x_widget_lent-2\")|//BODY/DIV[3]/DIV[1]/SECTION[1]/DIV/DIV"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Hit.az",
+      "url": "https://hit.az/az/",
+      "xpaths": [
+        "//DIV[1][@class=\"home-wrap sym\"]|//BODY/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Pressxeber.info",
+      "url": "https://www.pressxeber.info/",
+      "xpaths": [
+        "//DIV[2][@class=\"last-posts-list\"]|//BODY/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AzadMedia.az",
+      "url": "https://azadmedia.az/",
+      "xpaths": [
+        "id(\"siteGenel\")|//BODY/DIV[6]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AzFakt",
+      "url": "https://azfakt.com/",
+      "xpaths": [
+        "//DIV[3][@class=\"xlent\"]|//BODY/DIV[3]/DIV[3]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Aqreqator.az xəbərlər portalı",
+      "url": "https://aqreqator.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"utf_latest_news block color-red\"]|//SECTION[2]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Axar.Az - Operativ xəbər portalı, son xəbərlər, yeni xəbərlər, ən son xəbərlər, xeber, ...",
+      "url": "https://axar.az/",
+      "xpaths": [
+        "//DIV[6][@class=\"wrapper\"]|//BODY/DIV[2]/DIV[6]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xalq Cəbhəsi Qəzeti | Bütöv Azərbaycanın qəzeti",
+      "url": "https://www.xalqcebhesi.az/",
+      "xpaths": [
+        "id(\"content\")|//BODY/DIV[1]/DIV[4]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Faktor.az",
+      "url": "https://faktor.az/az",
+      "xpaths": [
+        "//DIV[2][@class=\"col-md-4 col-md-pull-8 aside\"]|//BODY/DIV[2]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "ENA.az (Economic News Agency) - İqtisadiyyat Xəbərləri Agentliyi | ENA.az",
+      "url": "https://ena.az/",
+      "xpaths": [
+        "//SECTION[4]/DIV[1][@class=\"elementor-container elementor-column-gap-default\"]/DIV[1][@class=\"elementor-row\"]/DIV[1]/DIV[1][@class=\"elementor-column-wrap elementor-element-populated\"]|//SECTION[4]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "CİA.AZ - Ana Səhifə",
+      "url": "https://cia.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"wrapper\"]|//BODY/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Pravda.az",
+      "url": "https://pravda.az/",
+      "xpaths": [
+        "//body"
+      ],
+      "keywords": [
+        "əmrullayev",
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Son Xəbərlər » XalqXeber.Az | Son xeberler Azerbaycan xeberleri",
+      "url": "https://xalqxeber.az/lastnews/",
+      "xpaths": [
+        "//DIV[@class=\"altSayfalar\"]|//BODY/DIV[7]/DIV",
+        "//DIV[7][@class=\"siteyiOrtala\"]|//BODY/DIV[7]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Bay Media",
+      "url": "https://www.baymedia.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"all-news-area\"]/DIV[1][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[2]|//BODY/DIV[2]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Yeni Sabah",
+      "url": "https://yenisabah.az/",
+      "xpaths": [
+        "//DIV[5][@class=\"section-news-lent\"]/DIV[1][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[2]|//BODY/DIV[5]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Naxçıvan Dövlət Universiteti",
+      "url": "https://ndu.edu.az/xeberler",
+      "xpaths": [
+        "//SECTION[1][@class=\"news-section\"]|//SECTION[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "\"Nuhçıxan\" İnformasiya Agentliyi - Xəbərlər",
+      "url": "https://nuhcixan.az/",
+      "xpaths": [
+        "id(\"lang_az\")/DIV[2][@class=\"vc_tta-panel-body\"]/DIV[1]|//MAIN[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[2]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AZMIU",
+      "url": "https://www.azmiu.edu.az/az/allnews",
+      "xpaths": [
+        "//DIV[1][@class=\"news-detail-content\"]/DIV[1][@class=\"container\"]|//SECTION[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər – Azərbaycan Dövlət Mədəniyyət və İncəsənət Universiteti",
+      "url": "https://admiu.edu.az/x%C9%99b%C9%99rl%C9%99r/",
+      "xpaths": [
+        "//DIV[1][@class=\"elementor elementor-1711\"]/DIV[1]/DIV[1][@class=\"e-con-inner\"]|//ARTICLE[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Reportyor.az",
+      "url": "https://reportyor.az/",
+      "xpaths": [
+        "id(\"gw_gallery-5\")|//ASIDE[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Versus.az",
+      "url": "https://versus.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"right\"]|//SECTION[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Sabahinfo.az",
+      "url": "https://sabahinfo.az/",
+      "xpaths": [
+        "id(\"colormag_featured_posts_vertical_widget-5\")|//BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[2]/ASIDE[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "E-huquq.az",
+      "url": "https://www.e-huquq.az/az/latest/",
+      "xpaths": [
+        "//ASIDE[1][@class=\"wrapper__list__article\"]|//SECTION[1]/DIV[2]/DIV[1]/DIV[1]/ASIDE[1]",
+        "//DIV[2][@class=\"__courier-btn__ __courier-close__\"]|//BODY/DIV[2]/DIV[2]",
+        "//DIV[2][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[1][@class=\"col-md-12\"]|//SECTION[1]/DIV[2]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Banker.az | Banker.az",
+      "url": "https://banker.az/",
+      "xpaths": [
+        "id(\"tdi_106\")|//BODY/DIV[5]/DIV[2]/DIV[1]/DIV[1]/DIV/DIV[5]/DIV/DIV[2]/DIV[1]/DIV[4]/DIV[1]/DIV[1]/DIV/DIV/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Arantv.az -",
+      "url": "https://arantv.az/",
+      "xpaths": [
+        "id(\"recent-posts-5\")|//BODY/DIV[1]/DIV[1]/DIV[4]/DIV[2]/DIV[1]/DIV/ASIDE[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbər lenti",
+      "url": "https://lsu.edu.az/new/NewsLister/index.php",
+      "xpaths": [
+        "//DIV[2][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[1]|//BODY/DIV[2]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "adalet.az",
+      "url": "https://adalet.az/az/butun-xeberler",
+      "xpaths": [
+        "//DIV[1][@class=\"col-9 writer-lists\"]/DIV|//MAIN[1]/SECTION/DIV/DIV[1]/DIV"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər | tvreal.az",
+      "url": "https://www.realtv.az/category/az/15",
+      "xpaths": [
+        "//DIV[1][@class=\"row\"]/DIV[2]|//BODY/DIV[3]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "No Comment",
+      "url": "https://nocomment.az/",
+      "xpaths": [
+        "id(\"onesignal-slidedown-cancel-button\")|/DIV/DIV/DIV[2]/BUTTON[2]",
+        "id(\"w_widget_lent-4\")|//MAIN[1]/DIV[1]/DIV[1]/DIV"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Cəbhə.info",
+      "url": "https://cebheinfo.az/hadise/azerbaycanda-vezifeli-sexslere-cinayet-isi-acildi",
+      "xpaths": [
+        "id(\"main-container\")/DIV[1][@class=\"row\"]/ASIDE[1]/ASIDE[1][@class=\"widget widget-popular-posts\"]|//MAIN[1]/DIV[5]/DIV[1]/ASIDE[1]/ASIDE[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Azxeber.com Azərbaycanda özəl xəbərlər, araşdırmalar, təhlillər və müsahibələrin tək ün...",
+      "url": "https://azxeber.com/",
+      "xpaths": [
+        "//DIV[1][@class=\"home\"]/DIV[1][@class=\"centered\"]|//BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Olke.az",
+      "url": "https://olke.az/",
+      "xpaths": [
+        "id(\"posts\")|//SECTION[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AMEA Dilçilik İnstitutu",
+      "url": "https://www.dilcilik.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"main-container fl-wrap fix-container-init\"]|//SECTION[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Qafqazinfo.az",
+      "url": "https://qafqazinfo.az/",
+      "xpaths": [
+        "//DIV[4][@class=\"row\"]/DIV[1]/UL[1][@class=\"sonxeber\"]|//CONTENT[1]/DIV[1]/DIV[1]/DIV[4]/DIV[1]/UL[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər / Xəbərlər / Azərbaycan İlahiyyat İnstitutu",
+      "url": "https://ait.edu.az/az/news/all/",
+      "xpaths": [
+        "id(\"content\")|//SECTION[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AFN.az - Xəbər Portalı » AFN.az - Xəbər Portalı",
+      "url": "https://afn.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"composs-panel\"]|//ARTICLE[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbər lenti - Aznews.az",
+      "url": "https://www.aznews.az/latest/",
+      "xpaths": [
+        "//DIV[1][@class=\"WaHFU\"]|//BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Unikal.az",
+      "url": "https://unikal.az/",
+      "xpaths": [
+        "//BODY/DIV[5]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "poliqon.info",
+      "url": "https://poliqon.info/",
+      "xpaths": [
+        "id(\"jnews_popular-2\")|//BODY/DIV[1]/DIV[3]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV/DIV/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "NEFT KİMYA PROSESLƏRİ İNSTİTUTU",
+      "url": "https://www.nkpi.az/?page=news",
+      "xpaths": [
+        "id(\"content-inner\")|//BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "ASOIU | allNews",
+      "url": "https://asoiu.edu.az/allNews",
+      "xpaths": [
+        "//DIV[3][@class=\"container mt-5 \"]/DIV[1][@class=\"row\"]|//BODY/DIV[3]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "102xeber.info",
+      "url": "https://102xeber.info/index.php?newsid=4857",
+      "xpaths": [
+        "//DIV[1][@class=\"selanhead\"]|//BODY/DIV[1]/DIV[6]/DIV[2]/DIV[1]/DIV[1]/DIV[1]",
+        "//DIV[2][@class=\"bolmic lent lenty\"]|//BODY/DIV[1]/DIV[6]/DIV[2]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Faktinfo.az",
+      "url": "https://www.faktinfo.az/",
+      "xpaths": [
+        "//MAIN[1]/DIV[@class=\"container\"]/DIV[@class=\"row-7\"]/DIV[3]|//MAIN[1]/DIV/DIV/DIV[3]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "525-ci qəzet",
+      "url": "https://525.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"home-cjr240\"]|//BODY/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[6]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər – Gəncə Dövlət Universiteti",
+      "url": "https://gdu.edu.az/category/x%c9%99b%c9%99rl%c9%99r/",
+      "xpaths": [
+        "id(\"content\")|//BODY/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
+        "id(\"body\")|//BODY/DIV[1]/DIV[2]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AzTimes",
+      "url": "https://aztimes.az/",
+      "xpaths": [
+        "id(\"recent-posts-3\")|//ASIDE/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "sfera.az",
+      "url": "https://sfera.az/",
+      "xpaths": [
+        "//SECTION[3][@class=\"posts\"]|//SECTION[3]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Azərbaycan Tibb Universiteti | Xəbərlər",
+      "url": "https://amu.edu.az/news",
+      "xpaths": [
+        "//SECTION[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AŞQARLAR KİMYASI İNSTİTUTU | ica.az",
+      "url": "https://ica.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"wpb_column vc_column_container td-pb-span8\"]|//BODY/DIV[7]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Bakı Dövlət Universiteti",
+      "url": "http://bsu.edu.az/az/newsarchive",
+      "xpaths": [
+        "id(\"main_container\")/DIV[2]|//BODY/DIV[1]/DIV[2]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "TEHSIL-PRESS Agentliyi",
+      "url": "https://tehsil-press.az/",
+      "xpaths": [
+        "id(\"sideRight\")/B[1]/B/B[1]/B/B[1]/B/DIV[1]|//ASIDE[1]/B[1]/B/B[1]/B/B[1]/B/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "XƏBƏRLƏR-AMEA Folklor İnstitutu",
+      "url": "https://folklor.az/az/news",
+      "xpaths": [
+        "//DIV[1][@class=\"section_wrap section_news\"]/DIV[1][@class=\"main_center\"]|//MAIN[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Kəpəz TV",
+      "url": "http://www.kepeztv.az/xeberler",
+      "xpaths": [
+        "//DIV[1][@class=\"news-page\"]|//BODY/DIV[6]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "XƏBƏRLƏR-NƏSİRƏDDİN TUSİ adına ŞAMAXI ASTROFİZİKA RƏSƏDXANASI",
+      "url": "https://shao.az/az/news",
+      "xpaths": [
+        "//SECTION[1][@class=\"center\"]|//SECTION[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər – Naxçıvan Müəllimlər İnstitutu",
+      "url": "https://www.nmi.edu.az/category/x%c9%99b%c9%99rl%c9%99r/",
+      "xpaths": [
+        "id(\"primary\")|//BODY/DIV[2]/DIV[2]/DIV[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "APA.AZ- Azərbaycan və dünyadan ən son xəbərlər",
+      "url": "https://apa.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"news_block\"]/DIV[2][@class=\"news\"]|//MAIN[1]/DIV[2]/DIV[2]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Anews.az",
+      "url": "https://anews.az/",
+      "xpaths": [
+        "//SECTION[1][@class=\"post-list clr\"]/DIV[1]|//BODY/DIV[2]/DIV[7]/DIV[1]/DIV[2]/DIV[3]/SECTION[1]/DIV[1]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "ADPU - Xəbərlər",
+      "url": "https://adpu.edu.az/index.php/az/x%C9%99b%C9%99rl%C9%99r",
+      "xpaths": [
+        "id(\"sp-main-body\")|//SECTION[3]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "UNEC NEWS - UNEC-in Rəsmi Xəbər Portalı",
+      "url": "https://news.unec.edu.az/",
+      "xpaths": [
+        "//DIV[1][@class=\"equal-height\"]/DIV[3]|//BODY/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[3]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər — BXA",
+      "url": "https://bxa.edu.az/blog/",
+      "xpaths": [
+        "id(\"page_content\")/DIV[@class=\"row clr\"]|//BODY/DIV[1]/DIV/DIV[3]/DIV"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Universitet üzrə",
+      "url": "https://atmu.edu.az/az/xeberler-uni",
+      "xpaths": [
+        "//DIV[2][@class=\"main my-5\"]|//BODY/DIV[2]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AzTU - Azərbaycan Texniki Universiteti (Beta)",
+      "url": "https://www.aztu.edu.az/az/news",
+      "xpaths": [
+        "//DIV[4][@class=\"news-page-area\"]|//BODY/DIV[4]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "ATU-Azərbaycan Texnologiya Universiteti",
+      "url": "https://www.atu.edu.az/xeberler/1",
+      "xpaths": [
+        "id(\"overviews\")/DIV[1][@class=\"container\"]|//BODY/DIV[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər - IMBB",
+      "url": "https://imbb.az/az/news",
+      "xpaths": [
+        "//DIV[3][@class=\"left_part_in\"]|//SECTION[2]/DIV[1]/DIV[1]/DIV[3]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Azia.az",
+      "url": "https://azia.az/",
+      "xpaths": [
+        "id(\"siteSag\")|//BODY/DIV[1]/DIV[9]/DIV[4]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Azərbaycan Universiteti",
+      "url": "https://www.au.edu.az/az/",
+      "xpaths": [
+        "//DIV[3][@class=\"news wpage\"]|//BODY/DIV[1]/DIV[3]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "BDU-Qazax",
+      "url": "https://bdu-qazax.edu.az/index.php/az/",
+      "xpaths": [
+        "id(\"mx-maincol\")|//BODY/DIV[6]/DIV[1]/DIV[3]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "XƏBƏRLƏR-AMEA GƏNCƏ BÖLMƏSİ",
+      "url": "https://ameagb.az/az/news",
+      "xpaths": [
+        "//MAIN[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər | SDU - Sumqayıt Dövlət Universitetinin rəsmi portalı",
+      "url": "https://www.sdu.edu.az/az/news",
+      "xpaths": [
+        "//DIV[1][@class=\"content\"]|//SECTION[2]/SECTION[1]/DIV[2]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Əsas xəbərlər - Azərbaycan Milli Konservatoriyası",
+      "url": "https://conservatory.edu.az/category/esas-xeberler/",
+      "xpaths": [
+        "id(\"core\")/DIV[1][@class=\"c-container\"]|//BODY/DIV[3]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "BANM",
+      "url": "https://bhos.edu.az/news",
+      "xpaths": [
+        "//MAIN[1]/DIV[1][@class=\"container\"]|//MAIN[1]/DIV[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "AGRİ - Item Category",
+      "url": "https://www.genres.az/az/category/item/2",
+      "xpaths": [
+        "//SECTION[1][@class=\"content categories\"]|//BODY/DIV[1]/SECTION[1]/DIV[1]/SECTION[1]/SECTION[1]/DIV[1]/SECTION[1]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "XƏBƏRLƏR-Fiziologiya İnstitutu",
+      "url": "https://physiology.az/az/news",
+      "xpaths": [
+        "//DIV[2][@class=\"col-8\"]|//BODY/DIV[5]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Xəbərlər - UFAZ Website",
+      "url": "https://www.ufaz.az/az/news/",
+      "xpaths": [
+        "//MAIN[1][@class=\"min-h-[800px] bg-gray-50\"]/DIV[2][@class=\"container\"]/DIV[2]|//MAIN[1]/DIV[2]/DIV[2]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Bakı Musiqi Akademiyası - Xəbərlər",
+      "url": "https://musicacademy.edu.az/az/kheberler.html",
+      "xpaths": [
+        "//DIV[1][@class=\"rt-grid-9 \"]/DIV[2]|//BODY/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Milletinsesi.info",
+      "url": "https://milletinsesi.info/az",
+      "xpaths": [
+        "//MAIN[1][@class=\"mt-3\"]/DIV[1][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[2]|//MAIN[1]/DIV[1]/DIV[1]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Naxçıvan Xəbərləri",
+      "url": "https://naxcivanxeberleri.com/",
+      "xpaths": [
+        "//ASIDE[1][@class=\"col-md-4 col-sm-4\"]/DIV[1]|//ASIDE[1]/DIV[1]",
+        "//DIV[2][@class=\"__courier-btn__ __courier-close__\"]|//BODY/DIV[2]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    },
+    {
+      "name": "Turan.az xəbər agentliyi",
+      "url": "https://turan.az/",
+      "xpaths": [
+        "//DIV[2][@class=\"row\"]/DIV[2]|//BODY/DIV[1]/DIV[2]/DIV[2]/DIV[1]/DIV[2]/DIV[2]/DIV[2]"
+      ],
+      "keywords": [
+        "məktəb",
+        "şagird",
+        "tələbə",
+        "dərs",
+        "universitet",
+        "lisey",
+        "direktor",
+        "rektor",
+        "kollec",
+        "alim",
+        "əmrullayev",
+        "tədris",
+        "təhsil",
+        "repetitor",
+        "imtahan",
+        "yeniyetmə",
+        "internat",
+        "TKTA",
+        "sertifikatlaşdırma",
+        "attestat",
+        "şəhadətnamə",
+        "fakültə",
+        "bağça",
+        "institut",
+        "gimnaziya",
+        "peşə",
+        "sertifikasiya",
+        "Azərbaycan müəllimi"
+      ],
+      "enabled": true,
+      "limit": 30
+    }
+  ]
 }
