@@ -6,7 +6,8 @@ import requests
 from bs4 import BeautifulSoup
 from lxml import html
 from urllib.parse import urljoin, urlparse
-from datetime import datetime
+from datetime import datetime, timedelta
+from dateutil import parser
 
 BOT_TOKEN = "8820784481:AAGMe9uWrD97Xh1nET-JU8AgZAqggZ234fg"
 CHAT_ID = "1271870098"
@@ -16,6 +17,7 @@ CONFIG_FILE = "courier_config_clean.json"
 CHECK_INTERVAL_SECONDS = 600
 MAX_SEND_PER_RUN = 20
 MAX_LINKS_PER_SITE = 15
+NEWS_TIME_LIMIT_HOURS = 12
 
 conn = sqlite3.connect("site_monitor.db")
 cursor = conn.cursor()
@@ -62,47 +64,6 @@ def clean_text(text):
 def get_domain(url):
     return urlparse(url).netloc.replace("www.", "")
 
-
-def extract_publish_time_from_article(article_url):
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/124.0.0.0 Safari/537.36"
-        )
-    }
-
-    try:
-        response = requests.get(article_url, headers=headers, timeout=10)
-        response.encoding = response.apparent_encoding
-
-        tree = html.fromstring(response.text)
-
-        possible_xpaths = [
-            "//time/@datetime",
-            "//time/text()",
-            "//meta[@property='article:published_time']/@content",
-            "//meta[@name='article:published_time']/@content",
-            "//meta[@itemprop='datePublished']/@content",
-            "//meta[@name='pubdate']/@content",
-            "//span[contains(@class,'date')]/text()",
-            "//div[contains(@class,'date')]/text()"
-        ]
-
-        for xpath in possible_xpaths:
-            result = tree.xpath(xpath)
-
-            if result:
-                value = clean_text(str(result[0]))
-
-                if len(value) > 5:
-                    return value
-
-        return "Tarix tapılmadı"
-
-    except Exception as e:
-        print("Tarix çıxarma xətası:", e)
-        return "Tarix tapılmadı"
 
 def exists(link):
     cursor.execute("SELECT link FROM posts WHERE link=?", (link,))
@@ -175,6 +136,76 @@ def is_bad_link(title, link):
     return False
 
 
+def extract_publish_time_from_article(article_url):
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        ),
+        "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Referer": "https://www.google.com/"
+    }
+
+    try:
+        response = requests.get(article_url, headers=headers, timeout=10)
+        response.encoding = response.apparent_encoding
+
+        tree = html.fromstring(response.text)
+
+        possible_xpaths = [
+            "//time/@datetime",
+            "//time/text()",
+            "//meta[@property='article:published_time']/@content",
+            "//meta[@name='article:published_time']/@content",
+            "//meta[@itemprop='datePublished']/@content",
+            "//meta[@name='pubdate']/@content",
+            "//meta[@property='og:updated_time']/@content",
+            "//span[contains(@class,'date')]/text()",
+            "//div[contains(@class,'date')]/text()",
+            "//span[contains(@class,'time')]/text()",
+            "//div[contains(@class,'time')]/text()"
+        ]
+
+        for xpath in possible_xpaths:
+            result = tree.xpath(xpath)
+
+            if result:
+                value = clean_text(str(result[0]))
+
+                if len(value) > 5:
+                    return value
+
+        return None
+
+    except Exception as e:
+        print("Tarix çıxarma xətası:", e)
+        return None
+
+
+def is_recent_news(published_time):
+    try:
+        if not published_time:
+            return False
+
+        dt = parser.parse(published_time, fuzzy=True)
+
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+
+        now = datetime.now()
+        difference = now - dt
+
+        if difference.total_seconds() < 0:
+            return False
+
+        return difference <= timedelta(hours=NEWS_TIME_LIMIT_HOURS)
+
+    except Exception as e:
+        print(f"Tarix yoxlama xətası: {published_time} | {e}")
+        return False
+
+
 def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
     results = []
 
@@ -202,8 +233,6 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
             except Exception as e:
                 print("Link çıxarma xətası:", e)
                 continue
-
-            print(f"Blok daxilində link sayı: {len(links)}")
 
             for a in links:
                 href = a.get("href")
@@ -276,11 +305,7 @@ def fetch_site(site):
     try:
         print(f"Sayt açılır: {page_url}")
 
-        response = requests.get(
-            page_url,
-            headers=headers,
-            timeout=10
-        )
+        response = requests.get(page_url, headers=headers, timeout=10)
 
         print(f"Status: {response.status_code}")
 
@@ -311,7 +336,6 @@ def fetch_site(site):
         )
 
     unique = {}
-
     for item in items:
         unique[item["link"]] = item
 
@@ -338,18 +362,29 @@ def check_sites(first_run=False):
         latest_new_item = None
 
         for item in items[:limit]:
-            if not exists(item["link"]):
-                latest_new_item = item
-                break
+            link = item["link"]
+
+            if exists(link):
+                continue
+
+            published_time = extract_publish_time_from_article(link)
+
+            if not is_recent_news(published_time):
+                print(f"Köhnə və ya tarixi tapılmayan xəbər keçildi: {item['title'][:70]} | {published_time}")
+                continue
+
+            item["published_time"] = published_time
+            latest_new_item = item
+            break
 
         if not latest_new_item:
-            print("Bu saytda yeni uyğun xəbər yoxdur.")
+            print("Bu saytda son 12 saatda yeni uyğun xəbər yoxdur.")
             continue
 
         title = latest_new_item["title"]
         link = latest_new_item["link"]
         source = latest_new_item["source"]
-        published_time = extract_publish_time_from_article(link)
+        published_time = latest_new_item.get("published_time", "Tarix tapılmadı")
 
         save(link, title, source)
 
@@ -391,8 +426,8 @@ send_telegram("✅ Sayt monitorinq botu işə düşdü.")
 print("📦 İlk yoxlama: mövcud xəbərlər bazaya yazılır, Telegram-a göndərilmir.")
 check_sites(first_run=True)
 
-print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yalnız yeni uyğun xəbərlər göndəriləcək.")
-send_telegram("✅ İlkin indeksləmə tamamlandı. Bot yeni xəbərləri izləyir.")
+print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yalnız son 12 saatdakı yeni uyğun xəbərlər göndəriləcək.")
+send_telegram("✅ İlkin indeksləmə tamamlandı. Bot son 12 saatdakı yeni uyğun xəbərləri izləyir.")
 
 while True:
     print("🔎 Yeni xəbərlər yoxlanılır...")
