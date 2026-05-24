@@ -120,8 +120,23 @@ def load_sites():
 
 
 def keyword_match(title, keywords):
-    if not keywords:
-        return True
+
+    default_keywords = [
+        "təhsil", "məktəb", "şagird", "müəllim",
+        "universitet", "imtahan", "tələbə",
+        "elm", "araşdırma", "tədqiqat",
+        "akademik", "laboratoriya",
+        "abituriyent", "kollec",
+        "lisey", "STEAM", "PISA",
+        "doktorant", "magistr",
+        "tədris", "elmi", "institut"
+    ]
+
+    all_keywords = keywords if keywords else default_keywords
+
+    title_lower = title.lower()
+
+    return any(keyword.lower() in title_lower for keyword in all_keywords)
     return any(keyword in title.lower() for keyword in keywords)
 
 
