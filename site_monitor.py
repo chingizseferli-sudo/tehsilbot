@@ -3,11 +3,14 @@ import re
 import time
 import sqlite3
 import requests
+import feedparser
+from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 from lxml import html
 from urllib.parse import urljoin, urlparse
 from datetime import datetime, timedelta
 from dateutil import parser
+
 
 BOT_TOKEN = "8820784481:AAGMe9uWrD97Xh1nET-JU8AgZAqggZ234fg"
 CHAT_ID = "1271870098"
