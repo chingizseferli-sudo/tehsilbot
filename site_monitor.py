@@ -447,6 +447,37 @@ def fetch_site(site):
 
     page_html = response.text
 
+    selector = site.get("selector")
+
+if selector:
+    soup = BeautifulSoup(page_html, "html.parser")
+
+    blocks = soup.select(selector)
+
+    items = []
+
+    for block in blocks:
+        for a in block.find_all("a", href=True):
+
+            title = clean_text(a.get_text(" ", strip=True))
+            link = urljoin(page_url, a["href"]).split("#")[0]
+
+            if not link.startswith("http"):
+                continue
+
+            if is_bad_link(title, link):
+                continue
+
+            if not keyword_match(title, site["keywords"]):
+                continue
+
+            items.append({
+                "title": title,
+                "link": link,
+                "source": get_domain(page_url)
+            })
+
+else:
     items = extract_links_from_xpath(
         page_url,
         page_html,
