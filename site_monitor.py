@@ -138,14 +138,12 @@ def is_bad_link(title, link):
 
 def extract_publish_time_from_article(article_url):
     headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/124.0.0.0 Safari/537.36"
-        ),
-        "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7",
-        "Referer": "https://www.google.com/"
-    }
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://www.google.com/",
+    "Connection": "keep-alive"
+}
 
     try:
         response = requests.get(article_url, headers=headers, timeout=10)
