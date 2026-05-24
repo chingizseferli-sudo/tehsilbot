@@ -1,3 +1,1429 @@
 {
-  "sites": []
+  "sites": [
+    {
+      "name": "Latest News",
+      "url": "https://timssandpirls.bc.edu/latest-news.html",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər | RADİASİYA PROBLEMLƏRİ İNSTİTUTU",
+      "url": "http://radiation.gov.az/az/xeberler",
+      "mode": "selector",
+      "selector": "#con-mid>div.all-news",
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "XƏBƏRLƏR-Xəzər Universiteti",
+      "url": "https://khazar.org/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AMEA Dilçilik İnstitutu",
+      "url": "https://www.dilcilik.az/index.php",
+      "mode": "selector",
+      "selector": "#wrapper>div.content>section:nth-child(2)>div.container>div.row>div.col-md-8",
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AZƏRBAYCAN RƏSSAMLIQ AKADEMİYASI — ADRA",
+      "url": "https://adra.edu.az/#features-2",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər - ADBTİA",
+      "url": "https://www.sport.edu.az/az/news/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "BANM",
+      "url": "https://www.bhos.edu.az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Azərbaycan Standartlaşdırma İnstitutu",
+      "url": "https://azstand.gov.az/az/xeberler",
+      "mode": "selector",
+      "selector": ">div.page-wrapper>section.news-container.container",
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər",
+      "url": "https://karabakh.edu.az/page/64",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Sabah Qrupları",
+      "url": "https://sabah.edu.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Azərbaycan Universiteti",
+      "url": "https://www.au.edu.az/az/news/?show=2024",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Universitet üzrə",
+      "url": "https://atmu.edu.az/az/xeberler-uni",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "XƏBƏRLƏR-Azərbaycan Dövlət Dəniz Akademiyası",
+      "url": "https://adda.edu.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər – Dia.edu.az",
+      "url": "https://dia.edu.az/arxivl%C9%99r/category/x%c9%99b%c9%99rl%c9%99r",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Naxçıvan Müəllimlər İnstitutu – Nakhchivan Teachers Institute",
+      "url": "https://www.nmi.edu.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Əsas xəbərlər - Azərbaycan Milli Konservatoriyası",
+      "url": "https://conservatory.edu.az/category/esas-xeberler/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AZƏRBAYCAN RƏSSAMLIQ AKADEMİYASI — ADRA",
+      "url": "http://adra.edu.az/#blog",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Naxçıvan Dövlət Universiteti",
+      "url": "https://ndu.edu.az/xeberler",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Azərbaycan Tibb Universiteti | Xəbərlər",
+      "url": "https://amu.edu.az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AzTU - Azərbaycan Texniki Universiteti (Beta)",
+      "url": "https://aztu.edu.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər",
+      "url": "https://bdu-qazax.edu.az/index.php/az/kheberler",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Bakı Dövlət Universiteti",
+      "url": "http://bsu.edu.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər – Azərbaycan Dövlət Mədəniyyət və İncəsənət Universiteti",
+      "url": "https://admiu.edu.az/x%C9%99b%C9%99rl%C9%99r/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Bakı Musiqi Akademiyası - Xəbərlər",
+      "url": "https://musicacademy.edu.az/az/kheberler.html",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər",
+      "url": "https://bsu-uni.edu.az/news/xeberler",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "BDU-Qazax",
+      "url": "https://bdu-qazax.edu.az/index.php/az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "XƏBƏRLƏR - AZƏRBAYCAN DÖVLƏT AQRAR UNİVERSİTETİ",
+      "url": "https://www.adau.edu.az/xeberler/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər - ADU",
+      "url": "https://adu.edu.az/az/xeberler/xeberler/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər | Azərbaycan Respublikasının Təhsil İnstitutu",
+      "url": "https://arti.edu.az/media/news/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AGRİ - Site",
+      "url": "https://www.genres.az/az",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AKADEMİK HƏSƏN ƏLİYEV ADINA COĞRAFİYA İNSTİTUTU",
+      "url": "https://igaz.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "NEFT KİMYA PROSESLƏRİ İNSTİTUTU",
+      "url": "https://www.nkpi.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "XƏBƏRLƏR-Botanika İnstitutu",
+      "url": "https://botany.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər - IMBB",
+      "url": "https://imbb.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "ASOIU | allNews",
+      "url": "https://asoiu.edu.az/allNews",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər | SDU - Sumqayıt Dövlət Universitetinin rəsmi portalı",
+      "url": "https://www.sdu.edu.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AMEA Torpaqşunaslıq və Aqrokimya İnstitutu - Rəsmi səhifəsi",
+      "url": "https://tai.az/az",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "ADPU - Xəbərlər",
+      "url": "https://adpu.edu.az/index.php/az/x%C9%99b%C9%99rl%C9%99r",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Bakı Dövlət Universiteti",
+      "url": "http://bsu.edu.az/az/newsarchive",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "XƏBƏR",
+      "url": "https://news.unec.edu.az/xeber",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AzTU - Azərbaycan Texniki Universiteti (Beta)",
+      "url": "https://www.aztu.edu.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Polimer Materialları İnstitutu",
+      "url": "http://amea-pmi.az/news/all/1",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Polimer Materialları İnstitutu",
+      "url": "http://amea-pmi.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Bakı Mühəndislik Universiteti",
+      "url": "https://beu.edu.az/az/news/xeberler-4/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "4cu senaye inqilabi",
+      "url": "https://4sim.gov.az/az/page/media/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər",
+      "url": "https://mdu.edu.az/xeberler/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AZMIU",
+      "url": "https://www.azmiu.edu.az/az/allnews",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "XƏBƏRLƏR – İdarəetmə Sistemləri İnstitutu",
+      "url": "https://isi.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "ANA SƏHİFƏ-NƏSİRƏDDİN TUSİ adına ŞAMAXI ASTROFİZİKA RƏSƏDXANASI",
+      "url": "https://shao.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "ATU-Azərbaycan Texnologiya Universiteti",
+      "url": "https://www.atu.edu.az/xeberler/1",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Gia - Xəbərlər",
+      "url": "https://www.gia.az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər – Gəncə Dövlət Universiteti",
+      "url": "https://gdu.edu.az/category/x%c9%99b%c9%99rl%c9%99r/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər - UFAZ Website",
+      "url": "https://www.ufaz.az/az/news/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Riyaziyyat və Mexanika İnstitutu",
+      "url": "https://www.imm.az/exp/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Peşə Təhsili üzrə Dövlət Agentliyi",
+      "url": "https://vet.edu.gov.az/p/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Naxçıvan Dövlət Universiteti",
+      "url": "https://www.ndu.edu.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Ana səhifə - IKT",
+      "url": "https://ict.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Ana səhifə - Kataliz və Qeyri-üzvi Kimya İnstitutu",
+      "url": "https://kqkiamea.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "ARETN Mikrobiologiya İnstitutu - Ana Səhifə",
+      "url": "https://www.azmbi.az/index.php/az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "AŞQARLAR KİMYASI İNSTİTUTU | ica.az",
+      "url": "https://ica.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Ekologiya və Təbii ehtiyatlar İnstitutu-AMEA GƏNCƏ BÖLMƏSİ",
+      "url": "https://ameagb.az/az/content/9",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "yeb.science.gov.az",
+      "url": "http://www.yeb.science.gov.az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "XƏBƏRLƏR-ARETN Zoologiya İnstitutu",
+      "url": "https://zoologiya.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Biofizika İnstitutu - Biophysics.az",
+      "url": "https://biophysics.az/az",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "2019-2023/2022-2026 Dövlət Proqramı",
+      "url": "https://dp.edu.az/az/index",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Sənədlər |Azərbaycan Respublikası Elm və Təhsil Nazirliyi",
+      "url": "https://edu.gov.az/az/esas-senedler",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbər lenti",
+      "url": "https://lsu.edu.az/new/NewsLister/index.php",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Dövlət Proqramları – Alumni",
+      "url": "https://alumni.dp.edu.az/az/index",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Fiziologiya İnstitutu",
+      "url": "http://www.physiology.az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər » Azərbaycan Respublikasının Prezidenti yanında Elmin İnkişafı Fondu",
+      "url": "https://www.aef.gov.az/az/news/list/2",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər-Bakı Slavyan Universiteti",
+      "url": "https://bsu-uni.edu.az/az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Təhsildə İnkişaf və İnnovasiyalar üzrə Qrant Müsabiqəsi",
+      "url": "https://grants.edu.az/news",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər - Həmkarlar təşkilatı - Radiasiya Problemləri İnstitutu - Azərbaycan Respublikası Elm və Təhsil Nazirliyi",
+      "url": "https://irp.science.az/?l=/static,63/lang,az/",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Xəbərlər - Dövlət İmtahan Mərkəzi",
+      "url": "https://dim.gov.az/news/index.php",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    },
+    {
+      "name": "Azərbaycan Dövlət Mədəniyyət və İncəsənət Universiteti",
+      "url": "https://www.admiu.edu.az/az.php?go=arxiv8",
+      "mode": "text",
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris",
+        "abituriyent"
+      ],
+      "enabled": true
+    }
+  ]
 }
