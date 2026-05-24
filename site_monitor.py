@@ -4,13 +4,11 @@ import time
 import sqlite3
 import requests
 import feedparser
-from urllib.parse import quote_plus
 from bs4 import BeautifulSoup
 from lxml import html
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, quote_plus
 from datetime import datetime, timedelta
 from dateutil import parser
-
 
 BOT_TOKEN = "8820784481:AAGMe9uWrD97Xh1nET-JU8AgZAqggZ234fg"
 CHAT_ID = "1271870098"
@@ -66,40 +64,7 @@ def clean_text(text):
 
 def get_domain(url):
     return urlparse(url).netloc.replace("www.", "")
-def google_news_fallback(site_url, keywords):
-    domain = get_domain(site_url)
-    results = []
 
-    for keyword in keywords:
-        query = f"site:{domain} {keyword}"
-
-        rss_url = (
-            "https://news.google.com/rss/search?"
-            f"q={quote_plus(query)}"
-            "&hl=az"
-            "&gl=AZ"
-            "&ceid=AZ:az"
-        )
-
-        feed = feedparser.parse(rss_url)
-
-        for entry in feed.entries[:5]:
-            title = clean_text(entry.title)
-            link = entry.link
-
-            if not title or not link:
-                continue
-
-            if exists(link):
-                continue
-
-            results.append({
-                "title": title,
-                "link": link,
-                "source": domain
-            })
-
-    return results
 
 def exists(link):
     cursor.execute("SELECT link FROM posts WHERE link=?", (link,))
@@ -172,14 +137,65 @@ def is_bad_link(title, link):
     return False
 
 
+def google_news_fallback(site_url, keywords):
+    domain = get_domain(site_url)
+    results = []
+
+    if not keywords:
+        keywords = ["təhsil", "məktəb", "şagird", "müəllim", "universitet", "imtahan", "tələbə", "elm"]
+
+    for keyword in keywords:
+        query = f"site:{domain} {keyword}"
+
+        rss_url = (
+            "https://news.google.com/rss/search?"
+            f"q={quote_plus(query)}"
+            "&hl=az"
+            "&gl=AZ"
+            "&ceid=AZ:az"
+        )
+
+        feed = feedparser.parse(rss_url)
+
+        for entry in feed.entries[:5]:
+            title = clean_text(entry.title)
+            link = entry.link
+
+            if not title or not link:
+                continue
+
+            if exists(link):
+                continue
+
+            results.append({
+                "title": title,
+                "link": link,
+                "source": domain,
+                "published_time": get_google_news_time(entry)
+            })
+
+    return results
+
+
+def get_google_news_time(entry):
+    try:
+        if hasattr(entry, "published_parsed") and entry.published_parsed:
+            dt = datetime(*entry.published_parsed[:6])
+            return dt.strftime("%d.%m.%Y | %H:%M")
+    except:
+        pass
+
+    return None
+
+
 def extract_publish_time_from_article(article_url):
     headers = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
-    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Referer": "https://www.google.com/",
-    "Connection": "keep-alive"
-}
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7",
+        "Referer": "https://www.google.com/",
+        "Connection": "keep-alive"
+    }
 
     try:
         response = requests.get(article_url, headers=headers, timeout=10)
@@ -206,7 +222,6 @@ def extract_publish_time_from_article(article_url):
 
             if result:
                 value = clean_text(str(result[0]))
-
                 if len(value) > 5:
                     return value
 
@@ -220,9 +235,9 @@ def extract_publish_time_from_article(article_url):
 def is_recent_news(published_time):
     try:
         if not published_time:
-            return False
+            return True
 
-        dt = parser.parse(published_time, fuzzy=True)
+        dt = parser.parse(published_time, fuzzy=True, dayfirst=True)
 
         if dt.tzinfo is not None:
             dt = dt.replace(tzinfo=None)
@@ -237,7 +252,7 @@ def is_recent_news(published_time):
 
     except Exception as e:
         print(f"Tarix yoxlama xətası: {published_time} | {e}")
-        return False
+        return True
 
 
 def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
@@ -325,11 +340,7 @@ def fetch_site(site):
     page_url = site["url"]
 
     headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/124.0.0.0 Safari/537.36"
-        ),
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8,en;q=0.7",
         "Connection": "keep-alive",
@@ -340,26 +351,22 @@ def fetch_site(site):
         print(f"Sayt açılır: {page_url}")
 
         response = requests.get(page_url, headers=headers, timeout=10)
-
         print(f"Status: {response.status_code}")
 
         if response.status_code in [403, 500, 502, 503, 504]:
-    print(f"Sayt bloklandı və ya server xətası verdi: {response.status_code}")
-    print("Google News fallback işləyir...")
+            print(f"Sayt bloklandı və ya server xətası verdi: {response.status_code}")
+            print("Google News fallback işləyir...")
+            return google_news_fallback(page_url, site["keywords"])
 
-    return google_news_fallback(
-        page_url,
-        site["keywords"]
-    )
-
-       if response.status_code != 200:
-    return []
+        if response.status_code != 200:
+            return []
 
         response.encoding = response.apparent_encoding
 
     except Exception as e:
         print(f"Sayt xətası: {page_url} | {e}")
-        return []
+        print("Google News fallback işləyir...")
+        return google_news_fallback(page_url, site["keywords"])
 
     page_html = response.text
 
@@ -371,12 +378,16 @@ def fetch_site(site):
     )
 
     if not items:
-        print("XPath nəticə vermədi, fallback işləyir...")
+        print("XPath nəticə vermədi, HTML fallback işləyir...")
         items = extract_links_fallback(
             page_url,
             page_html,
             site["keywords"]
         )
+
+    if not items:
+        print("Saytda uyğun link tapılmadı. Google News fallback işləyir...")
+        items = google_news_fallback(page_url, site["keywords"])
 
     unique = {}
     for item in items:
@@ -410,21 +421,24 @@ def check_sites(first_run=False):
             if exists(link):
                 continue
 
-            published_time = extract_publish_time_from_article(link)
-
-            if published_time and not is_recent_news(published_time):
-             print(f"Köhnə xəbər keçildi: {item['title'][:70]} | {published_time}")
-            continue
+            published_time = item.get("published_time")
 
             if not published_time:
-             print(f"Tarix tapılmadı, amma xəbər yeni link kimi qəbul edildi: {item['title'][:70]}")
+                published_time = extract_publish_time_from_article(link)
+
+            if not is_recent_news(published_time):
+                print(f"Köhnə xəbər keçildi: {item['title'][:70]} | {published_time}")
+                continue
+
+            if not published_time:
+                published_time = "Tarix tapılmadı"
 
             item["published_time"] = published_time
             latest_new_item = item
             break
 
         if not latest_new_item:
-            print("Bu saytda son 12 saatda yeni uyğun xəbər yoxdur.")
+            print("Bu saytda yeni uyğun xəbər yoxdur.")
             continue
 
         title = latest_new_item["title"]
@@ -472,8 +486,8 @@ send_telegram("✅ Sayt monitorinq botu işə düşdü.")
 print("📦 İlk yoxlama: mövcud xəbərlər bazaya yazılır, Telegram-a göndərilmir.")
 check_sites(first_run=True)
 
-print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yalnız son 12 saatdakı yeni uyğun xəbərlər göndəriləcək.")
-send_telegram("✅ İlkin indeksləmə tamamlandı. Bot son 12 saatdakı yeni uyğun xəbərləri izləyir.")
+print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yeni uyğun xəbərlər göndəriləcək.")
+send_telegram("✅ İlkin indeksləmə tamamlandı. Bot yeni uyğun xəbərləri izləyir.")
 
 while True:
     print("🔎 Yeni xəbərlər yoxlanılır...")
