@@ -66,7 +66,40 @@ def clean_text(text):
 
 def get_domain(url):
     return urlparse(url).netloc.replace("www.", "")
+def google_news_fallback(site_url, keywords):
+    domain = get_domain(site_url)
+    results = []
 
+    for keyword in keywords:
+        query = f"site:{domain} {keyword}"
+
+        rss_url = (
+            "https://news.google.com/rss/search?"
+            f"q={quote_plus(query)}"
+            "&hl=az"
+            "&gl=AZ"
+            "&ceid=AZ:az"
+        )
+
+        feed = feedparser.parse(rss_url)
+
+        for entry in feed.entries[:5]:
+            title = clean_text(entry.title)
+            link = entry.link
+
+            if not title or not link:
+                continue
+
+            if exists(link):
+                continue
+
+            results.append({
+                "title": title,
+                "link": link,
+                "source": domain
+            })
+
+    return results
 
 def exists(link):
     cursor.execute("SELECT link FROM posts WHERE link=?", (link,))
@@ -310,8 +343,17 @@ def fetch_site(site):
 
         print(f"Status: {response.status_code}")
 
-        if response.status_code != 200:
-            return []
+        if response.status_code in [403, 500, 502, 503, 504]:
+    print(f"Sayt bloklandı və ya server xətası verdi: {response.status_code}")
+    print("Google News fallback işləyir...")
+
+    return google_news_fallback(
+        page_url,
+        site["keywords"]
+    )
+
+       if response.status_code != 200:
+    return []
 
         response.encoding = response.apparent_encoding
 
