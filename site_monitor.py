@@ -51,12 +51,12 @@ def send_telegram(message):
             timeout=15
         )
 
+        print("Telegram:", response.status_code, flush=True)
+
         if response.status_code == 429:
             retry_after = response.json().get("parameters", {}).get("retry_after", 30)
             print(f"Telegram limit verdi: {retry_after} saniyə", flush=True)
             time.sleep(retry_after + 2)
-
-        print("Telegram:", response.status_code, flush=True)
 
     except Exception as e:
         print("Telegram xətası:", e, flush=True)
@@ -121,7 +121,7 @@ def is_bad_link(title, link):
         "ana səhifə", "haqqımızda", "əlaqə", "reklam",
         "giriş", "qeydiyyat", "axtarış", "abunə",
         "facebook", "instagram", "youtube", "telegram",
-        "twitter", "linkedin"
+        "twitter", "linkedin", "rss"
     ]
 
     bad_domains = [
@@ -129,13 +129,48 @@ def is_bad_link(title, link):
         "t.me", "twitter.com", "x.com", "linkedin.com"
     ]
 
-    if len(title) < 12:
+    bad_extensions = [
+        ".jpg", ".jpeg", ".png", ".gif", ".webp",
+        ".pdf", ".doc", ".docx", ".xls", ".xlsx",
+        ".zip", ".rar"
+    ]
+
+    if len(title) < 15:
         return True
 
     if any(word in title_lower for word in bad_words):
         return True
 
     if any(domain in link_lower for domain in bad_domains):
+        return True
+
+    if any(link_lower.endswith(ext) for ext in bad_extensions):
+        return True
+
+    parsed = urlparse(link_lower)
+    path = parsed.path.strip("/")
+
+    section_paths = [
+        "news",
+        "xeber",
+        "xeberler",
+        "xəbərlər",
+        "media/news",
+        "category",
+        "archive",
+        "allnews",
+        "newsarchive",
+        "az/news",
+        "az/xeberler",
+        "az/metbuat/xeberler",
+        "az/page/media/news",
+        "az/news-and-updates"
+    ]
+
+    if path in section_paths:
+        return True
+
+    if path.endswith("/news") or path.endswith("/xeberler") or path.endswith("/allnews"):
         return True
 
     return False
@@ -157,7 +192,10 @@ def google_news_fallback(site_url, keywords):
     results = []
 
     if not keywords:
-        keywords = ["təhsil", "məktəb", "şagird", "müəllim", "universitet", "imtahan", "tələbə", "elm"]
+        keywords = [
+            "təhsil", "məktəb", "şagird", "müəllim",
+            "universitet", "imtahan", "tələbə", "elm"
+        ]
 
     for keyword in keywords:
         query = f"site:{domain} {keyword}"
@@ -175,6 +213,7 @@ def google_news_fallback(site_url, keywords):
         for entry in feed.entries[:5]:
             title = clean_text(entry.title)
             link = entry.link
+            published_time = get_google_news_time(entry)
 
             if not title or not link:
                 continue
@@ -182,11 +221,17 @@ def google_news_fallback(site_url, keywords):
             if exists(link):
                 continue
 
+            if is_bad_link(title, link):
+                continue
+
+            if not is_recent_news(published_time):
+                continue
+
             results.append({
                 "title": title,
                 "link": link,
                 "source": domain,
-                "published_time": get_google_news_time(entry)
+                "published_time": published_time
             })
 
     return results
@@ -239,7 +284,7 @@ def extract_publish_time_from_article(article_url):
 def is_recent_news(published_time):
     try:
         if not published_time:
-            return True
+            return False
 
         dt = parser.parse(published_time, fuzzy=True, dayfirst=True)
 
@@ -256,7 +301,7 @@ def is_recent_news(published_time):
 
     except Exception as e:
         print(f"Tarix yoxlama xətası: {published_time} | {e}", flush=True)
-        return True
+        return False
 
 
 def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
@@ -432,11 +477,8 @@ def check_sites(first_run=False):
                 published_time = extract_publish_time_from_article(link)
 
             if not is_recent_news(published_time):
-                print(f"Köhnə xəbər keçildi: {item['title'][:70]} | {published_time}", flush=True)
+                print(f"Köhnə və ya tarixsiz xəbər keçildi: {item['title'][:70]} | {published_time}", flush=True)
                 continue
-
-            if not published_time:
-                published_time = "Tarix tapılmadı"
 
             title = item["title"]
             source = item["source"]
