@@ -439,8 +439,6 @@ def check_sites(first_run=False):
             title = item["title"]
             source = item["source"]
 
-            save(link, title, source)
-
             if first_run:
                 print(f"İlkin bazaya yazıldı: {source} | {title[:70]}")
                 sent_for_this_site = True
@@ -463,7 +461,7 @@ def check_sites(first_run=False):
 """
 
             send_telegram(message)
-
+            save(link, title, source)
             print(f"Göndərildi: {source} | {title[:70]}")
 
             sent_count += 1
