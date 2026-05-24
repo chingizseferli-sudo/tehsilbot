@@ -5,18 +5,8 @@
       "url": "https://timssandpirls.bc.edu/latest-news.html",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1486625006,
+      "last_changed": 1779197136456,
       "enabled": true
     },
     {
@@ -24,18 +14,8 @@
       "url": "http://radiation.gov.az/az/xeberler",
       "mode": "selector",
       "selector": "#con-mid>div.all-news",
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 636843860,
+      "last_changed": 1779084290674,
       "enabled": true
     },
     {
@@ -43,18 +23,8 @@
       "url": "https://khazar.org/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1135180689,
+      "last_changed": 1779607679989,
       "enabled": true
     },
     {
@@ -62,18 +32,8 @@
       "url": "https://www.dilcilik.az/index.php",
       "mode": "selector",
       "selector": "#wrapper>div.content>section:nth-child(2)>div.container>div.row>div.col-md-8",
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -900960820,
+      "last_changed": 1779607680898,
       "enabled": true
     },
     {
@@ -81,18 +41,8 @@
       "url": "https://adra.edu.az/#features-2",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -439964065,
+      "last_changed": 1749108220959,
       "enabled": true
     },
     {
@@ -100,18 +50,8 @@
       "url": "https://www.sport.edu.az/az/news/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -401754434,
+      "last_changed": 1779617698641,
       "enabled": true
     },
     {
@@ -119,18 +59,8 @@
       "url": "https://www.bhos.edu.az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1057262155,
+      "last_changed": 1779276153869,
       "enabled": true
     },
     {
@@ -138,18 +68,8 @@
       "url": "https://azstand.gov.az/az/xeberler",
       "mode": "selector",
       "selector": ">div.page-wrapper>section.news-container.container",
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1433284768,
+      "last_changed": 1779437521404,
       "enabled": true
     },
     {
@@ -157,18 +77,8 @@
       "url": "https://karabakh.edu.az/page/64",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 310758227,
+      "last_changed": 1777632337015,
       "enabled": true
     },
     {
@@ -176,18 +86,8 @@
       "url": "https://sabah.edu.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 2141779657,
+      "last_changed": 1779180624503,
       "enabled": true
     },
     {
@@ -195,18 +95,8 @@
       "url": "https://www.au.edu.az/az/news/?show=2024",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1104821257,
+      "last_changed": 1779346688878,
       "enabled": true
     },
     {
@@ -214,18 +104,8 @@
       "url": "https://atmu.edu.az/az/xeberler-uni",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -755059740,
+      "last_changed": 1779268661860,
       "enabled": true
     },
     {
@@ -233,18 +113,8 @@
       "url": "https://adda.edu.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1192744435,
+      "last_changed": 1779440195333,
       "enabled": true
     },
     {
@@ -252,18 +122,8 @@
       "url": "https://dia.edu.az/arxivl%C9%99r/category/x%c9%99b%c9%99rl%c9%99r",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1453436214,
+      "last_changed": 1766645620714,
       "enabled": true
     },
     {
@@ -271,18 +131,8 @@
       "url": "https://www.nmi.edu.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -432685429,
+      "last_changed": 1779607693836,
       "enabled": true
     },
     {
@@ -290,18 +140,8 @@
       "url": "https://conservatory.edu.az/category/esas-xeberler/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1249485939,
+      "last_changed": 1779259910530,
       "enabled": true
     },
     {
@@ -309,18 +149,8 @@
       "url": "http://adra.edu.az/#blog",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 720139762,
+      "last_changed": 1749108220742,
       "enabled": true
     },
     {
@@ -328,18 +158,8 @@
       "url": "https://ndu.edu.az/xeberler",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 2069087537,
+      "last_changed": 1779607695290,
       "enabled": true
     },
     {
@@ -347,18 +167,8 @@
       "url": "https://amu.edu.az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -412463415,
+      "last_changed": 1779607695876,
       "enabled": true
     },
     {
@@ -366,18 +176,8 @@
       "url": "https://aztu.edu.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1509170654,
+      "last_changed": 1779617712628,
       "enabled": true
     },
     {
@@ -385,18 +185,8 @@
       "url": "https://bdu-qazax.edu.az/index.php/az/kheberler",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -70775166,
+      "last_changed": 1779282100497,
       "enabled": true
     },
     {
@@ -404,18 +194,8 @@
       "url": "http://bsu.edu.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 536845531,
+      "last_changed": 1779607699265,
       "enabled": true
     },
     {
@@ -423,18 +203,8 @@
       "url": "https://admiu.edu.az/x%C9%99b%C9%99rl%C9%99r/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1224215660,
+      "last_changed": 1779607702812,
       "enabled": true
     },
     {
@@ -442,18 +212,8 @@
       "url": "https://musicacademy.edu.az/az/kheberler.html",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -75541272,
+      "last_changed": 1779084312780,
       "enabled": true
     },
     {
@@ -461,18 +221,8 @@
       "url": "https://bsu-uni.edu.az/news/xeberler",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 160812406,
+      "last_changed": 1740980122544,
       "enabled": true
     },
     {
@@ -480,18 +230,8 @@
       "url": "https://bdu-qazax.edu.az/index.php/az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -593177060,
+      "last_changed": 1779282023550,
       "enabled": true
     },
     {
@@ -499,18 +239,8 @@
       "url": "https://www.adau.edu.az/xeberler/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 830197596,
+      "last_changed": 1766555205457,
       "enabled": true
     },
     {
@@ -518,18 +248,8 @@
       "url": "https://adu.edu.az/az/xeberler/xeberler/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1885397648,
+      "last_changed": 1779607704746,
       "enabled": true
     },
     {
@@ -537,18 +257,8 @@
       "url": "https://arti.edu.az/media/news/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -807940236,
+      "last_changed": 1779448877636,
       "enabled": true
     },
     {
@@ -556,18 +266,8 @@
       "url": "https://www.genres.az/az",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1738507658,
+      "last_changed": 1779607706788,
       "enabled": true
     },
     {
@@ -575,18 +275,8 @@
       "url": "https://igaz.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -375770028,
+      "last_changed": 1779607707874,
       "enabled": true
     },
     {
@@ -594,18 +284,8 @@
       "url": "https://www.nkpi.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -250796502,
+      "last_changed": 1779428139117,
       "enabled": true
     },
     {
@@ -613,18 +293,8 @@
       "url": "https://botany.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1425974931,
+      "last_changed": 1779359993131,
       "enabled": true
     },
     {
@@ -632,18 +302,8 @@
       "url": "https://imbb.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 564493114,
+      "last_changed": 1779607712231,
       "enabled": true
     },
     {
@@ -651,18 +311,8 @@
       "url": "https://asoiu.edu.az/allNews",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1949432247,
+      "last_changed": 1779607711941,
       "enabled": true
     },
     {
@@ -670,18 +320,8 @@
       "url": "https://www.sdu.edu.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 246559843,
+      "last_changed": 1779607714457,
       "enabled": true
     },
     {
@@ -689,18 +329,8 @@
       "url": "https://tai.az/az",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -194793657,
+      "last_changed": 1768284551707,
       "enabled": true
     },
     {
@@ -708,18 +338,8 @@
       "url": "https://adpu.edu.az/index.php/az/x%C9%99b%C9%99rl%C9%99r",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -2115580592,
+      "last_changed": 1779607715220,
       "enabled": true
     },
     {
@@ -727,18 +347,8 @@
       "url": "http://bsu.edu.az/az/newsarchive",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1173540449,
+      "last_changed": 1779607716443,
       "enabled": true
     },
     {
@@ -746,18 +356,8 @@
       "url": "https://news.unec.edu.az/xeber",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1257556,
+      "last_changed": 1779179625339,
       "enabled": true
     },
     {
@@ -765,18 +365,8 @@
       "url": "https://www.aztu.edu.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1509170654,
+      "last_changed": 1779617652977,
       "enabled": true
     },
     {
@@ -784,18 +374,8 @@
       "url": "http://amea-pmi.az/news/all/1",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1892841464,
+      "last_changed": 1755077199471,
       "enabled": true
     },
     {
@@ -803,18 +383,8 @@
       "url": "http://amea-pmi.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1389244455,
+      "last_changed": 1757914866277,
       "enabled": true
     },
     {
@@ -822,18 +392,8 @@
       "url": "https://beu.edu.az/az/news/xeberler-4/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1867618100,
+      "last_changed": 1773897840184,
       "enabled": true
     },
     {
@@ -841,18 +401,8 @@
       "url": "https://4sim.gov.az/az/page/media/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -667585264,
+      "last_changed": 1779448253971,
       "enabled": true
     },
     {
@@ -860,18 +410,8 @@
       "url": "https://mdu.edu.az/xeberler/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 868906372,
+      "last_changed": 1779607723110,
       "enabled": true
     },
     {
@@ -879,18 +419,8 @@
       "url": "https://www.azmiu.edu.az/az/allnews",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1034926222,
+      "last_changed": 1779607724281,
       "enabled": true
     },
     {
@@ -898,18 +428,8 @@
       "url": "https://isi.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1497980774,
+      "last_changed": 1775719508876,
       "enabled": true
     },
     {
@@ -917,18 +437,8 @@
       "url": "https://shao.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 239706661,
+      "last_changed": 1779607726386,
       "enabled": true
     },
     {
@@ -936,18 +446,8 @@
       "url": "https://www.atu.edu.az/xeberler/1",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1084107281,
+      "last_changed": 1779448578671,
       "enabled": true
     },
     {
@@ -955,18 +455,8 @@
       "url": "https://www.gia.az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -169956053,
+      "last_changed": 1779427999810,
       "enabled": true
     },
     {
@@ -974,18 +464,8 @@
       "url": "https://gdu.edu.az/category/x%c9%99b%c9%99rl%c9%99r/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -631241524,
+      "last_changed": 1779607730893,
       "enabled": true
     },
     {
@@ -993,18 +473,8 @@
       "url": "https://www.ufaz.az/az/news/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -829545622,
+      "last_changed": 1779084343019,
       "enabled": true
     },
     {
@@ -1012,18 +482,8 @@
       "url": "https://www.imm.az/exp/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 411849854,
+      "last_changed": 1775713312691,
       "enabled": true
     },
     {
@@ -1031,18 +491,8 @@
       "url": "https://vet.edu.gov.az/p/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 53405312,
+      "last_changed": 1778574689189,
       "enabled": true
     },
     {
@@ -1050,18 +500,8 @@
       "url": "https://www.ndu.edu.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1766696056,
+      "last_changed": 1779607733299,
       "enabled": true
     },
     {
@@ -1069,18 +509,8 @@
       "url": "https://ict.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 380412223,
+      "last_changed": 1779607735016,
       "enabled": true
     },
     {
@@ -1088,18 +518,8 @@
       "url": "https://kqkiamea.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -2067327003,
+      "last_changed": 1750138890218,
       "enabled": true
     },
     {
@@ -1107,18 +527,8 @@
       "url": "https://www.azmbi.az/index.php/az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1867827001,
+      "last_changed": 1767764792341,
       "enabled": true
     },
     {
@@ -1126,18 +536,8 @@
       "url": "https://ica.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1334928357,
+      "last_changed": 1779441460595,
       "enabled": true
     },
     {
@@ -1145,18 +545,8 @@
       "url": "https://ameagb.az/az/content/9",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1555478207,
+      "last_changed": 1779445798675,
       "enabled": true
     },
     {
@@ -1164,18 +554,8 @@
       "url": "http://www.yeb.science.gov.az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1679796883,
+      "last_changed": 1777632389627,
       "enabled": true
     },
     {
@@ -1183,18 +563,8 @@
       "url": "https://zoologiya.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 75532676,
+      "last_changed": 1779445412376,
       "enabled": true
     },
     {
@@ -1202,18 +572,8 @@
       "url": "https://biophysics.az/az",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -1897058603,
+      "last_changed": 1773726015716,
       "enabled": true
     },
     {
@@ -1221,18 +581,8 @@
       "url": "https://dp.edu.az/az/index",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1447110904,
+      "last_changed": 1779196961866,
       "enabled": true
     },
     {
@@ -1240,18 +590,8 @@
       "url": "https://edu.gov.az/az/esas-senedler",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 240775865,
+      "last_changed": 1778761298517,
       "enabled": true
     },
     {
@@ -1259,18 +599,8 @@
       "url": "https://lsu.edu.az/new/NewsLister/index.php",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1996594537,
+      "last_changed": 1779607743777,
       "enabled": true
     },
     {
@@ -1278,18 +608,8 @@
       "url": "https://alumni.dp.edu.az/az/index",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1830236683,
+      "last_changed": 1767955722099,
       "enabled": true
     },
     {
@@ -1297,18 +617,8 @@
       "url": "http://www.physiology.az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 2057198728,
+      "last_changed": 1779178296775,
       "enabled": true
     },
     {
@@ -1316,18 +626,8 @@
       "url": "https://www.aef.gov.az/az/news/list/2",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -315812711,
+      "last_changed": 1771910938194,
       "enabled": true
     },
     {
@@ -1335,18 +635,8 @@
       "url": "https://bsu-uni.edu.az/az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 160812406,
+      "last_changed": 1740980219560,
       "enabled": true
     },
     {
@@ -1354,18 +644,8 @@
       "url": "https://grants.edu.az/news",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 1127377704,
+      "last_changed": 1776317900127,
       "enabled": true
     },
     {
@@ -1373,18 +653,8 @@
       "url": "https://irp.science.az/?l=/static,63/lang,az/",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": -610127280,
+      "last_changed": 1728970507799,
       "enabled": true
     },
     {
@@ -1392,18 +662,8 @@
       "url": "https://dim.gov.az/news/index.php",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 0,
+      "last_changed": 1718973815662,
       "enabled": true
     },
     {
@@ -1411,18 +671,8 @@
       "url": "https://www.admiu.edu.az/az.php?go=arxiv8",
       "mode": "text",
       "selector": null,
-      "keywords": [
-        "təhsil",
-        "məktəb",
-        "şagird",
-        "müəllim",
-        "universitet",
-        "imtahan",
-        "tələbə",
-        "elm",
-        "tədris",
-        "abituriyent"
-      ],
+      "crc": 0,
+      "last_changed": 1718352157550,
       "enabled": true
     }
   ]
