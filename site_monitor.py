@@ -526,11 +526,8 @@ def check_sites(first_run=False):
             return
 print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
 
-print("📦 İlk yoxlama: mövcud xəbərlər bazaya yazılır, Telegram-a göndərilmir.", flush=True)
-check_sites(first_run=True)
-
-print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yeni uyğun xəbərlər göndəriləcək.", flush=True)
-send_telegram("✅ İlkin indeksləmə tamamlandı. Bot yeni uyğun xəbərləri izləyir.")
+print("🚀 Bot birbaşa monitorinq rejimində işə düşdü.", flush=True)
+send_telegram("✅ Bot işə düşdü və saytları yoxlamağa başladı.")
 
 while True:
     print("🔎 Yeni xəbərlər yoxlanılır...", flush=True)
