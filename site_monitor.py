@@ -1,15 +1,16 @@
-print("PYTHON STARTED")
+print("PYTHON STARTED", flush=True)
+
 import json
 import re
 import time
 import sqlite3
 import requests
-# import feedparser
+import feedparser
 from bs4 import BeautifulSoup
 from lxml import html
 from urllib.parse import urljoin, urlparse, quote_plus
 from datetime import datetime, timedelta
-# from dateutil import parser
+from dateutil import parser
 
 BOT_TOKEN = "8820784481:AAGMe9uWrD97Xh1nET-JU8AgZAqggZ234fg"
 CHAT_ID = "1271870098"
@@ -33,6 +34,8 @@ CREATE TABLE IF NOT EXISTS posts (
 """)
 conn.commit()
 
+print("BAZA HAZIRDIR", flush=True)
+
 
 def send_telegram(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
@@ -50,13 +53,13 @@ def send_telegram(message):
 
         if response.status_code == 429:
             retry_after = response.json().get("parameters", {}).get("retry_after", 30)
-            print(f"Telegram limit verdi: {retry_after} saniyə")
+            print(f"Telegram limit verdi: {retry_after} saniyə", flush=True)
             time.sleep(retry_after + 2)
 
-        print("Telegram:", response.status_code)
+        print("Telegram:", response.status_code, flush=True)
 
     except Exception as e:
-        print("Telegram xətası:", e)
+        print("Telegram xətası:", e, flush=True)
 
 
 def clean_text(text):
@@ -138,6 +141,17 @@ def is_bad_link(title, link):
     return False
 
 
+def get_google_news_time(entry):
+    try:
+        if hasattr(entry, "published_parsed") and entry.published_parsed:
+            dt = datetime(*entry.published_parsed[:6])
+            return dt.strftime("%d.%m.%Y | %H:%M")
+    except:
+        pass
+
+    return None
+
+
 def google_news_fallback(site_url, keywords):
     domain = get_domain(site_url)
     results = []
@@ -176,17 +190,6 @@ def google_news_fallback(site_url, keywords):
             })
 
     return results
-
-
-def get_google_news_time(entry):
-    try:
-        if hasattr(entry, "published_parsed") and entry.published_parsed:
-            dt = datetime(*entry.published_parsed[:6])
-            return dt.strftime("%d.%m.%Y | %H:%M")
-    except:
-        pass
-
-    return None
 
 
 def extract_publish_time_from_article(article_url):
@@ -229,7 +232,7 @@ def extract_publish_time_from_article(article_url):
         return None
 
     except Exception as e:
-        print("Tarix çıxarma xətası:", e)
+        print("Tarix çıxarma xətası:", e, flush=True)
         return None
 
 
@@ -252,7 +255,7 @@ def is_recent_news(published_time):
         return difference <= timedelta(hours=NEWS_TIME_LIMIT_HOURS)
 
     except Exception as e:
-        print(f"Tarix yoxlama xətası: {published_time} | {e}")
+        print(f"Tarix yoxlama xətası: {published_time} | {e}", flush=True)
         return True
 
 
@@ -262,17 +265,17 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
     try:
         tree = html.fromstring(page_html)
     except Exception as e:
-        print("HTML parse xətası:", e)
+        print("HTML parse xətası:", e, flush=True)
         return []
 
     for xpath in xpaths:
         try:
             blocks = tree.xpath(xpath)
         except Exception as e:
-            print("XPath xətası:", e)
+            print("XPath xətası:", e, flush=True)
             continue
 
-        print(f"XPath üzrə blok sayı: {len(blocks)}")
+        print(f"XPath üzrə blok sayı: {len(blocks)}", flush=True)
 
         for block in blocks:
             try:
@@ -281,7 +284,7 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
                 else:
                     links = block.xpath(".//a[@href]")
             except Exception as e:
-                print("Link çıxarma xətası:", e)
+                print("Link çıxarma xətası:", e, flush=True)
                 continue
 
             for a in links:
@@ -349,14 +352,14 @@ def fetch_site(site):
     }
 
     try:
-        print(f"Sayt açılır: {page_url}")
+        print(f"Sayt açılır: {page_url}", flush=True)
 
         response = requests.get(page_url, headers=headers, timeout=10)
-        print(f"Status: {response.status_code}")
+        print(f"Status: {response.status_code}", flush=True)
 
         if response.status_code in [403, 500, 502, 503, 504]:
-            print(f"Sayt bloklandı və ya server xətası verdi: {response.status_code}")
-            print("Google News fallback işləyir...")
+            print(f"Sayt bloklandı və ya server xətası verdi: {response.status_code}", flush=True)
+            print("Google News fallback işləyir...", flush=True)
             return google_news_fallback(page_url, site["keywords"])
 
         if response.status_code != 200:
@@ -365,8 +368,8 @@ def fetch_site(site):
         response.encoding = response.apparent_encoding
 
     except Exception as e:
-        print(f"Sayt xətası: {page_url} | {e}")
-        print("Google News fallback işləyir...")
+        print(f"Sayt xətası: {page_url} | {e}", flush=True)
+        print("Google News fallback işləyir...", flush=True)
         return google_news_fallback(page_url, site["keywords"])
 
     page_html = response.text
@@ -379,7 +382,7 @@ def fetch_site(site):
     )
 
     if not items:
-        print("XPath nəticə vermədi, HTML fallback işləyir...")
+        print("XPath nəticə vermədi, HTML fallback işləyir...", flush=True)
         items = extract_links_fallback(
             page_url,
             page_html,
@@ -387,7 +390,7 @@ def fetch_site(site):
         )
 
     if not items:
-        print("Saytda uyğun link tapılmadı. Google News fallback işləyir...")
+        print("Saytda uyğun link tapılmadı. Google News fallback işləyir...", flush=True)
         items = google_news_fallback(page_url, site["keywords"])
 
     unique = {}
@@ -401,21 +404,20 @@ def check_sites(first_run=False):
     sent_count = 0
     sites = load_sites()
 
-    print(f"Yüklənən sayt sayı: {len(sites)}")
+    print(f"Yüklənən sayt sayı: {len(sites)}", flush=True)
 
     for site in sites:
-        print(f"Yoxlanır: {site['name']} | {site['url']}")
+        print(f"Yoxlanır: {site['name']} | {site['url']}", flush=True)
 
         items = fetch_site(site)
 
-        print(f"Tapılan uyğun link sayı: {len(items)}")
+        print(f"Tapılan uyğun link sayı: {len(items)}", flush=True)
 
         if not items:
-            print("Bu saytda uyğun xəbər tapılmadı.")
+            print("Bu saytda uyğun xəbər tapılmadı.", flush=True)
             continue
 
         limit = site.get("limit", MAX_LINKS_PER_SITE)
-
         sent_for_this_site = False
 
         for item in items[:limit]:
@@ -430,7 +432,7 @@ def check_sites(first_run=False):
                 published_time = extract_publish_time_from_article(link)
 
             if not is_recent_news(published_time):
-                print(f"Köhnə xəbər keçildi: {item['title'][:70]} | {published_time}")
+                print(f"Köhnə xəbər keçildi: {item['title'][:70]} | {published_time}", flush=True)
                 continue
 
             if not published_time:
@@ -440,7 +442,8 @@ def check_sites(first_run=False):
             source = item["source"]
 
             if first_run:
-                print(f"İlkin bazaya yazıldı: {source} | {title[:70]}")
+                save(link, title, source)
+                print(f"İlkin bazaya yazıldı: {source} | {title[:70]}", flush=True)
                 sent_for_this_site = True
                 break
 
@@ -462,18 +465,32 @@ def check_sites(first_run=False):
 
             send_telegram(message)
             save(link, title, source)
-            print(f"Göndərildi: {source} | {title[:70]}")
+
+            print(f"Göndərildi: {source} | {title[:70]}", flush=True)
 
             sent_count += 1
             sent_for_this_site = True
 
             time.sleep(2)
-
             break
 
         if not sent_for_this_site:
-            print("Bu saytda yeni uyğun xəbər yoxdur.")
+            print("Bu saytda yeni uyğun xəbər yoxdur.", flush=True)
 
         if sent_count >= MAX_SEND_PER_RUN:
-            print("Bu dövr üçün göndərmə limiti tamamlandı.")
+            print("Bu dövr üçün göndərmə limiti tamamlandı.", flush=True)
             return
+
+
+print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
+
+print("📦 İlk yoxlama: mövcud xəbərlər bazaya yazılır, Telegram-a göndərilmir.", flush=True)
+check_sites(first_run=True)
+
+print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yeni uyğun xəbərlər göndəriləcək.", flush=True)
+send_telegram("✅ İlkin indeksləmə tamamlandı. Bot yeni uyğun xəbərləri izləyir.")
+
+while True:
+    print("🔎 Yeni xəbərlər yoxlanılır...", flush=True)
+    check_sites(first_run=False)
+    time.sleep(CHECK_INTERVAL_SECONDS)
