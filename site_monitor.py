@@ -85,26 +85,53 @@ def save(link, title, source):
 
 
 def load_sites():
-    with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
+    all_sites = []
 
-    sites = data.get("sites", [])
-    clean_sites = []
+    # Əsas JSON
+    try:
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
 
-    for site in sites:
-        if not site.get("enabled", True):
-            continue
+        for site in data.get("sites", []):
+            if not site.get("enabled", True):
+                continue
 
-        clean_sites.append({
-            "name": site.get("name") or get_domain(site.get("url", "")),
-            "url": site.get("url"),
-            "xpaths": site.get("xpaths", []),
-            "keywords": [k.lower() for k in site.get("keywords", [])],
-            "limit": site.get("limit", MAX_LINKS_PER_SITE)
-        })
+            all_sites.append({
+                "name": site.get("name") or get_domain(site.get("url", "")),
+                "url": site.get("url"),
+                "xpaths": site.get("xpaths", []),
+                "selector": site.get("selector"),
+                "keywords": [k.lower() for k in site.get("keywords", [])],
+                "limit": site.get("limit", MAX_LINKS_PER_SITE),
+                "source_type": "main_json"
+            })
 
-    return [s for s in clean_sites if s["url"]]
+    except Exception as e:
+        print("Əsas JSON oxunmadı:", e, flush=True)
 
+    # Extension JSON
+    try:
+        with open(EXTENSION_CONFIG_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        for site in data.get("sites", []):
+            if not site.get("enabled", True):
+                continue
+
+            all_sites.append({
+                "name": site.get("name") or get_domain(site.get("url", "")),
+                "url": site.get("url"),
+                "xpaths": [],
+                "selector": site.get("selector"),
+                "keywords": [k.lower() for k in site.get("keywords", [])],
+                "limit": site.get("limit", MAX_LINKS_PER_SITE),
+                "source_type": "extension_json"
+            })
+
+    except Exception as e:
+        print("Extension JSON oxunmadı:", e, flush=True)
+
+    return [s for s in all_sites if s.get("url")]
 
 def keyword_match(title, keywords):
     if not keywords:
