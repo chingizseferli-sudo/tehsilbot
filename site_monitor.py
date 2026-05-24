@@ -1,3 +1,4 @@
+print("PYTHON STARTED")
 import json
 import re
 import time
