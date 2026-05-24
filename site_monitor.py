@@ -369,9 +369,12 @@ def check_sites(first_run=False):
 
             published_time = extract_publish_time_from_article(link)
 
-            if not is_recent_news(published_time):
-                print(f"Köhnə və ya tarixi tapılmayan xəbər keçildi: {item['title'][:70]} | {published_time}")
-                continue
+            if published_time and not is_recent_news(published_time):
+    print(f"Köhnə xəbər keçildi: {item['title'][:70]} | {published_time}")
+    continue
+
+if not published_time:
+    print(f"Tarix tapılmadı, amma xəbər yeni link kimi qəbul edildi: {item['title'][:70]}")
 
             item["published_time"] = published_time
             latest_new_item = item
