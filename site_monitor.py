@@ -410,10 +410,12 @@ def check_sites(first_run=False):
         print(f"Tapılan uyğun link sayı: {len(items)}")
 
         if not items:
+            print("Bu saytda uyğun xəbər tapılmadı.")
             continue
 
         limit = site.get("limit", MAX_LINKS_PER_SITE)
-        latest_new_item = None
+
+        sent_for_this_site = False
 
         for item in items[:limit]:
             link = item["link"]
@@ -433,26 +435,16 @@ def check_sites(first_run=False):
             if not published_time:
                 published_time = "Tarix tapılmadı"
 
-            item["published_time"] = published_time
-            latest_new_item = item
-            break
+            title = item["title"]
+            source = item["source"]
 
-        if not latest_new_item:
-            print("Bu saytda yeni uyğun xəbər yoxdur.")
-            continue
+            if first_run:
+                save(link, title, source)
+                print(f"İlkin bazaya yazıldı: {source} | {title[:70]}")
+                sent_for_this_site = True
+                break
 
-        title = latest_new_item["title"]
-        link = latest_new_item["link"]
-        source = latest_new_item["source"]
-        published_time = latest_new_item.get("published_time", "Tarix tapılmadı")
-
-        save(link, title, source)
-
-        if first_run:
-            print(f"İlkin bazaya yazıldı: {source} | {title[:70]}")
-            continue
-
-        message = f"""
+            message = f"""
 🆕 Yeni uyğun xəbər
 
 📌 Başlıq:
@@ -468,28 +460,22 @@ def check_sites(first_run=False):
 {link}
 """
 
-        send_telegram(message)
-        time.sleep(3)
+            send_telegram(message)
 
-        sent_count += 1
+            save(link, title, source)
 
-        print(f"Göndərildi: {source} | {title[:70]}")
+            print(f"Göndərildi və bazaya yazıldı: {source} | {title[:70]}")
+
+            sent_count += 1
+            sent_for_this_site = True
+
+            time.sleep(3)
+
+            break
+
+        if not sent_for_this_site:
+            print("Bu saytda yeni uyğun xəbər yoxdur.")
 
         if sent_count >= MAX_SEND_PER_RUN:
             print("Bu dövr üçün göndərmə limiti tamamlandı.")
             return
-
-
-print("🚀 Sayt monitorinq botu işə düşdü.")
-send_telegram("✅ Sayt monitorinq botu işə düşdü.")
-
-print("📦 İlk yoxlama: mövcud xəbərlər bazaya yazılır, Telegram-a göndərilmir.")
-check_sites(first_run=True)
-
-print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yeni uyğun xəbərlər göndəriləcək.")
-send_telegram("✅ İlkin indeksləmə tamamlandı. Bot yeni uyğun xəbərləri izləyir.")
-
-while True:
-    print("🔎 Yeni xəbərlər yoxlanılır...")
-    check_sites(first_run=False)
-    time.sleep(CHECK_INTERVAL_SECONDS)
