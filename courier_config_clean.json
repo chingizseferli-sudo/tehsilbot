@@ -76,55 +76,6 @@
       "limit": 30
     },
     {
-      "name": "XƏBƏRLƏR - ADU",
-      "url": "https://adu.edu.az/az/xeberler/",
-      "xpaths": [
-        "id(\"inner-page\")|//BODY/DIV[1]/SECTION[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbərlər | Azərbaycan Respublikasının Təhsil İnstitutu",
-      "url": "https://arti.edu.az/media/news/",
-      "xpaths": [
-        "//DIV[1][@class=\"position-relative bg-img-start\"]/DIV[1]|//BODY/DIV[1]/DIV[1]"
-      ],
-      "keywords": [
-        "məktəb",
-        "şagird",
-        "tələbə",
-        "dərs",
-        "universitet",
-        "lisey",
-        "direktor",
-        "rektor",
-        "kollec",
-        "alim",
-        "əmrullayev",
-        "tədris",
-        "təhsil",
-        "repetitor",
-        "imtahan",
-        "yeniyetmə",
-        "internat",
-        "TKTA",
-        "sertifikatlaşdırma",
-        "attestat",
-        "şəhadətnamə",
-        "fakültə",
-        "bağça",
-        "institut",
-        "gimnaziya",
-        "peşə",
-        "sertifikasiya",
-        "Azərbaycan müəllimi"
-      ],
-      "enabled": true,
-      "limit": 30
-    },
-    {
       "name": "Editor.az - Azərbaycanın Onlayn Xəbər Portalı",
       "url": "https://editor.az/",
       "xpaths": [
@@ -160,26 +111,6 @@
         "sertifikasiya",
         "Azərbaycan müəllimi"
       ],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "XƏBƏRLƏR",
-      "url": "https://science.gov.az/az/news",
-      "xpaths": [
-        "//DIV[2][@class=\"row justify-content-between mt-lg-2\"]/DIV[1]|//BODY/DIV[3]/DIV[2]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Əlyazmalar İnstitutu",
-      "url": "https://www.manuscript.az/",
-      "xpaths": [
-        "id(\"blog\")|//BODY/DIV[1]/DIV[2]/DIV[2]"
-      ],
-      "keywords": [],
       "enabled": true,
       "limit": 30
     },
@@ -1399,26 +1330,6 @@
       "limit": 30
     },
     {
-      "name": "AZMIU",
-      "url": "https://www.azmiu.edu.az/az/allnews",
-      "xpaths": [
-        "//DIV[1][@class=\"news-detail-content\"]/DIV[1][@class=\"container\"]|//SECTION[1]/DIV[1]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbərlər – Azərbaycan Dövlət Mədəniyyət və İncəsənət Universiteti",
-      "url": "https://admiu.edu.az/x%C9%99b%C9%99rl%C9%99r/",
-      "xpaths": [
-        "//DIV[1][@class=\"elementor elementor-1711\"]/DIV[1]/DIV[1][@class=\"e-con-inner\"]|//ARTICLE[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
       "name": "Reportyor.az",
       "url": "https://reportyor.az/",
       "xpaths": [
@@ -1650,16 +1561,6 @@
         "sertifikasiya",
         "Azərbaycan müəllimi"
       ],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbər lenti",
-      "url": "https://lsu.edu.az/new/NewsLister/index.php",
-      "xpaths": [
-        "//DIV[2][@class=\"container\"]/DIV[1][@class=\"row\"]/DIV[1]|//BODY/DIV[2]/DIV[1]/DIV[1]"
-      ],
-      "keywords": [],
       "enabled": true,
       "limit": 30
     },
@@ -1898,16 +1799,6 @@
       "limit": 30
     },
     {
-      "name": "AMEA Dilçilik İnstitutu",
-      "url": "https://www.dilcilik.az/",
-      "xpaths": [
-        "//DIV[1][@class=\"main-container fl-wrap fix-container-init\"]|//SECTION[1]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
       "name": "Qafqazinfo.az",
       "url": "https://qafqazinfo.az/",
       "xpaths": [
@@ -1943,16 +1834,6 @@
         "sertifikasiya",
         "Azərbaycan müəllimi"
       ],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbərlər / Xəbərlər / Azərbaycan İlahiyyat İnstitutu",
-      "url": "https://ait.edu.az/az/news/all/",
-      "xpaths": [
-        "id(\"content\")|//SECTION[1]"
-      ],
-      "keywords": [],
       "enabled": true,
       "limit": 30
     },
@@ -2111,26 +1992,6 @@
       "limit": 30
     },
     {
-      "name": "NEFT KİMYA PROSESLƏRİ İNSTİTUTU",
-      "url": "https://www.nkpi.az/?page=news",
-      "xpaths": [
-        "id(\"content-inner\")|//BODY/DIV[1]/DIV[1]/DIV[1]/DIV[2]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "ASOIU | allNews",
-      "url": "https://asoiu.edu.az/allNews",
-      "xpaths": [
-        "//DIV[3][@class=\"container mt-5 \"]/DIV[1][@class=\"row\"]|//BODY/DIV[3]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
       "name": "102xeber.info",
       "url": "https://102xeber.info/index.php?newsid=4857",
       "xpaths": [
@@ -2248,17 +2109,6 @@
       "limit": 30
     },
     {
-      "name": "Xəbərlər – Gəncə Dövlət Universiteti",
-      "url": "https://gdu.edu.az/category/x%c9%99b%c9%99rl%c9%99r/",
-      "xpaths": [
-        "id(\"content\")|//BODY/DIV[1]/DIV[2]/DIV[1]/DIV[1]",
-        "id(\"body\")|//BODY/DIV[1]/DIV[2]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
       "name": "AzTimes",
       "url": "https://aztimes.az/",
       "xpaths": [
@@ -2335,36 +2185,6 @@
       "limit": 30
     },
     {
-      "name": "Azərbaycan Tibb Universiteti | Xəbərlər",
-      "url": "https://amu.edu.az/news",
-      "xpaths": [
-        "//SECTION[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "AŞQARLAR KİMYASI İNSTİTUTU | ica.az",
-      "url": "https://ica.az/",
-      "xpaths": [
-        "//DIV[1][@class=\"wpb_column vc_column_container td-pb-span8\"]|//BODY/DIV[7]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Bakı Dövlət Universiteti",
-      "url": "http://bsu.edu.az/az/newsarchive",
-      "xpaths": [
-        "id(\"main_container\")/DIV[2]|//BODY/DIV[1]/DIV[2]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
       "name": "TEHSIL-PRESS Agentliyi",
       "url": "https://tehsil-press.az/",
       "xpaths": [
@@ -2404,16 +2224,6 @@
       "limit": 30
     },
     {
-      "name": "XƏBƏRLƏR-AMEA Folklor İnstitutu",
-      "url": "https://folklor.az/az/news",
-      "xpaths": [
-        "//DIV[1][@class=\"section_wrap section_news\"]/DIV[1][@class=\"main_center\"]|//MAIN[1]/DIV[1]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
       "name": "Kəpəz TV",
       "url": "http://www.kepeztv.az/xeberler",
       "xpaths": [
@@ -2449,26 +2259,6 @@
         "sertifikasiya",
         "Azərbaycan müəllimi"
       ],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "XƏBƏRLƏR-NƏSİRƏDDİN TUSİ adına ŞAMAXI ASTROFİZİKA RƏSƏDXANASI",
-      "url": "https://shao.az/az/news",
-      "xpaths": [
-        "//SECTION[1][@class=\"center\"]|//SECTION[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbərlər – Naxçıvan Müəllimlər İnstitutu",
-      "url": "https://www.nmi.edu.az/category/x%c9%99b%c9%99rl%c9%99r/",
-      "xpaths": [
-        "id(\"primary\")|//BODY/DIV[2]/DIV[2]/DIV[1]/DIV[1]"
-      ],
-      "keywords": [],
       "enabled": true,
       "limit": 30
     },
@@ -2551,76 +2341,6 @@
       "limit": 30
     },
     {
-      "name": "ADPU - Xəbərlər",
-      "url": "https://adpu.edu.az/index.php/az/x%C9%99b%C9%99rl%C9%99r",
-      "xpaths": [
-        "id(\"sp-main-body\")|//SECTION[3]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "UNEC NEWS - UNEC-in Rəsmi Xəbər Portalı",
-      "url": "https://news.unec.edu.az/",
-      "xpaths": [
-        "//DIV[1][@class=\"equal-height\"]/DIV[3]|//BODY/DIV[1]/DIV[1]/DIV[2]/DIV[1]/DIV[3]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbərlər — BXA",
-      "url": "https://bxa.edu.az/blog/",
-      "xpaths": [
-        "id(\"page_content\")/DIV[@class=\"row clr\"]|//BODY/DIV[1]/DIV/DIV[3]/DIV"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Universitet üzrə",
-      "url": "https://atmu.edu.az/az/xeberler-uni",
-      "xpaths": [
-        "//DIV[2][@class=\"main my-5\"]|//BODY/DIV[2]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "AzTU - Azərbaycan Texniki Universiteti (Beta)",
-      "url": "https://www.aztu.edu.az/az/news",
-      "xpaths": [
-        "//DIV[4][@class=\"news-page-area\"]|//BODY/DIV[4]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "ATU-Azərbaycan Texnologiya Universiteti",
-      "url": "https://www.atu.edu.az/xeberler/1",
-      "xpaths": [
-        "id(\"overviews\")/DIV[1][@class=\"container\"]|//BODY/DIV[1]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbərlər - IMBB",
-      "url": "https://imbb.az/az/news",
-      "xpaths": [
-        "//DIV[3][@class=\"left_part_in\"]|//SECTION[2]/DIV[1]/DIV[1]/DIV[3]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
       "name": "Azia.az",
       "url": "https://azia.az/",
       "xpaths": [
@@ -2656,106 +2376,6 @@
         "sertifikasiya",
         "Azərbaycan müəllimi"
       ],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Azərbaycan Universiteti",
-      "url": "https://www.au.edu.az/az/",
-      "xpaths": [
-        "//DIV[3][@class=\"news wpage\"]|//BODY/DIV[1]/DIV[3]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "BDU-Qazax",
-      "url": "https://bdu-qazax.edu.az/index.php/az/",
-      "xpaths": [
-        "id(\"mx-maincol\")|//BODY/DIV[6]/DIV[1]/DIV[3]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "XƏBƏRLƏR-AMEA GƏNCƏ BÖLMƏSİ",
-      "url": "https://ameagb.az/az/news",
-      "xpaths": [
-        "//MAIN[1]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbərlər | SDU - Sumqayıt Dövlət Universitetinin rəsmi portalı",
-      "url": "https://www.sdu.edu.az/az/news",
-      "xpaths": [
-        "//DIV[1][@class=\"content\"]|//SECTION[2]/SECTION[1]/DIV[2]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Əsas xəbərlər - Azərbaycan Milli Konservatoriyası",
-      "url": "https://conservatory.edu.az/category/esas-xeberler/",
-      "xpaths": [
-        "id(\"core\")/DIV[1][@class=\"c-container\"]|//BODY/DIV[3]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "BANM",
-      "url": "https://bhos.edu.az/news",
-      "xpaths": [
-        "//MAIN[1]/DIV[1][@class=\"container\"]|//MAIN[1]/DIV[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "AGRİ - Item Category",
-      "url": "https://www.genres.az/az/category/item/2",
-      "xpaths": [
-        "//SECTION[1][@class=\"content categories\"]|//BODY/DIV[1]/SECTION[1]/DIV[1]/SECTION[1]/SECTION[1]/DIV[1]/SECTION[1]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "XƏBƏRLƏR-Fiziologiya İnstitutu",
-      "url": "https://physiology.az/az/news",
-      "xpaths": [
-        "//DIV[2][@class=\"col-8\"]|//BODY/DIV[5]/DIV[1]/DIV[2]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Xəbərlər - UFAZ Website",
-      "url": "https://www.ufaz.az/az/news/",
-      "xpaths": [
-        "//MAIN[1][@class=\"min-h-[800px] bg-gray-50\"]/DIV[2][@class=\"container\"]/DIV[2]|//MAIN[1]/DIV[2]/DIV[2]"
-      ],
-      "keywords": [],
-      "enabled": true,
-      "limit": 30
-    },
-    {
-      "name": "Bakı Musiqi Akademiyası - Xəbərlər",
-      "url": "https://musicacademy.edu.az/az/kheberler.html",
-      "xpaths": [
-        "//DIV[1][@class=\"rt-grid-9 \"]/DIV[2]|//BODY/DIV[2]/DIV[1]/DIV[2]/DIV[1]/DIV[1]/DIV[1]/DIV[1]/DIV[2]"
-      ],
-      "keywords": [],
       "enabled": true,
       "limit": 30
     },
