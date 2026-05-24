@@ -20,7 +20,7 @@ EXTENSION_CONFIG_FILE = "extension_sites.json"
 
 CHECK_INTERVAL_SECONDS = 600
 MAX_SEND_PER_RUN = 20
-MAX_LINKS_PER_SITE = 15
+MAX_LINKS_PER_SITE = 5
 NEWS_TIME_LIMIT_HOURS = 12
 
 conn = sqlite3.connect("site_monitor.db")
@@ -466,7 +466,9 @@ def check_sites(first_run=False):
         sent_for_this_site = False
 
         for item in items[:limit]:
+            title = item["title"]
             link = item["link"]
+            source = item["source"]
 
             if exists(link):
                 continue
@@ -477,11 +479,8 @@ def check_sites(first_run=False):
                 published_time = extract_publish_time_from_article(link)
 
             if not is_recent_news(published_time):
-                print(f"Köhnə və ya tarixsiz xəbər keçildi: {item['title'][:70]} | {published_time}", flush=True)
+                print(f"Köhnə və ya tarixsiz xəbər keçildi: {title[:70]} | {published_time}", flush=True)
                 continue
-
-            title = item["title"]
-            source = item["source"]
 
             if first_run:
                 save(link, title, source)
@@ -514,6 +513,8 @@ def check_sites(first_run=False):
             sent_for_this_site = True
 
             time.sleep(2)
+
+            # Bu saytdan 1 xəbər göndərdi, artıq növbəti sayta keçir
             break
 
         if not sent_for_this_site:
@@ -522,17 +523,3 @@ def check_sites(first_run=False):
         if sent_count >= MAX_SEND_PER_RUN:
             print("Bu dövr üçün göndərmə limiti tamamlandı.", flush=True)
             return
-
-
-print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
-
-print("📦 İlk yoxlama: mövcud xəbərlər bazaya yazılır, Telegram-a göndərilmir.", flush=True)
-check_sites(first_run=True)
-
-print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yeni uyğun xəbərlər göndəriləcək.", flush=True)
-send_telegram("✅ İlkin indeksləmə tamamlandı. Bot yeni uyğun xəbərləri izləyir.")
-
-while True:
-    print("🔎 Yeni xəbərlər yoxlanılır...", flush=True)
-    check_sites(first_run=False)
-    time.sleep(CHECK_INTERVAL_SECONDS)
