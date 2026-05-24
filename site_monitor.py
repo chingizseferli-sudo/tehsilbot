@@ -523,3 +523,15 @@ def check_sites(first_run=False):
         if sent_count >= MAX_SEND_PER_RUN:
             print("Bu dövr üçün göndərmə limiti tamamlandı.", flush=True)
             return
+print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
+
+print("📦 İlk yoxlama: mövcud xəbərlər bazaya yazılır, Telegram-a göndərilmir.", flush=True)
+check_sites(first_run=True)
+
+print("✅ İlkin indeksləmə tamamlandı. Bundan sonra yeni uyğun xəbərlər göndəriləcək.", flush=True)
+send_telegram("✅ İlkin indeksləmə tamamlandı. Bot yeni uyğun xəbərləri izləyir.")
+
+while True:
+    print("🔎 Yeni xəbərlər yoxlanılır...", flush=True)
+    check_sites(first_run=False)
+    time.sleep(CHECK_INTERVAL_SECONDS)
