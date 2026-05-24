@@ -40,25 +40,13 @@ print("BAZA HAZIRDIR", flush=True)
 
 def send_telegram(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-
     try:
         response = requests.post(
             url,
-            data={
-                "chat_id": CHAT_ID,
-                "text": message,
-                "disable_web_page_preview": False
-            },
+            data={"chat_id": CHAT_ID, "text": message, "disable_web_page_preview": False},
             timeout=15
         )
-
         print("Telegram:", response.status_code, flush=True)
-
-        if response.status_code == 429:
-            retry_after = response.json().get("parameters", {}).get("retry_after", 30)
-            print(f"Telegram limit verdi: {retry_after} saniyə", flush=True)
-            time.sleep(retry_after + 2)
-
     except Exception as e:
         print("Telegram xətası:", e, flush=True)
 
@@ -87,7 +75,6 @@ def save(link, title, source):
 def load_sites():
     all_sites = []
 
-    # Əsas JSON
     try:
         with open(CONFIG_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -105,11 +92,9 @@ def load_sites():
                 "limit": site.get("limit", MAX_LINKS_PER_SITE),
                 "source_type": "main_json"
             })
-
     except Exception as e:
         print("Əsas JSON oxunmadı:", e, flush=True)
 
-    # Extension JSON
     try:
         with open(EXTENSION_CONFIG_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
@@ -127,18 +112,16 @@ def load_sites():
                 "limit": site.get("limit", MAX_LINKS_PER_SITE),
                 "source_type": "extension_json"
             })
-
     except Exception as e:
         print("Extension JSON oxunmadı:", e, flush=True)
 
     return [s for s in all_sites if s.get("url")]
 
+
 def keyword_match(title, keywords):
     if not keywords:
         return True
-
-    title_lower = title.lower()
-    return any(keyword in title_lower for keyword in keywords)
+    return any(keyword in title.lower() for keyword in keywords)
 
 
 def is_bad_link(title, link):
@@ -175,32 +158,6 @@ def is_bad_link(title, link):
     if any(link_lower.endswith(ext) for ext in bad_extensions):
         return True
 
-    parsed = urlparse(link_lower)
-    path = parsed.path.strip("/")
-
-    section_paths = [
-        "news",
-        "xeber",
-        "xeberler",
-        "xəbərlər",
-        "media/news",
-        "category",
-        "archive",
-        "allnews",
-        "newsarchive",
-        "az/news",
-        "az/xeberler",
-        "az/metbuat/xeberler",
-        "az/page/media/news",
-        "az/news-and-updates"
-    ]
-
-    if path in section_paths:
-        return True
-
-    if path.endswith("/news") or path.endswith("/xeberler") or path.endswith("/allnews"):
-        return True
-
     return False
 
 
@@ -211,7 +168,6 @@ def get_google_news_time(entry):
             return dt.strftime("%d.%m.%Y | %H:%M")
     except:
         pass
-
     return None
 
 
@@ -220,14 +176,10 @@ def google_news_fallback(site_url, keywords):
     results = []
 
     if not keywords:
-        keywords = [
-            "təhsil", "məktəb", "şagird", "müəllim",
-            "universitet", "imtahan", "tələbə", "elm"
-        ]
+        keywords = ["təhsil", "məktəb", "şagird", "müəllim", "universitet", "imtahan", "tələbə", "elm"]
 
     for keyword in keywords:
         query = f"site:{domain} {keyword}"
-
         rss_url = (
             "https://news.google.com/rss/search?"
             f"q={quote_plus(query)}"
@@ -252,9 +204,6 @@ def google_news_fallback(site_url, keywords):
             if is_bad_link(title, link):
                 continue
 
-            if not is_recent_news(published_time):
-                continue
-
             results.append({
                 "title": title,
                 "link": link,
@@ -277,7 +226,6 @@ def extract_publish_time_from_article(article_url):
     try:
         response = requests.get(article_url, headers=headers, timeout=10)
         response.encoding = response.apparent_encoding
-
         tree = html.fromstring(response.text)
 
         possible_xpaths = [
@@ -296,14 +244,12 @@ def extract_publish_time_from_article(article_url):
 
         for xpath in possible_xpaths:
             result = tree.xpath(xpath)
-
             if result:
                 value = clean_text(str(result[0]))
                 if len(value) > 5:
                     return value
 
         return None
-
     except Exception as e:
         print("Tarix çıxarma xətası:", e, flush=True)
         return None
@@ -319,8 +265,7 @@ def is_recent_news(published_time):
         if dt.tzinfo is not None:
             dt = dt.replace(tzinfo=None)
 
-        now = datetime.now()
-        difference = now - dt
+        difference = datetime.now() - dt
 
         if difference.total_seconds() < 0:
             return False
@@ -363,11 +308,10 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
             for a in links:
                 href = a.get("href")
                 title = clean_text(a.text_content())
+                link = urljoin(page_url, href).split("#")[0]
 
                 if not href or not title:
                     continue
-
-                link = urljoin(page_url, href).split("#")[0]
 
                 if not link.startswith("http"):
                     continue
@@ -387,6 +331,40 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
     return results
 
 
+def extract_links_by_selector(page_url, page_html, selector, keywords):
+    soup = BeautifulSoup(page_html, "html.parser")
+
+    try:
+        blocks = soup.select(selector)
+    except Exception as e:
+        print("Selector xətası:", e, flush=True)
+        return []
+
+    results = []
+
+    for block in blocks:
+        for a in block.find_all("a", href=True):
+            title = clean_text(a.get_text(" ", strip=True))
+            link = urljoin(page_url, a["href"]).split("#")[0]
+
+            if not title or not link.startswith("http"):
+                continue
+
+            if is_bad_link(title, link):
+                continue
+
+            if not keyword_match(title, keywords):
+                continue
+
+            results.append({
+                "title": title,
+                "link": link,
+                "source": get_domain(page_url)
+            })
+
+    return results
+
+
 def extract_links_fallback(page_url, page_html, keywords):
     soup = BeautifulSoup(page_html, "html.parser")
     results = []
@@ -395,7 +373,7 @@ def extract_links_fallback(page_url, page_html, keywords):
         title = clean_text(a.get_text(strip=True))
         link = urljoin(page_url, a["href"]).split("#")[0]
 
-        if not link.startswith("http"):
+        if not title or not link.startswith("http"):
             continue
 
         if is_bad_link(title, link):
@@ -415,6 +393,8 @@ def extract_links_fallback(page_url, page_html, keywords):
 
 def fetch_site(site):
     page_url = site["url"]
+    selector = site.get("selector")
+    keywords = site.get("keywords", [])
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36",
@@ -431,9 +411,8 @@ def fetch_site(site):
         print(f"Status: {response.status_code}", flush=True)
 
         if response.status_code in [403, 500, 502, 503, 504]:
-            print(f"Sayt bloklandı və ya server xətası verdi: {response.status_code}", flush=True)
             print("Google News fallback işləyir...", flush=True)
-            return google_news_fallback(page_url, site["keywords"])
+            return google_news_fallback(page_url, keywords)
 
         if response.status_code != 200:
             return []
@@ -442,60 +421,22 @@ def fetch_site(site):
 
     except Exception as e:
         print(f"Sayt xətası: {page_url} | {e}", flush=True)
-        print("Google News fallback işləyir...", flush=True)
-        return google_news_fallback(page_url, site["keywords"])
+        return google_news_fallback(page_url, keywords)
 
     page_html = response.text
 
-    selector = site.get("selector")
-
-if selector:
-    soup = BeautifulSoup(page_html, "html.parser")
-
-    blocks = soup.select(selector)
-
-    items = []
-
-    for block in blocks:
-        for a in block.find_all("a", href=True):
-
-            title = clean_text(a.get_text(" ", strip=True))
-            link = urljoin(page_url, a["href"]).split("#")[0]
-
-            if not link.startswith("http"):
-                continue
-
-            if is_bad_link(title, link):
-                continue
-
-            if not keyword_match(title, site["keywords"]):
-                continue
-
-            items.append({
-                "title": title,
-                "link": link,
-                "source": get_domain(page_url)
-            })
-
-else:
-    items = extract_links_from_xpath(
-        page_url,
-        page_html,
-        site["xpaths"],
-        site["keywords"]
-    )
+    if selector:
+        items = extract_links_by_selector(page_url, page_html, selector, keywords)
+    else:
+        items = extract_links_from_xpath(page_url, page_html, site["xpaths"], keywords)
 
     if not items:
-        print("XPath nəticə vermədi, HTML fallback işləyir...", flush=True)
-        items = extract_links_fallback(
-            page_url,
-            page_html,
-            site["keywords"]
-        )
+        print("HTML fallback işləyir...", flush=True)
+        items = extract_links_fallback(page_url, page_html, keywords)
 
     if not items:
-        print("Saytda uyğun link tapılmadı. Google News fallback işləyir...", flush=True)
-        items = google_news_fallback(page_url, site["keywords"])
+        print("Google News fallback işləyir...", flush=True)
+        items = google_news_fallback(page_url, keywords)
 
     unique = {}
     for item in items:
