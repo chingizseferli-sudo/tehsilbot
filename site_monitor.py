@@ -17,6 +17,7 @@ CHAT_ID = "1271870098"
 
 CONFIG_FILE = "courier_config_clean.json"
 EXTENSION_CONFIG_FILE = "extension_sites.json"
+EXTENSION_CONFIG_FILE = "bez.json"
 
 CHECK_INTERVAL_SECONDS = 600
 MAX_SEND_PER_RUN = 20
