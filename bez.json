@@ -1,1 +1,508 @@
-{"client":{"local":1},"data":[{"name":"Xəbərlər | Dövlət İmtahan Mərkəzi","uri":"https://dim.gov.az/az/metbuat/xeberler","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"[role='main']\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":28}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"XƏBƏRLƏR","uri":"https://science.gov.az/az/news","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".news\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"Xəbərlər – Təhsilin İnkişafı Fondu","uri":"https://tif.edu.az/xeberler/","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"[class*='cols']> div:first-child\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":28}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"Təhsildə Keyfiyyət Təminatı Agentliyi - TKTA | TKTA","uri":"https://tkta.edu.az/p/news","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".page_news .sections_body\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":28}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"XƏBƏRLƏR » Azərbaycan Prezidentinin Rəsmi internet səhifəsi","uri":"https://president.az/az/news","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".main-content_news\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"2019-2023/2022-2026 Dövlət Proqramı","uri":"https://dp.edu.az/az/index","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".news-part\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":61}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"Xəbərlər və Yeniliklər |Azərbaycan Respublikası Elm və Təhsil Nazirliyi","uri":"https://edu.gov.az/az/news-and-updates","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".news-article\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":28}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"Peşə Təhsili üzrə Dövlət Agentliyi","uri":"https://vet.edu.gov.az/p/news","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".news\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":28}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"XƏBƏRLƏR | Azərbaycan Respublikasının Təhsil İnstitutu","uri":"https://arti.edu.az/category/xeberler/","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"div.container:nth-child(3)\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-10-15T06:46:17.000Z","datasource_id":null},{"name":"Bütün xəbərlər, AZƏRBAYCAN RESPUBLİKASININ NAZİRLƏR KABİNETİ","uri":"https://www.nk.gov.az/az/xeberler/hamisi","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"#news-items\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-10-24T11:30:27.000Z","datasource_id":null},{"name":"Bütün sənədlər, AZƏRBAYCAN RESPUBLİKASININ NAZİRLƏR KABİNETİ","uri":"https://www.nk.gov.az/az/senedler/hamisi","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"#doc-items\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-10-24T11:30:48.000Z","datasource_id":null},{"name":"SƏNƏDLƏR » Azərbaycan Prezidentinin Rəsmi internet səhifəsi","uri":"https://president.az/az/documents","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".news-feed\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-10-24T11:31:14.000Z","datasource_id":null},{"name":"Milli Meclis","uri":"https://www.meclis.gov.az/news-comit.php?id=16&lang=az&cat=55","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".content [class*='main']\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-10-30T05:41:04.000Z","datasource_id":null},{"name":"AKTUAL - Azərbaycan Məktəbi- ELMİ-NƏZƏRİ PEDAQOJİ JURNAL","uri":"https://as-journal.edu.az/actual_az","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"#wrapper\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-11-01T08:53:59.000Z","datasource_id":null},{"name":"Eatda.edu.az","uri":"https://eatda.edu.az/xeberler","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"div.v-container:nth-child(6)\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2024-11-15T12:00:04.000Z","datasource_id":null},{"name":"Sərəncamlar","uri":"https://alimajlis.gov.az/pages/ali-vezifeli-sexslerin-serencamlari","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".card-body\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-01-06T10:57:58.000Z","datasource_id":null},{"name":"Naxçıvan NK qərarlar","uri":"https://nnk.gov.az/decisions?id=7","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"body\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-01-06T11:06:43.000Z","datasource_id":null},{"name":"Naxçıvan NK Sərəncam ","uri":"https://nnk.gov.az/decisions?id=8","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"body\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-01-06T11:07:18.000Z","datasource_id":null},{"name":"Məktəbəqədər və Elmi Təhsil","uri":"https://ppe-journal.edu.az/az/archive","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".body\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-01-15T13:09:19.000Z","datasource_id":null},{"name":"Əsas səhifə | Milli Hidrometeorologiya Xidməti","uri":"https://meteo.az/","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".news\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"incognito\":false,\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-04-16T10:35:01.000Z","datasource_id":null},{"name":"Sənədlər |Azərbaycan Respublikası Elm və Təhsil Nazirliyi","uri":"https://edu.gov.az/az/esas-senedler","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"section\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"incognito\":false,\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-04-17T07:35:12.000Z","datasource_id":null},{"name":"Xəbərlər | Media Agentliyi","uri":"https://media.gov.az/kommunikasiya/xeberler/","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".category-area .container\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"incognito\":false,\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-09-29T08:12:11.000Z","datasource_id":null},{"name":"Xəbərlər","uri":"https://www.presscouncil.az/az/news","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\".main-container\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"incognito\":false,\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-09-29T08:13:14.000Z","datasource_id":null},{"name":"Elm və Təhsi̇l İşçi̇ləri̇ Həmkarlar İtti̇faqi rəsmi internet saytı - Etihi.org","uri":"https://etihi.org/xeberler","config":"{\"ignoreEmptyText\":true,\"includeStyle\":false,\"dataAttr\":\"text\",\"selections\":[{\"frames\":[{\"index\":0,\"excludes\":[],\"includes\":[{\"type\":\"css\",\"expr\":\"section[class*='card']\",\"fields\":[{\"name\":\"text\",\"type\":\"builtin\"}]}]}],\"dynamic\":true,\"delay\":2}],\"incognito\":false,\"regexp\":{\"expr\":\"\",\"flags\":\"gim\"}}","tags":[],"content_type":2,"schedule":"{\"type\":\"INTERVAL\",\"params\":{\"interval\":5}}","ts":"2025-09-29T08:14:07.000Z","datasource_id":null}]}
+{
+  "sites": [
+    {
+      "name": "Xəbərlər | Dövlət İmtahan Mərkəzi",
+      "url": "https://dim.gov.az/az/metbuat/xeberler",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "[role='main']",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "[role='main']"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 28,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "XƏBƏRLƏR",
+      "url": "https://science.gov.az/az/news",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".news",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".news"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Xəbərlər – Təhsilin İnkişafı Fondu",
+      "url": "https://tif.edu.az/xeberler/",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "[class*='cols']> div:first-child",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "[class*='cols']> div:first-child"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 28,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Təhsildə Keyfiyyət Təminatı Agentliyi - TKTA | TKTA",
+      "url": "https://tkta.edu.az/p/news",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".page_news .sections_body",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".page_news .sections_body"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 28,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "XƏBƏRLƏR » Azərbaycan Prezidentinin Rəsmi internet səhifəsi",
+      "url": "https://president.az/az/news",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".main-content_news",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".main-content_news"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "2019-2023/2022-2026 Dövlət Proqramı",
+      "url": "https://dp.edu.az/az/index",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".news-part",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".news-part"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 61,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Xəbərlər və Yeniliklər |Azərbaycan Respublikası Elm və Təhsil Nazirliyi",
+      "url": "https://edu.gov.az/az/news-and-updates",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".news-article",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".news-article"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 28,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Peşə Təhsili üzrə Dövlət Agentliyi",
+      "url": "https://vet.edu.gov.az/p/news",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".news",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".news"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 28,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "XƏBƏRLƏR | Azərbaycan Respublikasının Təhsil İnstitutu",
+      "url": "https://arti.edu.az/category/xeberler/",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "div.container:nth-child(3)",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "div.container:nth-child(3)"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Bütün xəbərlər, AZƏRBAYCAN RESPUBLİKASININ NAZİRLƏR KABİNETİ",
+      "url": "https://www.nk.gov.az/az/xeberler/hamisi",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "#news-items",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "#news-items"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Bütün sənədlər, AZƏRBAYCAN RESPUBLİKASININ NAZİRLƏR KABİNETİ",
+      "url": "https://www.nk.gov.az/az/senedler/hamisi",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "#doc-items",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "#doc-items"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "SƏNƏDLƏR » Azərbaycan Prezidentinin Rəsmi internet səhifəsi",
+      "url": "https://president.az/az/documents",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".news-feed",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".news-feed"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Milli Meclis",
+      "url": "https://www.meclis.gov.az/news-comit.php?id=16&lang=az&cat=55",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".content [class*='main']",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".content [class*='main']"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "AKTUAL - Azərbaycan Məktəbi- ELMİ-NƏZƏRİ PEDAQOJİ JURNAL",
+      "url": "https://as-journal.edu.az/actual_az",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "#wrapper",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "#wrapper"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Eatda.edu.az",
+      "url": "https://eatda.edu.az/xeberler",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "div.v-container:nth-child(6)",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "div.v-container:nth-child(6)"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Sərəncamlar",
+      "url": "https://alimajlis.gov.az/pages/ali-vezifeli-sexslerin-serencamlari",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".card-body",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".card-body"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Naxçıvan NK qərarlar",
+      "url": "https://nnk.gov.az/decisions?id=7",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "body",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "body"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Naxçıvan NK Sərəncam ",
+      "url": "https://nnk.gov.az/decisions?id=8",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "body",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "body"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Məktəbəqədər və Elmi Təhsil",
+      "url": "https://ppe-journal.edu.az/az/archive",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".body",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".body"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Əsas səhifə | Milli Hidrometeorologiya Xidməti",
+      "url": "https://meteo.az/",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".news",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".news"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Sənədlər |Azərbaycan Respublikası Elm və Təhsil Nazirliyi",
+      "url": "https://edu.gov.az/az/esas-senedler",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "section",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "section"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Xəbərlər | Media Agentliyi",
+      "url": "https://media.gov.az/kommunikasiya/xeberler/",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".category-area .container",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".category-area .container"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Xəbərlər",
+      "url": "https://www.presscouncil.az/az/news",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": ".main-container",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": ".main-container"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    },
+    {
+      "name": "Elm və Təhsi̇l İşçi̇ləri̇ Həmkarlar İtti̇faqi rəsmi internet saytı - Etihi.org",
+      "url": "https://etihi.org/xeberler",
+      "enabled": true,
+      "monitor_mode": "change",
+      "source_type": "css_change_json",
+      "selector": "section[class*='card']",
+      "xpaths": [],
+      "selectors": [
+        {
+          "type": "css",
+          "value": "section[class*='card']"
+        }
+      ],
+      "keywords": [],
+      "condition_rules": [],
+      "no_duplicate": true,
+      "interval": 5,
+      "delay": 2,
+      "limit": 5
+    }
+  ]
+}
