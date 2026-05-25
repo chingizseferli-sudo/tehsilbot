@@ -492,14 +492,14 @@ def check_sites(first_run=False):
             published_time = item.get("published_time")
 
             if not published_time:
-            published_time = extract_publish_time_from_article(link)
+                published_time = extract_publish_time_from_article(link)
 
             if not published_time:
-            print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
+                print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
                 continue
 
             if not published_time or not is_recent_news(published_time):
-            print(f"Köhnə xəbər keçildi: {title[:70]} | {published_time}", flush=True)
+                print(f"Köhnə xəbər keçildi: {title[:70]} | {published_time}", flush=True)
                 continue
 
             if not is_recent_news(published_time):
