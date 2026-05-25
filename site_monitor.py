@@ -15,10 +15,6 @@ from dateutil import parser
 BOT_TOKEN = "8820784481:AAGMe9uWrD97Xh1nET-JU8AgZAqggZ234fg"
 CHAT_ID = "1271870098"
 
-CONFIG_FILE = "courier_config_clean.json"
-EXTENSION_CONFIG_FILE = "extension_sites.json"
-EXTENSION_CONFIG_FILE = "bez.json"
-
 CHECK_INTERVAL_SECONDS = 600
 MAX_SEND_PER_RUN = 20
 MAX_LINKS_PER_SITE = 5
@@ -73,48 +69,39 @@ def save(link, title, source):
     conn.commit()
 
 
+CONFIG_FILES = [
+    "courier_config_clean.json",
+    "extension_sites.json",
+    "bez.json"
+]
+
 def load_sites():
     all_sites = []
 
-    try:
-        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
+    for config_file in CONFIG_FILES:
+        try:
+            with open(config_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
 
-        for site in data.get("sites", []):
-            if not site.get("enabled", True):
-                continue
+            for site in data.get("sites", []):
+                if not site.get("enabled", True):
+                    continue
 
-            all_sites.append({
-                "name": site.get("name") or get_domain(site.get("url", "")),
-                "url": site.get("url"),
-                "xpaths": site.get("xpaths", []),
-                "selector": site.get("selector"),
-                "keywords": [k.lower() for k in site.get("keywords", [])],
-                "limit": site.get("limit", MAX_LINKS_PER_SITE),
-                "source_type": "main_json"
-            })
-    except Exception as e:
-        print("Əsas JSON oxunmadı:", e, flush=True)
+                all_sites.append({
+                    "name": site.get("name") or get_domain(site.get("url", "")),
+                    "url": site.get("url"),
+                    "xpaths": site.get("xpaths", []),
+                    "selector": site.get("selector"),
+                    "keywords": [k.lower() for k in site.get("keywords", [])],
+                    "limit": site.get("limit", MAX_LINKS_PER_SITE),
+                    "source_type": site.get("source_type", config_file)
+                })
 
-    try:
-        with open(EXTENSION_CONFIG_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        except FileNotFoundError:
+            print(f"Fayl tapılmadı: {config_file}", flush=True)
 
-        for site in data.get("sites", []):
-            if not site.get("enabled", True):
-                continue
-
-            all_sites.append({
-                "name": site.get("name") or get_domain(site.get("url", "")),
-                "url": site.get("url"),
-                "xpaths": [],
-                "selector": site.get("selector"),
-                "keywords": [k.lower() for k in site.get("keywords", [])],
-                "limit": site.get("limit", MAX_LINKS_PER_SITE),
-                "source_type": "extension_json"
-            })
-    except Exception as e:
-        print("Extension JSON oxunmadı:", e, flush=True)
+        except Exception as e:
+            print(f"JSON oxunmadı: {config_file} | {e}", flush=True)
 
     return [s for s in all_sites if s.get("url")]
 
