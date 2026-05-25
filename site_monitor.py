@@ -491,8 +491,6 @@ def check_sites(first_run=False):
 
             published_time = item.get("published_time")
 
-            published_time = item.get("published_time")
-
             if not published_time:
             published_time = extract_publish_time_from_article(link)
 
