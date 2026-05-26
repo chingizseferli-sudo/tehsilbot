@@ -660,11 +660,24 @@ def check_sites(first_run=False):
             if not published_time:
                 published_time = extract_publish_time_from_article(link)
 
-            if not published_time:
-                print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
-                continue
+            # Discovery/pattern ilə tapılan saytlarda bəzi xəbərlərin tarixini çıxarmaq olmur.
+            # Belə hallarda link bazada yoxdursa, test və praktik istifadə üçün göndəririk.
+            # Köhnə linklər isə bazada saxlandığı üçün təkrar getməyəcək.
+            allow_undated = (
+                site.get("source_type") == "discovered_rss_or_sitemap"
+                or site.get("source_type") == "discovered_google_news"
+                or get_domain(site.get("url", "")) in patterns_data
+            )
 
-            if not is_recent_news(published_time):
+            if not published_time:
+                if allow_undated:
+                    published_time = "Tarix tapılmadı"
+                    print(f"Tarix tapılmadı, yeni link kimi qəbul edildi: {title[:70]}", flush=True)
+                else:
+                    print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
+                    continue
+
+            if published_time != "Tarix tapılmadı" and not is_recent_news(published_time):
                 print(f"Köhnə xəbər keçildi: {title[:70]} | {published_time}", flush=True)
                 continue
 
