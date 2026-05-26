@@ -17,10 +17,10 @@ BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 CHAT_ID = os.getenv("CHAT_ID", "").strip()
 
 if not BOT_TOKEN:
-    print("⚠️ BOT_TOKEN tapılmadı. Railway Variables bölməsinə BOT_TOKEN əlavə et.", flush=True)
+    print("⚠️ BOT_TOKEN tapılmadı.", flush=True)
 
 if not CHAT_ID:
-    print("⚠️ CHAT_ID tapılmadı. Railway Variables bölməsinə CHAT_ID əlavə et.", flush=True)
+    print("⚠️ CHAT_ID tapılmadı.", flush=True)
 
 CHECK_INTERVAL_SECONDS = 600
 MAX_SEND_PER_RUN = 20
@@ -71,11 +71,7 @@ def send_telegram(message):
         print("Telegram:", response.status_code, flush=True)
 
         if response.status_code == 429:
-            try:
-                retry_after = response.json().get("parameters", {}).get("retry_after", 30)
-            except Exception:
-                retry_after = 30
-
+            retry_after = response.json().get("parameters", {}).get("retry_after", 30)
             print(f"Telegram limit verdi: {retry_after} saniyə", flush=True)
             time.sleep(retry_after + 2)
 
@@ -126,10 +122,7 @@ def load_sites():
 
                 url = (site.get("url") or "").strip()
 
-                if not url:
-                    continue
-
-                if url in seen_urls:
+                if not url or url in seen_urls:
                     continue
 
                 seen_urls.add(url)
@@ -159,7 +152,7 @@ def load_patterns():
         with open(PATTERNS_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
-        print("patterns.json tapılmadı. Pattern fallback keçiləcək.", flush=True)
+        print("patterns.json tapılmadı.", flush=True)
         return {}
     except Exception as e:
         print(f"patterns.json oxunmadı: {e}", flush=True)
@@ -172,9 +165,8 @@ def keyword_match(title, keywords):
         "universitet", "imtahan", "tələbə",
         "elm", "araşdırma", "tədqiqat",
         "akademik", "laboratoriya",
-        "abituriyent", "kollec",
-        "lisey", "steam", "pisa",
-        "doktorant", "magistr",
+        "abituriyent", "kollec", "lisey",
+        "steam", "pisa", "doktorant", "magistr",
         "tədris", "elmi", "institut",
         "sertifikasiya", "sertifikatlaşdırma",
         "dim", "tkta", "məktəbəqədər"
@@ -243,6 +235,37 @@ def is_bad_link(title, link):
         return True
 
     return False
+
+
+def is_recent_news(published_time):
+    try:
+        if not published_time:
+            return False
+
+        text = str(published_time).strip().lower()
+
+        if "tarix tapılmadı" in text:
+            return False
+
+        dt = parser.parse(text, fuzzy=True, dayfirst=True)
+
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+
+        difference = datetime.now() - dt
+
+        if difference.total_seconds() < 0:
+            return False
+
+        hours = difference.total_seconds() / 3600
+
+        print(f"Tarix yoxlanır: {published_time} | fərq: {hours:.1f} saat", flush=True)
+
+        return difference <= timedelta(hours=NEWS_TIME_LIMIT_HOURS)
+
+    except Exception as e:
+        print(f"Tarix yoxlama xətası: {published_time} | {e}", flush=True)
+        return False
 
 
 def get_google_news_time(entry):
@@ -356,36 +379,6 @@ def extract_publish_time_from_article(article_url):
     except Exception as e:
         print("Tarix çıxarma xətası:", e, flush=True)
         return None
-
-
-def is_recent_news(published_time):
-    try:
-        if not published_time:
-            return False
-
-        text = str(published_time).strip().lower()
-
-        if "tarix tapılmadı" in text:
-            return False
-
-        dt = parser.parse(text, fuzzy=True, dayfirst=True)
-
-        if dt.tzinfo is not None:
-            dt = dt.replace(tzinfo=None)
-
-        difference = datetime.now() - dt
-
-        if difference.total_seconds() < 0:
-            return False
-
-        hours = difference.total_seconds() / 3600
-        print(f"Tarix yoxlanır: {published_time} | fərq: {hours:.1f} saat", flush=True)
-
-        return difference <= timedelta(hours=NEWS_TIME_LIMIT_HOURS)
-
-    except Exception as e:
-        print(f"Tarix yoxlama xətası: {published_time} | {e}", flush=True)
-        return False
 
 
 def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
@@ -660,24 +653,11 @@ def check_sites(first_run=False):
             if not published_time:
                 published_time = extract_publish_time_from_article(link)
 
-            # Discovery/pattern ilə tapılan saytlarda bəzi xəbərlərin tarixini çıxarmaq olmur.
-            # Belə hallarda link bazada yoxdursa, test və praktik istifadə üçün göndəririk.
-            # Köhnə linklər isə bazada saxlandığı üçün təkrar getməyəcək.
-            allow_undated = (
-                site.get("source_type") == "discovered_rss_or_sitemap"
-                or site.get("source_type") == "discovered_google_news"
-                or get_domain(site.get("url", "")) in patterns_data
-            )
-
             if not published_time:
-                if allow_undated:
-                    published_time = "Tarix tapılmadı"
-                    print(f"Tarix tapılmadı, yeni link kimi qəbul edildi: {title[:70]}", flush=True)
-                else:
-                    print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
-                    continue
+                print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
+                continue
 
-            if published_time != "Tarix tapılmadı" and not is_recent_news(published_time):
+            if not is_recent_news(published_time):
                 print(f"Köhnə xəbər keçildi: {title[:70]} | {published_time}", flush=True)
                 continue
 
@@ -723,7 +703,6 @@ def check_sites(first_run=False):
 
 
 print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
-print("🚀 Bot birbaşa monitorinq rejimində işə düşdü.", flush=True)
 send_telegram("✅ Bot işə düşdü və saytları yoxlamağa başladı.")
 
 while True:
