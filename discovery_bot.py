@@ -54,8 +54,10 @@ def main():
         feed = feedparser.parse(google_news_rss(query))
 
         for entry in feed.entries[:20]:
-            link = entry.link
-            domain = get_domain(link)
+        link = entry.link
+        domain = get_domain(link)
+
+        print(domain)
 
             if not domain:
                 continue
