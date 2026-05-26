@@ -25,6 +25,7 @@ def google_news_rss(query):
         "&hl=az"
         "&gl=AZ"
         "&ceid=AZ:az"
+        "&num=100"
     )
 
 def load_existing():
