@@ -5,14 +5,17 @@ from urllib.parse import quote_plus, urlparse
 OUTPUT_FILE = "discovered_sites.json"
 
 SEARCH_QUERIES = [
-    '"təhsil" Azərbaycan',
-    '"məktəb" Azərbaycan',
-    '"şagird" Azərbaycan',
-    '"universitet" Azərbaycan',
-    '"imtahan" Azərbaycan',
-    '"elm" Azərbaycan',
-    '"tələbə" Azərbaycan',
-    '"müəllim" Azərbaycan'
+    'təhsil Azərbaycan xəbər',
+    'məktəb Azərbaycan xəbər',
+    'şagird Azərbaycan xəbər',
+    'universitet Azərbaycan xəbər',
+    'imtahan Azərbaycan xəbər',
+    'elm Azərbaycan xəbər',
+    'tələbə Azərbaycan xəbər',
+    'müəllim Azərbaycan xəbər',
+    'site:.az təhsil',
+    'site:.az məktəb',
+    'site:.az universitet'
 ]
 
 def get_domain(url):
