@@ -76,7 +76,7 @@ def main():
 
             site = {
                 "name": domain,
-                "url": f"https://{domain}",
+                "url": real_url,
                 "enabled": True,
                 "xpaths": [],
                 "selector": None,
