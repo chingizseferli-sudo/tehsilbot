@@ -72,7 +72,8 @@ def save(link, title, source):
 CONFIG_FILES = [
     "courier_config_clean.json",
     # "extension_sites.json",
-    # "bez.json"
+    # "bez.json",
+    "discovered_sites.json"
 ]
 
 def load_sites():
