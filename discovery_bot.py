@@ -1,82 +1,103 @@
 import json
-import feedparser
-from urllib.parse import quote_plus, urlparse
+import requests
+from urllib.parse import urlparse
+
+INPUT_FILES = [
+    "courier_config_clean.json",
+    "extension_sites.json",
+    "bez.json"
+]
 
 OUTPUT_FILE = "discovered_sites.json"
 
-SEARCH_QUERIES = [
-    'təhsil Azərbaycan xəbər',
-    'məktəb Azərbaycan xəbər',
-    'şagird Azərbaycan xəbər',
-    'universitet Azərbaycan xəbər',
-    'imtahan Azərbaycan xəbər',
-    'elm Azərbaycan xəbər',
-    'tələbə Azərbaycan xəbər',
-    'müəllim Azərbaycan xəbər',
-    'site:.az təhsil',
-    'site:.az məktəb',
-    'site:.az universitet'
+PATHS_TO_CHECK = [
+    "/rss",
+    "/feed",
+    "/rss.xml",
+    "/feed.xml",
+    "/sitemap.xml",
+    "/news-sitemap.xml"
 ]
 
 def get_domain(url):
     return urlparse(url).netloc.replace("www.", "")
 
-def google_news_rss(query):
-    return (
-        "https://news.google.com/rss/search?"
-        f"q={quote_plus(query)}"
-        "&hl=az"
-        "&gl=AZ"
-        "&ceid=AZ:az"
-        "&num=100"
-    )
+def get_base_url(url):
+    parsed = urlparse(url)
+    return f"{parsed.scheme}://{parsed.netloc}"
 
-def load_existing():
+def load_sites_from_files():
+    sites = []
+
+    for file in INPUT_FILES:
+        try:
+            with open(file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            for site in data.get("sites", []):
+                url = site.get("url")
+                if url:
+                    sites.append(url)
+
+        except Exception as e:
+            print(f"{file} oxunmadı: {e}")
+
+    return list(set(sites))
+
+def endpoint_works(url):
     try:
-        with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
-            return json.load(f).get("sites", [])
-    except:
-        return []
+        r = requests.get(
+            url,
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=8
+        )
 
-def save_sites(sites):
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump({"sites": sites}, f, ensure_ascii=False, indent=2)
+        if r.status_code != 200:
+            return False
+
+        text = r.text.lower()
+
+        if "<rss" in text or "<urlset" in text or "<feed" in text:
+            return True
+
+        return False
+
+    except:
+        return False
 
 def main():
-    existing = load_existing()
-    known_domains = {get_domain(site["url"]) for site in existing}
+    urls = load_sites_from_files()
+    print(f"Yoxlanacaq domen sayı: {len(urls)}")
 
-    new_sites = []
+    discovered = []
+    seen = set()
 
-    for query in SEARCH_QUERIES:
-        print(f"Axtarılır: {query}")
+    for url in urls:
+        base = get_base_url(url)
+        domain = get_domain(base)
 
-        feed = feedparser.parse(google_news_rss(query))
+        if not domain or domain in seen:
+            continue
 
-        for entry in feed.entries[:20]:
-        link = entry.link
+        seen.add(domain)
 
-           if hasattr(entry, "source") and hasattr(entry.source, "href"):
-           real_url = entry.source.href
-           else:
-           real_url = link
+        print(f"Yoxlanır: {domain}")
 
-        domain = get_domain(real_url)
+        found_endpoint = None
 
-        print(domain)
+        for path in PATHS_TO_CHECK:
+            test_url = base + path
 
-            if not domain:
-                continue
+            if endpoint_works(test_url):
+                found_endpoint = test_url
+                print(f"Tapıldı: {test_url}")
+                break
 
-            if domain in known_domains:
-                continue
-
-            if "google.com" in domain:
-                continue
-
-            site = {
+        if found_endpoint:
+            discovered.append({
                 "name": domain,
-                "url": real_url,
+                "url": base,
+                "rss_or_sitemap": found_endpoint,
                 "enabled": True,
                 "xpaths": [],
                 "selector": None,
@@ -92,19 +113,13 @@ def main():
                     "tədris"
                 ],
                 "limit": 5,
-                "source_type": "discovered_google_news"
-            }
+                "source_type": "discovered_rss_sitemap"
+            })
 
-            new_sites.append(site)
-            known_domains.add(domain)
+    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+        json.dump({"sites": discovered}, f, ensure_ascii=False, indent=2)
 
-            print(f"Yeni mənbə tapıldı: {domain}")
-
-    all_sites = existing + new_sites
-    save_sites(all_sites)
-
-    print(f"Tamamlandı. Yeni mənbə sayı: {len(new_sites)}")
-    print(f"Ümumi mənbə sayı: {len(all_sites)}")
+    print(f"Tamamlandı. Tapılan mənbə sayı: {len(discovered)}")
 
 if __name__ == "__main__":
     main()
