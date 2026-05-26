@@ -1,0 +1,112 @@
+{
+  "sites": [
+    {
+      "name": "edu.gov.az",
+      "url": "https://edu.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "dim.gov.az",
+      "url": "https://dim.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "arti.edu.az",
+      "url": "https://arti.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "tkta.edu.az",
+      "url": "https://tkta.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "tif.edu.az",
+      "url": "https://tif.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "media.gov.az",
+      "url": "https://media.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "presscouncil.az",
+      "url": "https://presscouncil.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "apa.az",
+      "url": "https://apa.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "azertag.az",
+      "url": "https://azertag.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "qafqazinfo.az",
+      "url": "https://qafqazinfo.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "trend.az",
+      "url": "https://trend.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    },
+    {
+      "name": "oxu.az",
+      "url": "https://oxu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": ["təhsil","məktəb","şagird","müəllim","universitet","imtahan","tələbə","elm","tədris"],
+      "limit": 5
+    }
+  ]
+}
