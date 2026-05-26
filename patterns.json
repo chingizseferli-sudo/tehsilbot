@@ -1,0 +1,46 @@
+{
+  "dim.gov.az": [
+    "/az/",
+    "/storage/"
+  ],
+  "arti.edu.az": [
+    "/2026/",
+    "/nəsrlər/",
+    "/əlaqə/"
+  ],
+  "tkta.edu.az": [
+    "/az/"
+  ],
+  "tif.edu.az": [
+    "/xeberler/",
+    "/layiheler/"
+  ],
+  "media.gov.az": [
+    "/kommunikasiya/",
+    "/vturlar/"
+  ],
+  "presscouncil.az": [
+    "/az/"
+  ],
+  "apa.az": [
+    "/sosial/",
+    "/apa-tv/",
+    "/aqrar-senaye-kompleksi/",
+    "/news/",
+    "/economy/",
+    "/resmi-xeber/",
+    "/asiya/",
+    "/hadise/",
+    "/sport/",
+    "/blog/"
+  ],
+  "qafqazinfo.az": [
+    "/news/",
+    "/site/"
+  ],
+  "trend.az": [
+    "/sections/",
+    "/scaucasus/",
+    "/world/"
+  ]
+}
