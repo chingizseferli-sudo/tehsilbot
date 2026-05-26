@@ -55,7 +55,13 @@ def main():
 
         for entry in feed.entries[:20]:
         link = entry.link
-        domain = get_domain(link)
+
+           if hasattr(entry, "source") and hasattr(entry.source, "href"):
+           real_url = entry.source.href
+           else:
+           real_url = link
+
+        domain = get_domain(real_url)
 
         print(domain)
 
