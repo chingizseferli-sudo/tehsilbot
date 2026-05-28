@@ -1267,6 +1267,1806 @@
       ],
       "limit": 5,
       "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Report.az",
+      "url": "https://report.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Media.az",
+      "url": "https://media.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Baku.ws",
+      "url": "https://baku.ws",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Day.Az",
+      "url": "https://news.day.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Modern.az",
+      "url": "https://modern.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Təhsil 365",
+      "url": "https://tehsil365.news",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "AzEdu.az",
+      "url": "https://azedu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Nazirlər Kabineti",
+      "url": "https://nk.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Muallim.edu.az",
+      "url": "https://muallim.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Fineko/abc.az",
+      "url": "https://abc.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Medianews.az",
+      "url": "https://medianews.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "JAMnews",
+      "url": "https://jam-news.net",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Banco.az",
+      "url": "https://banco.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Aqreqator.az",
+      "url": "https://aqreqator.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Azərbaycan Respublikası Müdafiə Nazirliyi",
+      "url": "https://mod.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "1News.az",
+      "url": "https://1news.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Azərbaycan Milli Elmlər Akademiyası",
+      "url": "https://science.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Ministerstvo zahraničních věcí",
+      "url": "https://mzv.gov.cz",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Sonxeber.az",
+      "url": "https://sonxeber.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Medianews.az",
+      "url": "https://www.medianews.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "President.az",
+      "url": "https://president.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Azerisport.com",
+      "url": "https://azerisport.com",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "BBC",
+      "url": "https://www.bbc.com",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Milli Meclis",
+      "url": "https://www.meclis.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Milli Meclis",
+      "url": "https://meclis.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "| Hafta.az",
+      "url": "https://hafta.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Ajans.az",
+      "url": "https://ajans.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Yeni Müsavat - Onlayn ictimai-siyasi qəzet",
+      "url": "http://musavat.com",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "ru.trend.az",
+      "url": "https://ru.trend.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "br.az",
+      "url": "https://br.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Vesti.az",
+      "url": "https://vesti.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "AXAR.AZ Оперативный новостной портал",
+      "url": "https://ru.axar.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Caliber.Az",
+      "url": "https://caliber.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Синьхуа",
+      "url": "https://russian.news.cn",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Armiya.az",
+      "url": "https://armiya.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Minval Politika",
+      "url": "https://minval.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Operativ Məlumat Mərkəzi",
+      "url": "https://operativmm.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Axar.Az",
+      "url": "https://axar.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "ZERKALO.AZ",
+      "url": "https://zerkalo.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Birbank",
+      "url": "https://birbank.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Yeni Müsavat - Onlayn ictimai-siyasi qəzet",
+      "url": "https://musavat.com",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "AzPolitika",
+      "url": "https://azpolitika.info",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "AbzasMedia",
+      "url": "https://abzas.org",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Tezadlar.az",
+      "url": "https://tezadlar.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Hesab.az",
+      "url": "https://m.hesab.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "BakuPost",
+      "url": "https://www.bakupost.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Missiya Təhsil Şirkəti",
+      "url": "https://missiya.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "oyu.edu.az",
+      "url": "https://oyu.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "BIRMARKET",
+      "url": "https://birmarket.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "İNFORMASİYA TEXNOLOGİYALARI İNSTİTUTU",
+      "url": "https://ict.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Prezident Kitabxanası",
+      "url": "https://www.preslib.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "AZƏRBAYCAN DÖVLƏT AQRAR UNİVERSİTETİ",
+      "url": "https://adau.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "bina.az",
+      "url": "https://bina.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "glc.edu.az",
+      "url": "https://www.glc.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "yeniemlak.az",
+      "url": "https://www.yeniemlak.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "FAB Boya",
+      "url": "https://fabboya.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "msu.edu.az",
+      "url": "https://msu.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "kurslar.az",
+      "url": "https://kurslar.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "mektebeqeder.adpu.edu.az",
+      "url": "https://mektebeqeder.adpu.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "| GeoStrategiya",
+      "url": "http://www.geostrategiya.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "yeniemlak.az",
+      "url": "https://adm.yeniemlak.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Eatda.edu.az",
+      "url": "https://eatda.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Libraff",
+      "url": "https://www.libraff.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "sdu.edu.az",
+      "url": "https://sdu.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "MilliÖn",
+      "url": "https://www.million.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Azərbaycan Elm Fondu",
+      "url": "https://www.aef.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Göygöl Rayon İcra Hakimiyyəti",
+      "url": "https://goygol-ih.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "aak.gov.az.",
+      "url": "https://aak.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "ppe-journal.edu.az",
+      "url": "https://ppe-journal.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Mingəçevir Dövlət Universiteti",
+      "url": "https://mdu.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "ofis-plus.com",
+      "url": "https://officeplus.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "antaris.az",
+      "url": "https://antaris.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "yeniemlak.az",
+      "url": "https://yeniemlak.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "ofis-plus.com",
+      "url": "https://www.officeplus.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Kaspi Liseyi",
+      "url": "https://kaspiliseyi.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Bakimektebleri.edu.az",
+      "url": "https://bakimektebleri.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Alinino",
+      "url": "https://alinino.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "2gis.az",
+      "url": "https://2gis.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Qəbələ Rayon İcra Hakimiyyəti",
+      "url": "https://www.qebele-ih.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Azərbaycan Elm Fondu",
+      "url": "https://aef.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Azərbaycan Dövlət Pedaqoji universitetinin Ağcabədi filialı",
+      "url": "https://adpuagcabedi.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "tap.az",
+      "url": "https://ru.tap.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Əziz Əliyev adına Azərbaycan Dövlət Həkimləri Təkmilləşdirmə İnstitutu",
+      "url": "https://jurnal.adhti.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Dövlət İmtahan Mərkəzi",
+      "url": "https://eservices.dim.gov.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Hədəf Kursları",
+      "url": "https://www.hedef.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Hədəf Kursları",
+      "url": "https://hedef.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "tusi.edu.az",
+      "url": "https://tusi.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "cenub.edu.az",
+      "url": "https://cenub.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Kainat Tədris Mərkəzi",
+      "url": "https://kainat.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "lider.edu.az",
+      "url": "https://lider.edu.az",
+      "enabled": true,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 3,
+      "source_type": "discovered_google_news_source"
     }
   ]
 }

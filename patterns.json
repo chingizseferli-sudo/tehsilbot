@@ -28,14 +28,14 @@
   "apa.az": [
     "/resmi-xeber/",
     "/apa-tv/",
-    "/xarici-siyaset/",
+    "/asiya/",
     "/news/",
     "/economy/",
-    "/avropa/",
     "/hadise/",
+    "/xarici-siyaset/",
     "/sport/",
     "/blog/",
-    "/senaye-ve-energetika/"
+    "/mdb-olkeleri/"
   ],
   "qafqazinfo.az": [
     "/news/",
@@ -45,5 +45,290 @@
     "/sections/",
     "/scaucasus/",
     "/world/"
+  ],
+  "baku.ws": [
+    "/politics/",
+    "/social/",
+    "/incident/",
+    "/diger/",
+    "/dunya/"
+  ],
+  "news.day.az": [
+    "/world/",
+    "/officialchronicle/",
+    "/politics/",
+    "/sport/",
+    "/society/",
+    "/economy/",
+    "/hitech/",
+    "/culture/",
+    "/unusual/",
+    "/showbiz/"
+  ],
+  "modern.az": [
+    "/az/",
+    "/cdn-cgi/"
+  ],
+  "tehsil365.news": [
+    "/az/"
+  ],
+  "azedu.az": [
+    "/az/"
+  ],
+  "nk.gov.az": [
+    "/az/"
+  ],
+  "muallim.edu.az": [
+    "/Regionlar/",
+    "/uploads/",
+    "/elm-ve-tehsil/",
+    "/elm-ve-innovasiya/"
+  ],
+  "abc.az": [
+    "/ru/"
+  ],
+  "medianews.az": [
+    "/r/",
+    "/2022/"
+  ],
+  "jam-news.net": [
+    "/topic/"
+  ],
+  "banco.az": [
+    "/az/"
+  ],
+  "mod.gov.az": [
+    "/az/"
+  ],
+  "1news.az": [
+    "/news/"
+  ],
+  "science.gov.az": [
+    "/az/",
+    "/forms/",
+    "/news/"
+  ],
+  "mzv.gov.cz": [
+    "/jnp/",
+    "/error/",
+    "/public/"
+  ],
+  "sonxeber.az": [
+    "/395868/",
+    "/395860/",
+    "/395881/",
+    "/395866/",
+    "/395861/",
+    "/395862/",
+    "/395856/"
+  ],
+  "president.az": [
+    "/az/"
+  ],
+  "bbc.com": [
+    "/news/",
+    "/travel/",
+    "/audio/",
+    "/culture/",
+    "/future/",
+    "/reel/",
+    "/sport/",
+    "/pages/",
+    "/business/",
+    "/technology/"
+  ],
+  "ru.trend.az": [
+    "/azerbaijan/",
+    "/business/",
+    "/life/",
+    "/iran/",
+    "/world/",
+    "/casia/",
+    "/scaucasus/",
+    "/sections/",
+    "/tags/"
+  ],
+  "br.az": [
+    "/politics/",
+    "/inworld/",
+    "/society/",
+    "/sport/",
+    "/kultura/",
+    "/economy/",
+    "/xronika/",
+    "/region/"
+  ],
+  "vesti.az": [
+    "/v-mire/",
+    "/politika/",
+    "/socium/",
+    "/novosti-avtorov/",
+    "/eto-interesno/",
+    "/sport/",
+    "/tags/",
+    "/armiya/",
+    "/ekonomika/",
+    "/proisshestviye/"
+  ],
+  "ru.axar.az": [
+    "/news/",
+    "/section/",
+    "/cdn-cgi/"
+  ],
+  "caliber.az": [
+    "/post/"
+  ],
+  "russian.news.cn": [
+    "/20260528/",
+    "/china/",
+    "/special/",
+    "/20260511/",
+    "/world/",
+    "/20260523/",
+    "/20260415/",
+    "/20260408/",
+    "/20241211/",
+    "/20260527/"
+  ],
+  "minval.az": [
+    "/news/",
+    "/r/"
+  ],
+  "operativmm.az": [
+    "/az/"
+  ],
+  "axar.az": [
+    "/news/",
+    "/section/",
+    "/cdn-cgi/"
+  ],
+  "birbank.az": [
+    "/news/"
+  ],
+  "abzas.org": [
+    "/az/"
+  ],
+  "bakupost.az": [
+    "/s/",
+    "/az/",
+    "/cdn-cgi/"
+  ],
+  "birmarket.az": [
+    "/categories/",
+    "/promo_page/",
+    "/auth/",
+    "/tags/"
+  ],
+  "ict.az": [
+    "/az/",
+    "/uploads/"
+  ],
+  "preslib.az": [
+    "/az/"
+  ],
+  "adau.edu.az": [
+    "/media_ru/",
+    "/fexri_doktorlar_ru/",
+    "/haqqimizda_ru/",
+    "/media/",
+    "/telebe_heyati_ru/",
+    "/elmi_tedqiqat_merkezleri_ru/",
+    "/beynelxalq_elaqeler_ru/",
+    "/laboratoriyalar_ru/",
+    "/tecrube_ve_karyera_ru/",
+    "/tehsil_ru/"
+  ],
+  "glc.edu.az": [
+    "/school/",
+    "/change-locale/",
+    "/blogs/",
+    "/courses/",
+    "/student/"
+  ],
+  "fabboya.az": [
+    "/az/"
+  ],
+  "msu.edu.az": [
+    "/images/",
+    "/top/",
+    "/management/",
+    "/sveden/"
+  ],
+  "kurslar.az": [
+    "/kurslar/",
+    "/melumat/"
+  ],
+  "geostrategiya.az": [
+    "/pdf/"
+  ],
+  "eatda.edu.az": [
+    "/xeberler/",
+    "/meqaleler/",
+    "/activities/"
+  ],
+  "sdu.edu.az": [
+    "/az/"
+  ],
+  "goygol-ih.gov.az": [
+    "/az/"
+  ],
+  "aak.gov.az": [
+    "/single/",
+    "/documents/",
+    "/news/"
+  ],
+  "ppe-journal.edu.az": [
+    "/az/"
+  ],
+  "mdu.edu.az": [
+    "/wp-content/"
+  ],
+  "officeplus.az": [
+    "/office/",
+    "/profile/",
+    "/blog/"
+  ],
+  "antaris.az": [
+    "/product-category/",
+    "/məhsul/",
+    "/brand/",
+    "/seriya/",
+    "/my-account/"
+  ],
+  "kaspiliseyi.edu.az": [
+    "/az/",
+    "/cdn-cgi/"
+  ],
+  "alinino.az": [
+    "/collection/",
+    "/product/",
+    "/blogs/"
+  ],
+  "2gis.az": [
+    "/baku/"
+  ],
+  "qebele-ih.gov.az": [
+    "/az/"
+  ],
+  "jurnal.adhti.edu.az": [
+    "/pdf/"
+  ],
+  "hedef.edu.az": [
+    "/courses/",
+    "/programs/",
+    "/blog/",
+    "/hedef/"
+  ],
+  "tusi.edu.az": [
+    "/az/"
+  ],
+  "cenub.edu.az": [
+    "/az/"
+  ],
+  "kainat.edu.az": [
+    "/az/"
+  ],
+  "lider.edu.az": [
+    "/az/"
   ]
 }
