@@ -1167,6 +1167,106 @@
       ],
       "limit": 5,
       "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Nazirlər Kabineti",
+      "url": "",
+      "enabled": false,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 5,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "ru.trend.az",
+      "url": "",
+      "enabled": false,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 5,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "AXAR.AZ Оперативный новостной портал",
+      "url": "",
+      "enabled": false,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 5,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Azerisport.com",
+      "url": "",
+      "enabled": false,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 5,
+      "source_type": "discovered_google_news_source"
+    },
+    {
+      "name": "Moderator.az xəbər portalı",
+      "url": "",
+      "enabled": false,
+      "xpaths": [],
+      "selector": null,
+      "keywords": [
+        "təhsil",
+        "məktəb",
+        "şagird",
+        "müəllim",
+        "universitet",
+        "imtahan",
+        "tələbə",
+        "elm",
+        "tədris"
+      ],
+      "limit": 5,
+      "source_type": "discovered_google_news_source"
     }
   ]
 }
