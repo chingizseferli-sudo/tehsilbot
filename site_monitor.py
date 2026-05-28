@@ -22,9 +22,9 @@ if not BOT_TOKEN:
 if not CHAT_ID:
     print("⚠️ CHAT_ID tapılmadı.", flush=True)
 
-CHECK_INTERVAL_SECONDS = 600
-MAX_SEND_PER_RUN = 20
-MAX_LINKS_PER_SITE = 5
+CHECK_INTERVAL_SECONDS = 120
+MAX_SEND_PER_RUN = 10
+MAX_LINKS_PER_SITE = 3
 NEWS_TIME_LIMIT_HOURS = 1
 
 CONFIG_FILES = [
@@ -691,7 +691,7 @@ def check_sites(first_run=False):
             sent_count += 1
             sent_for_this_site = True
 
-            time.sleep(2)
+            time.sleep(1)
             break
 
         if not sent_for_this_site:
