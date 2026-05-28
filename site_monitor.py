@@ -15,9 +15,9 @@ from dateutil import parser
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 CHAT_ID = os.getenv("CHAT_ID", "").strip()
 
-CHECK_INTERVAL_SECONDS = 120
+CHECK_INTERVAL_SECONDS = 60
 MAX_SEND_PER_RUN = 10
-MAX_LINKS_PER_SITE = 3
+MAX_LINKS_PER_SITE = 1
 NEWS_TIME_LIMIT_HOURS = 1
 
 CONFIG_FILES = [
