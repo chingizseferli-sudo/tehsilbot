@@ -277,9 +277,9 @@ def is_recent_news(published_time):
         now_baku = datetime.now(BAKU_TZ)
 
         if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=BAKU_TZ)
+            dt = dt.replace(tzinfo=BAKU_TZ)
         else:
-        dt = dt.astimezone(BAKU_TZ)
+            dt = dt.astimezone(BAKU_TZ)
 
         diff = now_baku - dt
 
