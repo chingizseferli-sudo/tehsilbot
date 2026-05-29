@@ -11,6 +11,7 @@ from lxml import html
 from urllib.parse import urljoin, urlparse
 from datetime import datetime, timedelta
 from dateutil import parser
+from zoneinfo import ZoneInfo
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 CHAT_ID = os.getenv("CHAT_ID", "").strip()
@@ -259,7 +260,16 @@ def is_recent_news(published_time):
         if dt.tzinfo is not None:
             dt = dt.replace(tzinfo=None)
 
-        diff = datetime.now() - dt
+        BAKU_TZ = ZoneInfo("Asia/Baku")
+
+       now_baku = datetime.now(BAKU_TZ)
+
+       if dt.tzinfo is None:
+           dt = dt.replace(tzinfo=BAKU_TZ)
+       else:
+           dt = dt.astimezone(BAKU_TZ)
+
+       diff = now_baku - dt
 
         if diff.total_seconds() < 0:
             return False
