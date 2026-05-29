@@ -203,7 +203,7 @@ def keyword_match(title, keywords):
         if keyword in title_lower:
             score += 1
 
-    return score >= 2
+    return score >= 1
 
 
 def is_bad_link(title, link):
