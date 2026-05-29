@@ -262,14 +262,14 @@ def is_recent_news(published_time):
 
         BAKU_TZ = ZoneInfo("Asia/Baku")
 
-       now_baku = datetime.now(BAKU_TZ)
+        now_baku = datetime.now(BAKU_TZ)
 
-       if dt.tzinfo is None:
+        if dt.tzinfo is None:
            dt = dt.replace(tzinfo=BAKU_TZ)
-       else:
+        else:
            dt = dt.astimezone(BAKU_TZ)
 
-       diff = now_baku - dt
+        diff = now_baku - dt
 
         if diff.total_seconds() < 0:
             return False
