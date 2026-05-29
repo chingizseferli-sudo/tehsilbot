@@ -41,6 +41,15 @@ CREATE TABLE IF NOT EXISTS posts (
 """)
 conn.commit()
 
+KEYWORDS_FILE = "keywords.json"
+
+def load_keywords():
+    try:
+        with open(KEYWORDS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f).get("keywords", [])
+    except:
+        return []
+
 
 def send_telegram(message):
     if not BOT_TOKEN or not CHAT_ID:
@@ -175,19 +184,26 @@ def load_patterns():
         return {}
 
 
-def keyword_match(title, keywords):
-    default_keywords = [
-        "təhsil", "məktəb", "şagird", "müəllim",
-        "universitet", "imtahan", "tələbə", "elm",
-        "tədris", "abituriyent", "magistr", "doktorant",
-        "kollec", "lisey", "sertifikasiya", "sertifikatlaşdırma",
-        "dim", "tkta", "məktəbəqədər", "institut"
-    ]
+GLOBAL_KEYWORDS = load_keywords()
 
-    all_keywords = keywords if keywords else default_keywords
+def keyword_match(title, keywords):
     title_lower = title.lower()
 
-    return any(k.lower() in title_lower for k in all_keywords)
+    all_keywords = set()
+
+    for k in GLOBAL_KEYWORDS:
+        all_keywords.add(k.lower())
+
+    for k in keywords:
+        all_keywords.add(k.lower())
+
+    score = 0
+
+    for keyword in all_keywords:
+        if keyword in title_lower:
+            score += 1
+
+    return score >= 2
 
 
 def is_bad_link(title, link):
