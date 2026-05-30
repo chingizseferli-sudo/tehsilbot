@@ -46,7 +46,7 @@ HEADERS = {
 
 STRICT_WORDS = {
     "dim", "tkta", "pisa", "timss", "pirls", "bağça", "lisey", "kollec",
-    "rektor", "dekan", "magistr", "ARTİ", "MİQ", "doktorant", "abituriyent", "tələbə",
+    "rektor", "dekan", "magistr", "ARTİ", "Arti", "miq", "arti", "MİQ", "doktorant", "abituriyent", "tələbə",
     "şagird", "müəllim", "məktəb", "sinif", "dərs", "elm", "steam",
 }
 
