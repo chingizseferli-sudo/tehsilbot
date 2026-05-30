@@ -1,6 +1,5 @@
 import argparse
 import json
-from collections import Counter
 import os
 import re
 import sqlite3
@@ -26,7 +25,6 @@ PATTERNS_FILE = "patterns.json"
 KEYWORDS_FILE = "keywords.json"
 DB_FILE = os.getenv("DB_FILE", "news.db")
 HEALTH_FILE = "site_health.json"
-STATS_FILE = "site_stats.json"
 MAX_SITE_FAILS = int(os.getenv("MAX_SITE_FAILS", "3"))
 
 BAKU_TZ = ZoneInfo("Asia/Baku")
@@ -39,7 +37,6 @@ MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
 DB_LOCK = threading.Lock()
 HEALTH_LOCK = threading.Lock()
 TELEGRAM_LOCK = threading.Lock()
-LOG_LOCK = threading.Lock()
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; TehsilBot/2.0; +https://example.com/bot)",
@@ -265,22 +262,13 @@ GLOBAL_KEYWORDS = load_global_keywords()
 
 
 def extract_keywords_from_site(site: dict) -> list[str]:
-    keywords = set(GLOBAL_KEYWORDS)
-
-    for k in site.get("keywords", []) or []:
-        k = normalize_text(k)
-        if k:
-            keywords.add(k)
-
-    for rule in site.get("condition_rules", []) or []:
-        value = str(rule.get("value", ""))
-        for part in re.split(r"[|\r\n]+", value):
-            word = clean_text(part).replace(".*", "").strip()
-            if len(word) > 1:
-                keywords.add(normalize_text(word))
-
-    return sorted(keywords, key=len, reverse=True)
-
+    """
+    YEKUN QAYDA:
+    Bot yalnız keywords.json faylındakı təmiz açar sözlərə baxır.
+    courier_config_clean.json və discovered_sites.json içində qalmış köhnə/parazit
+    açar sözlər, məsələn "qəbul", "konfrans", "tədbir", nəzərə alınmır.
+    """
+    return sorted(set(GLOBAL_KEYWORDS), key=len, reverse=True)
 
 def load_sites() -> list[dict]:
     sites = []
@@ -785,73 +773,45 @@ def collect_candidates(session: requests.Session, site: dict, patterns_data: dic
     return unique_candidates(merged)[:MAX_CANDIDATES_PER_SITE], True, None
 
 
-def print_site_summary(index: int, total: int, site: dict, stats: dict):
-    status_icon = {
-        "sent": "✅",
-        "no_recent": "⏩",
-        "no_candidates": "🔎",
-        "duplicate": "🔁",
-        "failed": "❌",
-        "telegram_failed": "⚠️",
-    }.get(stats.get("result"), "ℹ️")
-
-    elapsed = stats.get("elapsed", 0)
-    lines = [
-        "────────────────────────────",
-        f"{status_icon} [{index}/{total}] {site.get('domain')} | {site.get('name')}",
-        f"URL: {site.get('url')}",
-        f"Namizəd: {stats.get('candidates', 0)} | Təkrar: {stats.get('duplicates', 0)} | Son 1 saat: {stats.get('recent', 0)} | Göndərildi: {stats.get('sent', 0)}",
-        f"Nəticə: {stats.get('message', '')}",
-        f"Vaxt: {elapsed:.2f} saniyə",
-        "────────────────────────────",
-    ]
-
-    with LOG_LOCK:
-        print("\n".join(lines), flush=True)
-
-
-def process_site(index: int, total: int, site: dict, patterns_data: dict) -> dict:
-    started = time.time()
-    stats = {
-        "domain": site.get("domain"),
-        "result": "unknown",
-        "message": "",
-        "candidates": 0,
-        "duplicates": 0,
-        "recent": 0,
-        "sent": 0,
-        "elapsed": 0,
-    }
-
+def process_site(index: int, total: int, site: dict, patterns_data: dict) -> int:
+    started_at = time.time()
     print(f"[{index}/{total}] Yoxlanır: {site['name']} | {site['url']}", flush=True)
 
     session = requests.Session()
     session.headers.update(HEADERS)
 
     candidates, site_opened, fetch_error = collect_candidates(session, site, patterns_data)
-    stats["candidates"] = len(candidates)
 
     if not site_opened:
         record_site_failure(site["domain"], site["url"], fetch_error or "Sayt açılmadı")
-        stats["result"] = "failed"
-        stats["message"] = fetch_error or "Sayt açılmadı"
-        stats["elapsed"] = time.time() - started
-        print_site_summary(index, total, site, stats)
-        return stats
+        elapsed = time.time() - started_at
+        print(
+            f"📊 [{index}/{total}] {site['domain']} | status=açılmadı | namizəd=0 | göndərildi=0 | vaxt={elapsed:.1f}s",
+            flush=True,
+        )
+        return 0
 
     record_site_success(site["domain"])
     print(f"{site['domain']} | uyğun namizəd sayı: {len(candidates)}", flush=True)
 
     if not candidates:
-        stats["result"] = "no_candidates"
-        stats["message"] = "Açar sözə uyğun namizəd tapılmadı"
-        stats["elapsed"] = time.time() - started
-        print_site_summary(index, total, site, stats)
-        return stats
+        elapsed = time.time() - started_at
+        print(
+            f"📊 [{index}/{total}] {site['domain']} | status=açıldı | namizəd=0 | nəticə=açar sözə uyğun xəbər yoxdur | vaxt={elapsed:.1f}s",
+            flush=True,
+        )
+        return 0
+
+    duplicate_count = 0
+    old_count = 0
+    checked_count = 0
+    no_date_count = 0
 
     for item in candidates:
+        checked_count += 1
+
         if was_sent(item["link"]):
-            stats["duplicates"] += 1
+            duplicate_count += 1
             print(f"Təkrar xəbər keçildi: {item['link']}", flush=True)
             continue
 
@@ -863,70 +823,59 @@ def process_site(index: int, total: int, site: dict, patterns_data: dict) -> dic
             flush=True,
         )
 
+        if not published_dt:
+            no_date_count += 1
+            print("Tarix tapılmadı, keçildi.", flush=True)
+            continue
+
         if not is_recent_today(published_dt):
+            old_count += 1
             print("Bugünkü son 1 saat xəbəri deyil, keçildi.", flush=True)
             continue
 
-        stats["recent"] += 1
-
         # İki paralel worker eyni xəbəri eyni anda göndərməsin deyə burada yenidən yoxlayırıq.
         if was_sent(item["link"]):
-            stats["duplicates"] += 1
+            duplicate_count += 1
             print(f"Təkrar xəbər keçildi: {item['link']}", flush=True)
             continue
 
         message = build_message(item, published_dt)
         if send_telegram(message):
             mark_sent(item["link"], item["title"], item["source"], published_dt)
+            elapsed = time.time() - started_at
             print(f"✅ Göndərildi və bazaya yazıldı: {item['source']} | {item['title'][:80]}", flush=True)
-            stats["sent"] = 1
-            stats["result"] = "sent"
-            stats["message"] = f"Telegram-a göndərildi | açar söz: {', '.join(item.get('matched_keywords', []))}"
-            stats["elapsed"] = time.time() - started
-            print_site_summary(index, total, site, stats)
-            return stats
+            print(
+                f"📊 [{index}/{total}] {site['domain']} | namizəd={len(candidates)} | yoxlandı={checked_count} | təkrar={duplicate_count} | köhnə={old_count} | tarixsiz={no_date_count} | göndərildi=1 | vaxt={elapsed:.1f}s",
+                flush=True,
+            )
+            return 1
 
-        stats["result"] = "telegram_failed"
-        stats["message"] = "Telegram göndərilmədi; bazaya yazılmadı"
-        stats["elapsed"] = time.time() - started
-        print_site_summary(index, total, site, stats)
-        return stats
+        print("Telegram göndərilmədi; bazaya yazılmadı.", flush=True)
 
-    if stats["duplicates"] and stats["duplicates"] == stats["candidates"]:
-        stats["result"] = "duplicate"
-        stats["message"] = "Bütün uyğun namizədlər əvvəl göndərilib"
-    else:
-        stats["result"] = "no_recent"
-        stats["message"] = "Açar söz var, amma son 1 saat xəbəri yoxdur"
-
+    elapsed = time.time() - started_at
     print("Bu saytdan göndəriləcək yeni son xəbər yoxdur.", flush=True)
-    stats["elapsed"] = time.time() - started
-    print_site_summary(index, total, site, stats)
-    return stats
-
-
-def save_run_stats(summary: dict):
-    data = read_json(STATS_FILE, {"runs": []})
-    runs = data.get("runs", [])
-    runs.append(summary)
-    data["runs"] = runs[-100:]
-    write_json(STATS_FILE, data)
+    print(
+        f"📊 [{index}/{total}] {site['domain']} | namizəd={len(candidates)} | yoxlandı={checked_count} | təkrar={duplicate_count} | köhnə={old_count} | tarixsiz={no_date_count} | göndərildi=0 | vaxt={elapsed:.1f}s",
+        flush=True,
+    )
+    return 0
 
 def check_sites(once_limit_sites: int | None = None) -> int:
+    run_started_at = time.time()
     sites = load_sites()
     patterns_data = load_patterns()
 
     if once_limit_sites:
         sites = sites[:once_limit_sites]
 
-    run_started = time.time()
     print(
         f"Monitorinq başladı | paralel işçi: {MAX_WORKERS} | son {NEWS_TIME_LIMIT_MINUTES} dəqiqə | {now_baku().strftime('%d.%m.%Y %H:%M:%S')} AZT",
         flush=True,
     )
 
     sent_count = 0
-    results = []
+    completed_count = 0
+    error_count = 0
     max_workers = max(1, min(MAX_WORKERS, len(sites) or 1))
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -938,48 +887,31 @@ def check_sites(once_limit_sites: int | None = None) -> int:
         for future in as_completed(futures):
             site = futures[future]
             try:
-                result = future.result() or {}
-                results.append(result)
-                sent_count += int(result.get("sent", 0))
+                sent_count += int(future.result() or 0)
+                completed_count += 1
             except Exception as e:
+                error_count += 1
                 print(f"⚠️ Worker xətası: {site.get('domain')} | {e}", flush=True)
-                results.append({"domain": site.get("domain"), "result": "worker_error", "sent": 0})
 
             if sent_count >= MAX_SEND_PER_RUN:
                 print("Bu dövr üçün göndərmə limiti tamamlandı. Qalan worker-lər tamamlananda dövr bağlanacaq.", flush=True)
+                # Artıq başlamamış task-ları ləğv etməyə çalışırıq.
                 for pending in futures:
                     if not pending.done():
                         pending.cancel()
                 break
 
-    counter = Counter(r.get("result", "unknown") for r in results)
-    elapsed = time.time() - run_started
-    summary = {
-        "time": now_baku().isoformat(),
-        "total_sites": len(sites),
-        "checked_results": len(results),
-        "sent": sent_count,
-        "no_recent": counter.get("no_recent", 0),
-        "no_candidates": counter.get("no_candidates", 0),
-        "duplicates": counter.get("duplicate", 0),
-        "failed": counter.get("failed", 0),
-        "telegram_failed": counter.get("telegram_failed", 0),
-        "worker_error": counter.get("worker_error", 0),
-        "elapsed_seconds": round(elapsed, 2),
-    }
-    save_run_stats(summary)
-
-    print("\n===== MONİTORİNQ YEKUNU =====", flush=True)
-    print(f"Yoxlanılan sayt nəticəsi: {len(results)}/{len(sites)}", flush=True)
-    print(f"✅ Göndərildi: {sent_count}", flush=True)
-    print(f"⏩ Açar söz var, son 1 saat deyil: {summary['no_recent']}", flush=True)
-    print(f"🔎 Açar sözə uyğun namizəd yoxdur: {summary['no_candidates']}", flush=True)
-    print(f"🔁 Təkrar xəbər: {summary['duplicates']}", flush=True)
-    print(f"❌ Açılmayan/bloklanan sayt: {summary['failed']}", flush=True)
-    print(f"⚠️ Telegram xətası: {summary['telegram_failed']}", flush=True)
-    print(f"⏱️ Ümumi vaxt: {summary['elapsed_seconds']} saniyə", flush=True)
-    print("============================\n", flush=True)
-
+    elapsed = time.time() - run_started_at
+    print("=" * 60, flush=True)
+    print("📈 MONİTORİNQ YEKUNU", flush=True)
+    print(f"🌐 Aktiv sayt sayı: {len(sites)}", flush=True)
+    print(f"✅ Tamamlanan sayt sayı: {completed_count}", flush=True)
+    print(f"📤 Göndərilən xəbər sayı: {sent_count}", flush=True)
+    print(f"⚠️ Worker xətası: {error_count}", flush=True)
+    print(f"⚙️ Paralel işçi sayı: {max_workers}", flush=True)
+    print(f"⏱️ Ümumi vaxt: {elapsed:.1f} saniyə", flush=True)
+    print(f"🕒 Bitmə vaxtı: {now_baku().strftime('%d.%m.%Y %H:%M:%S')} AZT", flush=True)
+    print("=" * 60, flush=True)
     return sent_count
 
 def main():
