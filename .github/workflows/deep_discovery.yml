@@ -1,1 +1,49 @@
 
+name: Deep Discovery
+
+on:
+  schedule:
+    # Hər gecə UTC 23:00 (Bakı vaxtı ilə təxminən 03:00)
+    - cron: '0 23 * * *'
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deep-discovery:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repo-nu yüklə
+        uses: actions/checkout@v4
+
+      - name: Python quraşdır
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Kitabxanaları quraşdır
+        run: |
+          pip install requests
+          pip install feedparser
+          pip install beautifulsoup4
+          pip install lxml
+
+      - name: Deep Discovery işə sal
+        run: |
+          python -u discovery_bot.py --mode deep --add-to-config
+
+      - name: Dəyişiklikləri commit et
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git add discovered_sites.json
+          git add courier_config_clean.json
+          git add patterns.json
+
+          git diff --staged --quiet || git commit -m "Deep discovery update"
+
+          git push
