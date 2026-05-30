@@ -1,104 +1,93 @@
 import json
+import time
 import feedparser
 import requests
 from bs4 import BeautifulSoup
+from collections import Counter
 from urllib.parse import quote_plus, urlparse, urljoin
 
-OUTPUT_FILE = "discovered_sites.json"
+DISCOVERED_FILE = "discovered_sites.json"
+PATTERNS_FILE = "patterns.json"
+KEYWORDS_FILE = "keywords.json"
 
-SEARCH_QUERIES = [
-    "təhsil Azərbaycan",
-    "məktəb Azərbaycan",
-    "şagird Azərbaycan",
-    "universitet Azərbaycan",
-    "imtahan Azərbaycan",
-    "elm Azərbaycan",
-    "tələbə Azərbaycan",
-    "müəllim Azərbaycan",
-    "sertifikasiya müəllim",
-    "magistratura qəbul",
-    "DİM imtahan",
-    "Elm və Təhsil Nazirliyi",
-    "site:.az təhsil",
-    "site:.az məktəb",
-    "site:.az universitet",
-    "site:.az elm",
-    "site:.az imtahan",
-    "site:.az tələbə",
-    "site:.az müəllim"
-]
-
-DEFAULT_KEYWORDS = [
-    "təhsil", "məktəb", "şagird", "müəllim",
-    "universitet", "imtahan", "tələbə", "elm",
-    "tədris", "abituriyent", "magistr", "doktorant",
-    "kollec", "lisey", "sertifikasiya", "sertifikatlaşdırma",
-    "dim", "tkta", "məktəbəqədər", "institut"
-]
+MAX_QUERIES = 80
+MAX_ENTRIES_PER_QUERY = 40
+MAX_SECTIONS_PER_SOURCE = 3
+REQUEST_TIMEOUT = 12
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0",
     "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8"
 }
 
+DEFAULT_KEYWORDS = [
+    "təhsil", "elm", "məktəb", "şagird", "müəllim",
+    "universitet", "imtahan", "tələbə", "magistratura",
+    "sertifikasiya", "tədqiqat", "olimpiada", "dim", "tkta"
+]
+
 COMMON_NEWS_PATHS = [
-    "/news",
-    "/news/",
-    "/xeber",
-    "/xeber/",
-    "/xeberler",
-    "/xeberler/",
-    "/xəbərlər",
-    "/xəbərlər/",
-    "/az/news",
-    "/az/news/",
-    "/az/xeberler",
-    "/az/xeberler/",
-    "/az/xəbərlər",
-    "/az/xəbərlər/",
-    "/media/news",
-    "/media/news/",
-    "/az/media/news",
-    "/az/media/news/",
-    "/all-news",
-    "/allnews",
-    "/latest",
-    "/lastnews",
-    "/son-xeberler",
-    "/son-xeberler/",
-    "/newsarchive",
-    "/az/newsarchive",
-    "/p/news"
+    "/news", "/news/", "/xeber", "/xeber/", "/xeberler", "/xeberler/",
+    "/xəbərlər", "/xəbərlər/", "/az/news", "/az/news/", "/az/xeber",
+    "/az/xeber/", "/az/xeberler", "/az/xeberler/", "/az/xəbərlər",
+    "/az/xəbərlər/", "/media/news", "/media/news/", "/az/media/news",
+    "/az/media/news/", "/all-news", "/allnews", "/latest", "/lastnews",
+    "/son-xeberler", "/son-xeberler/", "/newsarchive", "/az/newsarchive",
+    "/p/news", "/category/elm-ve-tehsil", "/category/tehsil",
+    "/elm-ve-tehsil", "/tehsil"
 ]
 
 BAD_WORDS = [
-    "facebook", "instagram", "youtube", "telegram",
-    "login", "register", "search", "contact", "about",
-    "elaqe", "haqqimizda", "reklam", "tag", "author"
+    "facebook", "instagram", "youtube", "telegram", "login", "register",
+    "search", "contact", "about", "elaqe", "haqqimizda", "reklam",
+    "tag", "author", "wp-content", "uploads"
+]
+
+GOOD_PATTERN_HINTS = [
+    "news", "xeber", "xeberler", "xəbər", "xəbərlər",
+    "article", "post", "read", "item", "son-xeber",
+    "latest", "media", "tehsil", "elm"
+]
+
+BAD_PATTERNS = [
+    "/tag/", "/category/", "/kateqoriya/", "/author/",
+    "/page/", "/login/", "/register/", "/search/",
+    "/video/", "/photo/", "/contact/", "/about/",
+    "/elaqe/", "/haqqimizda/", "/reklam/",
+    "/wp-content/", "/uploads/", "/cdn-cgi/"
 ]
 
 
-def load_existing():
+def read_json(filename, default):
     try:
-        with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
-            return json.load(f).get("sites", [])
-    except Exception:
-        return []
+        with open(filename, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return default
+    except Exception as e:
+        print(f"JSON oxunmadı: {filename} | {e}")
+        return default
 
 
-def save_sites(sites):
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump({"sites": sites}, f, ensure_ascii=False, indent=2)
+def write_json(filename, data):
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def google_news_rss(query):
-    return (
-        "https://news.google.com/rss/search?"
-        f"q={quote_plus(query)}"
-        "&hl=az"
-        "&gl=AZ"
-        "&ceid=AZ:az"
-    )
+def load_keywords():
+    data = read_json(KEYWORDS_FILE, {"keywords": DEFAULT_KEYWORDS})
+    keywords = data.get("keywords", DEFAULT_KEYWORDS)
+
+    cleaned = []
+    for keyword in keywords:
+        keyword = str(keyword).strip().lower()
+        if keyword and keyword not in cleaned:
+            cleaned.append(keyword)
+
+    return cleaned or DEFAULT_KEYWORDS
+
+
+KEYWORDS = load_keywords()
 
 
 def clean_domain(url):
@@ -115,15 +104,49 @@ def base_url(url):
     return f"{parsed.scheme}://{parsed.netloc}"
 
 
+def google_news_rss(query):
+    return (
+        "https://news.google.com/rss/search?"
+        f"q={quote_plus(query)}"
+        "&hl=az&gl=AZ&ceid=AZ:az"
+    )
+
+
+def build_search_queries():
+    queries = []
+
+    for keyword in KEYWORDS:
+        queries.append(f"{keyword} Azərbaycan")
+
+    important = [
+        "Elm və Təhsil Nazirliyi",
+        "Dövlət İmtahan Mərkəzi",
+        "Təhsildə Keyfiyyət Təminatı Agentliyi",
+        "təhsil xəbərləri",
+        "elm xəbərləri",
+        "universitet xəbərləri",
+        "məktəb xəbərləri",
+        "imtahan xəbərləri"
+    ]
+
+    for q in important:
+        if q not in queries:
+            queries.append(q)
+
+    return queries[:MAX_QUERIES]
+
+
 def looks_like_news_url(url):
     u = url.lower()
+
     if any(bad in u for bad in BAD_WORDS):
         return False
 
     hints = [
         "news", "xeber", "xeberler", "xəbər", "xəbərlər",
         "media/news", "all-news", "allnews", "latest",
-        "lastnews", "son-xeber", "newsarchive", "p/news"
+        "lastnews", "son-xeber", "newsarchive", "p/news",
+        "tehsil", "education", "elm-ve-tehsil"
     ]
 
     return any(h in u for h in hints)
@@ -131,7 +154,8 @@ def looks_like_news_url(url):
 
 def page_has_news_links(url):
     try:
-        r = requests.get(url, headers=HEADERS, timeout=10, allow_redirects=True)
+        r = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+
         if r.status_code != 200:
             return False
 
@@ -148,7 +172,9 @@ def page_has_news_links(url):
             if clean_domain(href) != clean_domain(url):
                 continue
 
-            if looks_like_news_url(href) or any(k.lower() in text.lower() for k in DEFAULT_KEYWORDS):
+            text_lower = text.lower()
+
+            if looks_like_news_url(href) or any(k in text_lower for k in KEYWORDS):
                 count += 1
 
             if count >= 3:
@@ -162,36 +188,35 @@ def page_has_news_links(url):
 
 def find_news_sections(source_url):
     root = base_url(source_url)
+
     if not root:
         return []
 
     found = []
 
-    # 1) Əgər Google News mənbə URL-i artıq xəbər bölməsinə oxşayırsa
     if looks_like_news_url(source_url) and page_has_news_links(source_url):
         found.append(source_url.rstrip("/"))
 
-    # 2) Standart xəbər yollarını yoxla
     for path in COMMON_NEWS_PATHS:
-        candidate = urljoin(root, path)
+        candidate = urljoin(root, path).rstrip("/")
 
-        if candidate.rstrip("/") in found:
+        if candidate in found:
             continue
 
         if page_has_news_links(candidate):
-            found.append(candidate.rstrip("/"))
+            found.append(candidate)
 
-        if len(found) >= 3:
-            break
+        if len(found) >= MAX_SECTIONS_PER_SOURCE:
+            return found
 
-    # 3) Ana səhifədə xəbər bölməsi linklərini tap
     try:
-        r = requests.get(root, headers=HEADERS, timeout=10)
+        r = requests.get(root, headers=HEADERS, timeout=REQUEST_TIMEOUT)
+
         if r.status_code == 200:
             soup = BeautifulSoup(r.text, "html.parser")
 
             for a in soup.find_all("a", href=True):
-                href = urljoin(root, a["href"]).split("#")[0]
+                href = urljoin(root, a["href"]).split("#")[0].rstrip("/")
 
                 if clean_domain(href) != clean_domain(root):
                     continue
@@ -199,27 +224,27 @@ def find_news_sections(source_url):
                 if not looks_like_news_url(href):
                     continue
 
-                href = href.rstrip("/")
-
                 if href in found:
                     continue
 
                 if page_has_news_links(href):
                     found.append(href)
 
-                if len(found) >= 3:
+                if len(found) >= MAX_SECTIONS_PER_SOURCE:
                     break
 
     except Exception:
         pass
 
-    # Əgər heç nə tapılmadısa, ən azı root-u qaytarmırıq.
-    # Çünki root çox vaxt menu/logo verir və monitorinqi zəiflədir.
     return found
 
 
-def main():
-    existing = load_existing()
+def discover_sites():
+    print("🔍 Discovery başladı")
+    print(f"Açar söz sayı: {len(KEYWORDS)}")
+
+    data = read_json(DISCOVERED_FILE, {"sites": []})
+    existing = data.get("sites", [])
 
     known_urls = {
         site.get("url", "").strip().rstrip("/").lower()
@@ -227,15 +252,23 @@ def main():
         if site.get("url")
     }
 
+    queries = build_search_queries()
+    print(f"Axtarış sorğusu sayı: {len(queries)}")
+
     new_sites = []
 
-    for query in SEARCH_QUERIES:
+    for query in queries:
         print("Axtarılır:", query)
 
-        feed = feedparser.parse(google_news_rss(query))
+        try:
+            feed = feedparser.parse(google_news_rss(query))
+        except Exception as e:
+            print("Google News RSS xətası:", e)
+            continue
+
         print("Nəticə sayı:", len(feed.entries))
 
-        for entry in feed.entries[:50]:
+        for entry in feed.entries[:MAX_ENTRIES_PER_QUERY]:
             source = entry.get("source", {})
             source_name = None
             source_url = None
@@ -275,7 +308,7 @@ def main():
                     "enabled": True,
                     "xpaths": [],
                     "selector": None,
-                    "keywords": DEFAULT_KEYWORDS,
+                    "keywords": KEYWORDS,
                     "limit": 1,
                     "source_type": "discovered_news_section"
                 }
@@ -285,11 +318,127 @@ def main():
 
                 print("Yeni xəbər bölməsi tapıldı:", source_name or domain, section_url)
 
+            time.sleep(0.2)
+
     all_sites = existing + new_sites
-    save_sites(all_sites)
+    write_json(DISCOVERED_FILE, {"sites": all_sites})
 
     print("Yeni bölmə sayı:", len(new_sites))
     print("Ümumi mənbə sayı:", len(all_sites))
+
+
+def is_bad_pattern(pattern):
+    return any(bad in pattern.lower() for bad in BAD_PATTERNS)
+
+
+def is_good_pattern(pattern):
+    return any(hint in pattern.lower() for hint in GOOD_PATTERN_HINTS)
+
+
+def analyze_site_patterns(site):
+    url = site.get("url")
+
+    if not url:
+        return []
+
+    try:
+        print(f"Pattern yoxlanır: {url}")
+
+        r = requests.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT)
+
+        print("Status:", r.status_code)
+
+        if r.status_code != 200:
+            return []
+
+        soup = BeautifulSoup(r.text, "html.parser")
+        links = []
+
+        for a in soup.find_all("a", href=True):
+            full = urljoin(url, a["href"])
+
+            if clean_domain(full) != clean_domain(url):
+                continue
+
+            path = urlparse(full).path
+            parts = [p for p in path.split("/") if p]
+
+            if len(parts) >= 1:
+                p1 = "/" + parts[0] + "/"
+
+                if not is_bad_pattern(p1) and is_good_pattern(p1):
+                    links.append(p1)
+
+            if len(parts) >= 2:
+                p2 = "/" + parts[0] + "/" + parts[1] + "/"
+
+                if not is_bad_pattern(p2) and is_good_pattern(p2):
+                    links.append(p2)
+
+        counter = Counter(links)
+
+        selected = [
+            pattern
+            for pattern, count in counter.most_common(15)
+            if count >= 1
+        ]
+
+        print("Tapılan patternlər:", selected)
+
+        return selected
+
+    except Exception as e:
+        print("Pattern xətası:", e)
+        return []
+
+
+def build_patterns():
+    print("🧩 Pattern builder başladı")
+
+    discovered = read_json(DISCOVERED_FILE, {"sites": []})
+    patterns = read_json(PATTERNS_FILE, {})
+
+    checked = 0
+    updated = 0
+
+    for site in discovered.get("sites", []):
+        url = site.get("url", "")
+
+        if not url:
+            continue
+
+        domain = clean_domain(url)
+
+        if not domain:
+            continue
+
+        checked += 1
+
+        new_patterns = analyze_site_patterns(site)
+
+        if not new_patterns:
+            continue
+
+        old_patterns = patterns.get(domain, [])
+        merged = []
+
+        for p in old_patterns + new_patterns:
+            if p not in merged:
+                merged.append(p)
+
+        patterns[domain] = merged[:20]
+        updated += 1
+
+    write_json(PATTERNS_FILE, patterns)
+
+    print("Yoxlanılan sayt sayı:", checked)
+    print("Pattern yenilənən sayt sayı:", updated)
+
+
+def main():
+    discover_sites()
+    build_patterns()
+    print("✅ Discovery və pattern yeniləmə tamamlandı")
 
 
 if __name__ == "__main__":
