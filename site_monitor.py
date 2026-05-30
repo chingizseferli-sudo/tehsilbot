@@ -32,6 +32,29 @@ KEYWORDS_FILE = "keywords.json"
 
 BAKU_TZ = ZoneInfo("Asia/Baku")
 
+STRICT_WORDS = {
+    "dim",
+    "tkta",
+    "pisa",
+    "timss",
+    "pirls",
+    "bağça",
+    "lisey",
+    "kollec",
+    "rektor",
+    "dekan",
+    "magistr",
+    "doktorant",
+    "abituriyent",
+    "tələbə",
+    "şagird",
+    "müəllim",
+    "məktəb",
+    "sinif",
+    "dərs",
+    "elm"
+}
+
 conn = sqlite3.connect(DB_FILE)
 cursor = conn.cursor()
 
@@ -86,6 +109,12 @@ def clean_text(text):
     return re.sub(r"\s+", " ", text or "").strip()
 
 
+def normalize_text(text):
+    text = str(text or "").lower()
+    text = text.replace("ı", "ı").replace("i̇", "i")
+    return text
+
+
 def get_domain(url):
     return urlparse(url).netloc.replace("www.", "").lower()
 
@@ -105,9 +134,11 @@ def save(link, title, source):
 
 def unique_items(items):
     unique = {}
+
     for item in items:
         if item.get("link"):
             unique[item["link"]] = item
+
     return list(unique.values())
 
 
@@ -194,7 +225,7 @@ GLOBAL_KEYWORDS = load_keywords()
 
 
 def keyword_match(title, keywords):
-    title_lower = title.lower()
+    title_lower = normalize_text(title)
 
     all_keywords = set()
 
@@ -210,9 +241,24 @@ def keyword_match(title, keywords):
 
     matched_keywords = []
 
+    # Azərbaycan hərfləri də daxil olmaqla söz sərhədi
+    word_chars = r"a-zA-Z0-9əöğüçıƏÖĞÜÇŞşİı"
+
     for keyword in sorted(all_keywords, key=len, reverse=True):
-        if keyword in title_lower:
-            matched_keywords.append(keyword)
+        keyword = normalize_text(keyword)
+
+        if keyword in STRICT_WORDS:
+            pattern = (
+                rf"(?<![{word_chars}])"
+                + re.escape(keyword)
+                + rf"(?![{word_chars}])"
+            )
+
+            if re.search(pattern, title_lower, flags=re.IGNORECASE):
+                matched_keywords.append(keyword)
+        else:
+            if keyword in title_lower:
+                matched_keywords.append(keyword)
 
     if matched_keywords:
         return True, matched_keywords
@@ -363,9 +409,8 @@ def extract_publish_time_from_article(article_url):
         r.encoding = r.apparent_encoding
         tree = html.fromstring(r.text)
 
-        # DİQQƏT:
-        # og:updated_time qəsdən çıxarıldı.
-        # Çünki o çox saytda xəbərin yayım tarixi yox, səhifənin yenilənmə tarixi olur.
+        # og:updated_time qəsdən istifadə olunmur.
+        # Çünki çox vaxt xəbərin yayım tarixi yox, səhifənin yenilənmə tarixi olur.
         possible_xpaths = [
             "//time/@datetime",
             "//time/text()",
