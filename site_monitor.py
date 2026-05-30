@@ -675,12 +675,12 @@ def check_sites():
             try:
                 dt = parser.parse(str(published_time), fuzzy=True)
 
-            now_baku = datetime.now(BAKU_TZ)
+                now_baku = datetime.now(BAKU_TZ)
 
             if dt.date() != now_baku.date():
-            print(
-            f"Bugünkü xəbər deyil: {title[:70]} | {published_time}",
-            flush=True
+                print(
+                f"Bugünkü xəbər deyil: {title[:70]} | {published_time}",
+                flush=True
             )
                 continue
 
