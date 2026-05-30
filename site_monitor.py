@@ -519,10 +519,93 @@ def extract_fallback(site: dict, page_html: str) -> list[dict]:
     return unique_candidates(results)
 
 
+AZ_MONTHS = {
+    "yanvar": 1, "fevral": 2, "mart": 3, "aprel": 4, "may": 5, "iyun": 6,
+    "iyul": 7, "avqust": 8, "sentyabr": 9, "oktyabr": 10, "noyabr": 11, "dekabr": 12,
+    "yan": 1, "fev": 2, "mar": 3, "apr": 4, "iyn": 6, "iyl": 7, "avq": 8,
+    "sen": 9, "okt": 10, "noy": 11, "dek": 12,
+}
+
+
+def parse_az_datetime(value: str | None) -> datetime | None:
+    value = clean_text(value).lower()
+    if not value:
+        return None
+
+    value = value.replace("—", "-").replace("–", "-")
+
+    patterns = [
+        r"(\d{1,2})\s+([a-zəöğıçşü]+)\s+(\d{4})\s*[,\-]?\s*(\d{1,2})[:.](\d{2})",
+        r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})\s*[,\-]?\s*(\d{1,2})[:.](\d{2})",
+        r"(\d{1,2})[:.](\d{2})\s*[,\-]?\s*(\d{1,2})\s+([a-zəöğıçşü]+)\s*,?\s*(\d{4})",
+        r"(\d{1,2})[:.](\d{2})\s*[,\-]?\s*(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})",
+    ]
+
+    for idx, pattern in enumerate(patterns):
+        match = re.search(pattern, value, re.IGNORECASE)
+        if not match:
+            continue
+        try:
+            groups = match.groups()
+            if idx == 0:
+                day, month_name, year, hour, minute = groups
+                month = AZ_MONTHS.get(month_name.lower())
+            elif idx == 1:
+                day, month, year, hour, minute = groups
+                month = int(month)
+            elif idx == 2:
+                hour, minute, day, month_name, year = groups
+                month = AZ_MONTHS.get(month_name.lower())
+            else:
+                hour, minute, day, month, year = groups
+                month = int(month)
+
+            if not month:
+                continue
+
+            return datetime(
+                int(year), int(month), int(day), int(hour), int(minute), tzinfo=BAKU_TZ
+            )
+        except Exception:
+            continue
+
+    date_only_patterns = [
+        r"(\d{1,2})\s+([a-zəöğıçşü]+)\s+(\d{4})",
+        r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})",
+    ]
+
+    for idx, pattern in enumerate(date_only_patterns):
+        match = re.search(pattern, value, re.IGNORECASE)
+        if not match:
+            continue
+        try:
+            groups = match.groups()
+            if idx == 0:
+                day, month_name, year = groups
+                month = AZ_MONTHS.get(month_name.lower())
+            else:
+                day, month, year = groups
+                month = int(month)
+
+            if not month:
+                continue
+
+            return datetime(int(year), int(month), int(day), 0, 0, tzinfo=BAKU_TZ)
+        except Exception:
+            continue
+
+    return None
+
+
 def parse_datetime(value: str | None) -> datetime | None:
     value = clean_text(value)
     if not value:
         return None
+
+    az_dt = parse_az_datetime(value)
+    if az_dt:
+        return az_dt
+
     try:
         try:
             dt = parsedate_to_datetime(value)
@@ -535,6 +618,14 @@ def parse_datetime(value: str | None) -> datetime | None:
         return dt
     except Exception:
         return None
+
+
+def choose_best_datetime(title_dt: datetime | None, article_dt: datetime | None) -> datetime | None:
+    if title_dt and article_dt:
+        if article_dt.hour == 0 and article_dt.minute == 0 and (title_dt.hour != 0 or title_dt.minute != 0):
+            return title_dt
+        return article_dt
+    return article_dt or title_dt
 
 
 def extract_publish_time_from_article(session: requests.Session, article_url: str, rss_published: str | None = None) -> datetime | None:
@@ -707,8 +798,13 @@ def check_sites(once_limit_sites: int | None = None) -> int:
                 print(f"Təkrar xəbər keçildi: {item['link']}", flush=True)
                 continue
 
-            published_dt = extract_publish_time_from_article(session, item["link"], item.get("rss_published"))
-            print(f"Namizəd: {item['title'][:80]} | tarix: {published_dt}", flush=True)
+            title_dt = parse_datetime(item.get("title"))
+            article_dt = extract_publish_time_from_article(session, item["link"], item.get("rss_published"))
+            published_dt = choose_best_datetime(title_dt, article_dt)
+            print(
+                f"Namizəd: {item['title'][:80]} | title_tarix: {title_dt} | article_tarix: {article_dt} | seçilən: {published_dt}",
+                flush=True,
+            )
 
             if not is_recent_today(published_dt):
                 print("Bugünkü son 1 saat xəbəri deyil, keçildi.", flush=True)
