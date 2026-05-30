@@ -30,6 +30,8 @@ PATTERNS_FILE = "patterns.json"
 DB_FILE = "site_monitor.db"
 KEYWORDS_FILE = "keywords.json"
 
+BAKU_TZ = ZoneInfo("Asia/Baku")
+
 conn = sqlite3.connect(DB_FILE)
 cursor = conn.cursor()
 
@@ -46,8 +48,9 @@ conn.commit()
 def load_keywords():
     try:
         with open(KEYWORDS_FILE, "r", encoding="utf-8") as f:
-            return json.load(f).get("keywords", [])
-    except:
+            data = json.load(f)
+            return data.get("keywords", [])
+    except Exception:
         return []
 
 
@@ -103,7 +106,8 @@ def save(link, title, source):
 def unique_items(items):
     unique = {}
     for item in items:
-        unique[item["link"]] = item
+        if item.get("link"):
+            unique[item["link"]] = item
     return list(unique.values())
 
 
@@ -145,10 +149,12 @@ def load_sites():
                 if not url:
                     continue
 
-                if url in seen_urls:
+                normalized_url = url.rstrip("/").lower()
+
+                if normalized_url in seen_urls:
                     continue
 
-                seen_urls.add(url)
+                seen_urls.add(normalized_url)
 
                 xpaths = site.get("xpaths", [])
 
@@ -163,7 +169,7 @@ def load_sites():
                     "xpaths": xpaths,
                     "selector": site.get("selector"),
                     "keywords": extract_keywords_from_rules(site),
-                    "limit": site.get("limit", MAX_LINKS_PER_SITE)
+                    "limit": min(int(site.get("limit", MAX_LINKS_PER_SITE)), MAX_LINKS_PER_SITE)
                 })
 
         except FileNotFoundError:
@@ -180,7 +186,7 @@ def load_patterns():
     try:
         with open(PATTERNS_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
-    except:
+    except Exception:
         return {}
 
 
@@ -214,6 +220,57 @@ def keyword_match(title, keywords):
     return False, []
 
 
+def is_probably_section_url(link):
+    path = urlparse(link.lower()).path.strip("/").lower()
+
+    if not path:
+        return True
+
+    section_paths = [
+        "news", "xeber", "xeberler", "xəbərlər",
+        "media", "media/news",
+        "category", "kateqoriya",
+        "archive", "arxiv",
+        "allnews", "all-news", "newsarchive",
+        "latest", "lastnews", "son-xeberler",
+        "az/news", "az/xeber", "az/xeberler", "az/xəbərlər",
+        "az/metbuat/xeberler",
+        "az/page/media/news",
+        "az/news-and-updates",
+        "p/news",
+        "tehsil", "elm", "elm-ve-tehsil"
+    ]
+
+    if path in section_paths:
+        return True
+
+    bad_section_words = [
+        "news", "xeber", "xeberler", "xəbərlər",
+        "category", "kateqoriya",
+        "archive", "arxiv",
+        "latest", "lastnews",
+        "allnews", "all-news",
+        "son-xeberler",
+        "media"
+    ]
+
+    parts = [p for p in path.split("/") if p]
+
+    if len(parts) <= 1 and any(word in path for word in bad_section_words):
+        return True
+
+    if len(parts) <= 2 and any(path.endswith(word) for word in [
+        "news", "xeber", "xeberler", "xəbərlər",
+        "media/news", "allnews", "all-news",
+        "latest", "lastnews", "son-xeberler",
+        "category", "kateqoriya",
+        "archive", "arxiv"
+    ]):
+        return True
+
+    return False
+
+
 def is_bad_link(title, link):
     title_lower = title.lower()
     link_lower = link.lower()
@@ -223,7 +280,8 @@ def is_bad_link(title, link):
         "giriş", "qeydiyyat", "axtarış", "abunə",
         "facebook", "instagram", "youtube", "telegram",
         "twitter", "linkedin", "rss", "bütün xəbərlər",
-        "daha çox", "arxiv", "kateqoriya"
+        "daha çox", "arxiv", "kateqoriya", "bütün bölmələr",
+        "menu", "menyu"
     ]
 
     bad_domains = [
@@ -249,21 +307,7 @@ def is_bad_link(title, link):
     if any(link_lower.endswith(ext) for ext in bad_extensions):
         return True
 
-    path = urlparse(link_lower).path.strip("/").lower()
-
-    section_paths = [
-        "news", "xeber", "xeberler", "xəbərlər",
-        "media/news", "category", "kateqoriya",
-        "archive", "arxiv", "allnews", "newsarchive",
-        "az/news", "az/xeberler", "az/xəbərlər",
-        "az/metbuat/xeberler", "az/page/media/news",
-        "az/news-and-updates", "p/news", "lastnews"
-    ]
-
-    if path in section_paths:
-        return True
-
-    if path.endswith("/news") or path.endswith("/xeberler") or path.endswith("/xəbərlər"):
+    if is_probably_section_url(link):
         return True
 
     return False
@@ -281,7 +325,6 @@ def is_recent_news(published_time):
 
         dt = parser.parse(text, fuzzy=True, dayfirst=True)
 
-        BAKU_TZ = ZoneInfo("Asia/Baku")
         now_baku = datetime.now(BAKU_TZ)
 
         if dt.tzinfo is None:
@@ -292,6 +335,11 @@ def is_recent_news(published_time):
         diff = now_baku - dt
 
         if diff.total_seconds() < 0:
+            print(f"Gələcək tarix kimi göründü, keçildi: {published_time}", flush=True)
+            return False
+
+        if diff.days > 0:
+            print(f"Gün fərqi var, xəbər köhnədir: {published_time}", flush=True)
             return False
 
         hours = diff.total_seconds() / 3600
@@ -315,6 +363,9 @@ def extract_publish_time_from_article(article_url):
         r.encoding = r.apparent_encoding
         tree = html.fromstring(r.text)
 
+        # DİQQƏT:
+        # og:updated_time qəsdən çıxarıldı.
+        # Çünki o çox saytda xəbərin yayım tarixi yox, səhifənin yenilənmə tarixi olur.
         possible_xpaths = [
             "//time/@datetime",
             "//time/text()",
@@ -322,13 +373,16 @@ def extract_publish_time_from_article(article_url):
             "//meta[@name='article:published_time']/@content",
             "//meta[@itemprop='datePublished']/@content",
             "//meta[@name='pubdate']/@content",
-            "//meta[@property='og:updated_time']/@content",
             "//meta[@name='date']/@content",
             "//meta[@name='DC.date.issued']/@content",
+            "//meta[@name='publishdate']/@content",
+            "//meta[@name='publish_date']/@content",
             "//span[contains(@class,'date')]/text()",
             "//div[contains(@class,'date')]/text()",
             "//span[contains(@class,'time')]/text()",
-            "//div[contains(@class,'time')]/text()"
+            "//div[contains(@class,'time')]/text()",
+            "//*[contains(@class,'date')]/text()",
+            "//*[contains(@class,'time')]/text()"
         ]
 
         for xp in possible_xpaths:
@@ -344,6 +398,51 @@ def extract_publish_time_from_article(article_url):
         print("Tarix çıxarma xətası:", e, flush=True)
 
     return None
+
+
+def is_article_like_link(link):
+    link_lower = link.lower()
+
+    article_patterns = [
+        "/news/", "/xeber/", "/xeberler/", "/xəbərlər/",
+        "/az/news/", "/az/xeber/", "/az/xeberler/", "/az/xəbərlər/",
+        "/post/", "/article/", "/read/", "/item/",
+        "/son-xeber/", "/sosial/", "/resmi-xeber/",
+        "/hadise/", "/politic/", "/world/", "/economy/",
+        "/education/", "/elm/", "/tehsil/",
+        "/2024/", "/2025/", "/2026/"
+    ]
+
+    return any(pattern in link_lower for pattern in article_patterns)
+
+
+def add_item(results, page_url, title, link, keywords):
+    title = clean_text(title)
+    link = link.split("#")[0]
+
+    if not title or not link.startswith("http"):
+        return
+
+    if get_domain(page_url) != get_domain(link):
+        return
+
+    if is_bad_link(title, link):
+        return
+
+    if not is_article_like_link(link):
+        return
+
+    matched, matched_keywords = keyword_match(title, keywords)
+
+    if not matched:
+        return
+
+    results.append({
+        "title": title,
+        "link": link,
+        "source": get_domain(page_url),
+        "matched_keywords": matched_keywords
+    })
 
 
 def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
@@ -370,37 +469,15 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
         for block in blocks:
             try:
                 links = [block] if hasattr(block, "tag") and block.tag == "a" else block.xpath(".//a[@href]")
-            except:
+            except Exception:
                 continue
 
             for a in links:
                 href = a.get("href")
                 title = clean_text(a.text_content())
-                link = urljoin(page_url, href).split("#")[0]
+                link = urljoin(page_url, href)
 
-                if not href or not title:
-                    continue
-
-                if not link.startswith("http"):
-                    continue
-
-                if get_domain(page_url) != get_domain(link):
-                    continue
-
-                if is_bad_link(title, link):
-                    continue
-
-                matched, matched_keywords = keyword_match(title, keywords)
-
-                if not matched:
-                    continue
-
-                results.append({
-                    "title": title,
-                    "link": link,
-                    "source": get_domain(page_url),
-                    "matched_keywords": matched_keywords
-                })
+                add_item(results, page_url, title, link, keywords)
 
     return unique_items(results)
 
@@ -418,33 +495,14 @@ def extract_links_by_selector(page_url, page_html, selector, keywords):
     for block in blocks:
         links = block.find_all("a", href=True)
 
-        if block.name == "a" and block.get("href"):
+        if getattr(block, "name", None) == "a" and block.get("href"):
             links.append(block)
 
         for a in links:
             title = clean_text(a.get_text(" ", strip=True))
-            link = urljoin(page_url, a["href"]).split("#")[0]
+            link = urljoin(page_url, a["href"])
 
-            if not title or not link.startswith("http"):
-                continue
-
-            if get_domain(page_url) != get_domain(link):
-                continue
-
-            if is_bad_link(title, link):
-                continue
-
-            matched, matched_keywords = keyword_match(title, keywords)
-
-            if not matched:
-                continue
-
-            results.append({
-                "title": title,
-                "link": link,
-                "source": get_domain(page_url),
-                "matched_keywords": matched_keywords
-            })
+            add_item(results, page_url, title, link, keywords)
 
     return unique_items(results)
 
@@ -455,36 +513,12 @@ def extract_links_by_patterns(page_url, page_html, keywords, patterns):
 
     for a in soup.find_all("a", href=True):
         title = clean_text(a.get_text(" ", strip=True))
-        link = urljoin(page_url, a["href"]).split("#")[0]
+        link = urljoin(page_url, a["href"])
 
-        if not title or not link.startswith("http"):
+        if not any(pattern.lower() in link.lower() for pattern in patterns):
             continue
 
-        if get_domain(page_url) != get_domain(link):
-            continue
-
-        if len(title) < 20:
-            continue
-
-        link_lower = link.lower()
-
-        if not any(pattern.lower() in link_lower for pattern in patterns):
-            continue
-
-        if is_bad_link(title, link):
-            continue
-
-        matched, matched_keywords = keyword_match(title, keywords)
-
-        if not matched:
-            continue
-
-        results.append({
-            "title": title,
-            "link": link,
-            "source": get_domain(page_url),
-            "matched_keywords": matched_keywords
-        })
+        add_item(results, page_url, title, link, keywords)
 
     return unique_items(results)
 
@@ -493,45 +527,11 @@ def extract_links_fallback(page_url, page_html, keywords):
     soup = BeautifulSoup(page_html, "html.parser")
     results = []
 
-    article_patterns = [
-        "/news/", "/xeber/", "/xeberler/", "/xəbərlər/",
-        "/az/news/", "/az/xeber/", "/az/xeberler/",
-        "/post/", "/article/", "/read/", "/item/",
-        "/son-xeber/", "/sosial/", "/resmi-xeber/",
-        "/hadise/", "/politic/", "/world/", "/economy/",
-        "/education/", "/elm/", "/tehsil/"
-    ]
-
     for a in soup.find_all("a", href=True):
         title = clean_text(a.get_text(" ", strip=True))
-        link = urljoin(page_url, a["href"]).split("#")[0]
+        link = urljoin(page_url, a["href"])
 
-        if not title or not link.startswith("http"):
-            continue
-
-        if get_domain(page_url) != get_domain(link):
-            continue
-
-        if len(title) < 20:
-            continue
-
-        if not any(p in link.lower() for p in article_patterns):
-            continue
-
-        if is_bad_link(title, link):
-            continue
-
-        matched, matched_keywords = keyword_match(title, keywords)
-
-        if not matched:
-            continue
-
-        results.append({
-            "title": title,
-            "link": link,
-            "source": get_domain(page_url),
-            "matched_keywords": matched_keywords
-        })
+        add_item(results, page_url, title, link, keywords)
 
     return unique_items(results)
 
@@ -618,6 +618,11 @@ def check_sites():
 
             published_time = extract_publish_time_from_article(link)
 
+            print(
+                f"Xəbər: {title[:70]} | Çıxarılan tarix: {published_time} | Link: {link}",
+                flush=True
+            )
+
             if not published_time:
                 print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
                 continue
@@ -650,7 +655,10 @@ def check_sites():
             send_telegram(message)
             save(link, title, source)
 
-            print(f"Göndərildi: {source} | {title[:70]} | Açar sözlər: {matched_keywords_text}", flush=True)
+            print(
+                f"Göndərildi: {source} | {title[:70]} | Açar sözlər: {matched_keywords_text}",
+                flush=True
+            )
 
             sent_count += 1
             sent_for_this_site = True
