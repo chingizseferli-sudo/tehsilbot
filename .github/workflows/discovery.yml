@@ -27,7 +27,7 @@ jobs:
 
       - name: Discovery və pattern yeniləmə
         run: |
-          python discovery_bot.py
+          python -u discovery_bot.py
 
       - name: Dəyişiklikləri commit et
         run: |
