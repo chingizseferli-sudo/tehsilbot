@@ -677,7 +677,7 @@ def check_sites():
 
                 now_baku = datetime.now(BAKU_TZ)
 
-            if dt.date() != now_baku.date():
+         if dt.date() != now_baku.date():
                 print(
                 f"Bugünkü xəbər deyil: {title[:70]} | {published_time}",
                 flush=True
