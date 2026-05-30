@@ -111,7 +111,7 @@ def clean_text(text):
 
 def normalize_text(text):
     text = str(text or "").lower()
-    text = text.replace("ı", "ı").replace("i̇", "i")
+    text = text.replace("i̇", "i")
     return text
 
 
@@ -240,8 +240,6 @@ def keyword_match(title, keywords):
             all_keywords.add(k)
 
     matched_keywords = []
-
-    # Azərbaycan hərfləri də daxil olmaqla söz sərhədi
     word_chars = r"a-zA-Z0-9əöğüçıƏÖĞÜÇŞşİı"
 
     for keyword in sorted(all_keywords, key=len, reverse=True):
@@ -359,24 +357,60 @@ def is_bad_link(title, link):
     return False
 
 
-def is_recent_news(published_time):
+def parse_datetime_to_baku(published_time):
     try:
-        if not published_time:
-            return False
-
         text = str(published_time).strip().lower()
 
-        if "tarix tapılmadı" in text:
-            return False
+        if not text or "tarix tapılmadı" in text:
+            return None
 
         dt = parser.parse(text, fuzzy=True, dayfirst=True)
-
-        now_baku = datetime.now(BAKU_TZ)
 
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=BAKU_TZ)
         else:
             dt = dt.astimezone(BAKU_TZ)
+
+        return dt
+
+    except Exception as e:
+        print(f"Tarix parse xətası: {published_time} | {e}", flush=True)
+        return None
+
+
+def is_today_news(published_time):
+    dt = parse_datetime_to_baku(published_time)
+
+    if not dt:
+        return False
+
+    now_baku = datetime.now(BAKU_TZ)
+
+    if dt.date() != now_baku.date():
+        print(
+            f"Bugünkü xəbər deyil, keçildi: {published_time} | bugün: {now_baku.date()}",
+            flush=True
+        )
+        return False
+
+    return True
+
+
+def is_recent_news(published_time):
+    try:
+        dt = parse_datetime_to_baku(published_time)
+
+        if not dt:
+            return False
+
+        now_baku = datetime.now(BAKU_TZ)
+
+        if dt.date() != now_baku.date():
+            print(
+                f"Bugünkü xəbər deyil, keçildi: {published_time} | bugün: {now_baku.date()}",
+                flush=True
+            )
+            return False
 
         diff = now_baku - dt
 
@@ -672,19 +706,8 @@ def check_sites():
                 print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
                 continue
 
-            try:
-                dt = parser.parse(str(published_time), fuzzy=True)
-
-                now_baku = datetime.now(BAKU_TZ)
-
-         if dt.date() != now_baku.date():
-                print(
-                f"Bugünkü xəbər deyil: {title[:70]} | {published_time}",
-                flush=True
-            )
-                continue
-
-            except Exception:
+            if not is_today_news(published_time):
+                print(f"Bugünkü xəbər deyil, keçildi: {title[:70]} | {published_time}", flush=True)
                 continue
 
             if not is_recent_news(published_time):
