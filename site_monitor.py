@@ -22,9 +22,11 @@ CONFIG_FILES = ["courier_config_clean.json", "discovered_sites.json"]
 PATTERNS_FILE = "patterns.json"
 KEYWORDS_FILE = "keywords.json"
 DB_FILE = os.getenv("DB_FILE", "news.db")
+HEALTH_FILE = "site_health.json"
+MAX_SITE_FAILS = int(os.getenv("MAX_SITE_FAILS", "3"))
 
 BAKU_TZ = ZoneInfo("Asia/Baku")
-REQUEST_TIMEOUT = 15
+REQUEST_TIMEOUT = 8
 NEWS_TIME_LIMIT_MINUTES = int(os.getenv("NEWS_TIME_LIMIT_MINUTES", "60"))
 MAX_SEND_PER_RUN = int(os.getenv("MAX_SEND_PER_RUN", "25"))
 MAX_CANDIDATES_PER_SITE = int(os.getenv("MAX_CANDIDATES_PER_SITE", "20"))
@@ -107,6 +109,90 @@ def read_json(filename: str, default):
     except Exception as e:
         print(f"JSON oxunmadı: {filename} | {e}", flush=True)
         return default
+
+
+def write_json(filename: str, data):
+    try:
+        with open(filename, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"JSON yazılmadı: {filename} | {e}", flush=True)
+
+
+def load_health() -> dict:
+    data = read_json(HEALTH_FILE, {})
+    return data if isinstance(data, dict) else {}
+
+
+def save_health(health: dict):
+    write_json(HEALTH_FILE, health)
+
+
+def deactivate_site_in_files(domain: str, reason: str):
+    changed_files = []
+
+    for filename in CONFIG_FILES:
+        data = read_json(filename, {"sites": []})
+        if not isinstance(data, dict) or not isinstance(data.get("sites"), list):
+            continue
+
+        changed = False
+        for site in data.get("sites", []):
+            url = clean_text(site.get("url", ""))
+            if url and get_domain(url) == domain and site.get("enabled", True):
+                site["enabled"] = False
+                site["disabled_reason"] = reason
+                site["disabled_at"] = now_baku().isoformat()
+                changed = True
+
+        if changed:
+            write_json(filename, data)
+            changed_files.append(filename)
+
+    if changed_files:
+        print(f"❌ Sayt avtomatik deaktiv edildi: {domain} | fayllar: {', '.join(changed_files)}", flush=True)
+
+
+def record_site_success(domain: str):
+    if not domain:
+        return
+
+    health = load_health()
+    item = health.get(domain, {})
+    if item.get("fails", 0) or item.get("disabled"):
+        print(f"✅ Sayt bərpa olundu: {domain}", flush=True)
+
+    health[domain] = {
+        "fails": 0,
+        "disabled": False,
+        "last_success": now_baku().isoformat(),
+        "last_error": None,
+    }
+    save_health(health)
+
+
+def record_site_failure(domain: str, url: str, error: str):
+    if not domain:
+        return
+
+    health = load_health()
+    item = health.get(domain, {})
+    fails = int(item.get("fails", 0)) + 1
+
+    item.update({
+        "fails": fails,
+        "disabled": fails >= MAX_SITE_FAILS,
+        "last_fail": now_baku().isoformat(),
+        "last_url": url,
+        "last_error": clean_text(error)[:300],
+    })
+    health[domain] = item
+    save_health(health)
+
+    print(f"⏩ {domain} açılmadı ({fails}/{MAX_SITE_FAILS}) | {error}", flush=True)
+
+    if fails >= MAX_SITE_FAILS:
+        deactivate_site_in_files(domain, f"{fails} ardıcıl açılma xətası: {clean_text(error)[:150]}")
 
 
 def init_db():
@@ -307,17 +393,22 @@ def unique_candidates(items: list[dict]) -> list[dict]:
     return out
 
 
-def fetch_html(session: requests.Session, url: str) -> str | None:
+def fetch_html(session: requests.Session, url: str) -> tuple[str | None, str | None]:
     try:
         response = session.get(url, timeout=REQUEST_TIMEOUT, allow_redirects=True)
         print(f"Sayt açılır: {url} | status: {response.status_code}", flush=True)
+
         if response.status_code != 200:
-            return None
+            return None, f"HTTP status {response.status_code}"
+
         response.encoding = response.apparent_encoding
-        return response.text
+        return response.text, None
+
+    except requests.exceptions.RequestException as e:
+        return None, str(e)
+
     except Exception as e:
-        print(f"Sayt xətası: {url} | {e}", flush=True)
-        return None
+        return None, f"Naməlum xəta: {e}"
 
 
 def discover_rss_links(page_url: str, page_html: str) -> list[str]:
@@ -556,10 +647,10 @@ def build_message(item: dict, published_dt: datetime) -> str:
 🔗 {item['link']}"""
 
 
-def collect_candidates(session: requests.Session, site: dict, patterns_data: dict) -> list[dict]:
-    page_html = fetch_html(session, site["url"])
+def collect_candidates(session: requests.Session, site: dict, patterns_data: dict) -> tuple[list[dict], bool, str | None]:
+    page_html, fetch_error = fetch_html(session, site["url"])
     if not page_html:
-        return []
+        return [], False, fetch_error
 
     methods = [
         ("selector", lambda: extract_by_selector(site, page_html)),
@@ -578,7 +669,7 @@ def collect_candidates(session: requests.Session, site: dict, patterns_data: dic
         if len(merged) >= MAX_CANDIDATES_PER_SITE:
             break
 
-    return unique_candidates(merged)[:MAX_CANDIDATES_PER_SITE]
+    return unique_candidates(merged)[:MAX_CANDIDATES_PER_SITE], True, None
 
 
 def check_sites(once_limit_sites: int | None = None) -> int:
@@ -597,7 +688,13 @@ def check_sites(once_limit_sites: int | None = None) -> int:
     for index, site in enumerate(sites, start=1):
         print(f"[{index}/{len(sites)}] Yoxlanır: {site['name']} | {site['url']}", flush=True)
 
-        candidates = collect_candidates(session, site, patterns_data)
+        candidates, site_opened, fetch_error = collect_candidates(session, site, patterns_data)
+
+        if not site_opened:
+            record_site_failure(site["domain"], site["url"], fetch_error or "Sayt açılmadı")
+            continue
+
+        record_site_success(site["domain"])
         print(f"Uyğun namizəd sayı: {len(candidates)}", flush=True)
 
         if not candidates:
