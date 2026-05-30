@@ -672,6 +672,21 @@ def check_sites():
                 print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
                 continue
 
+            try:
+                dt = parser.parse(str(published_time), fuzzy=True)
+
+            now_baku = datetime.now(BAKU_TZ)
+
+            if dt.date() != now_baku.date():
+            print(
+            f"Bugünkü xəbər deyil: {title[:70]} | {published_time}",
+            flush=True
+            )
+                continue
+
+            except Exception:
+                continue
+
             if not is_recent_news(published_time):
                 print(f"Köhnə xəbər keçildi: {title[:70]} | {published_time}", flush=True)
                 continue
