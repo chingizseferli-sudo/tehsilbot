@@ -4,6 +4,8 @@ import os
 import re
 import sqlite3
 import time
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
 from urllib.parse import urljoin, urlparse
@@ -29,7 +31,12 @@ BAKU_TZ = ZoneInfo("Asia/Baku")
 REQUEST_TIMEOUT = 8
 NEWS_TIME_LIMIT_MINUTES = int(os.getenv("NEWS_TIME_LIMIT_MINUTES", "60"))
 MAX_SEND_PER_RUN = int(os.getenv("MAX_SEND_PER_RUN", "25"))
-MAX_CANDIDATES_PER_SITE = int(os.getenv("MAX_CANDIDATES_PER_SITE", "20"))
+MAX_CANDIDATES_PER_SITE = int(os.getenv("MAX_CANDIDATES_PER_SITE", "5"))
+MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
+
+DB_LOCK = threading.Lock()
+HEALTH_LOCK = threading.Lock()
+TELEGRAM_LOCK = threading.Lock()
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; TehsilBot/2.0; +https://example.com/bot)",
@@ -157,46 +164,55 @@ def record_site_success(domain: str):
     if not domain:
         return
 
-    health = load_health()
-    item = health.get(domain, {})
-    if item.get("fails", 0) or item.get("disabled"):
-        print(f"✅ Sayt bərpa olundu: {domain}", flush=True)
+    with HEALTH_LOCK:
+        health = load_health()
+        item = health.get(domain, {})
+        if item.get("fails", 0) or item.get("disabled"):
+            print(f"✅ Sayt bərpa olundu: {domain}", flush=True)
 
-    health[domain] = {
-        "fails": 0,
-        "disabled": False,
-        "last_success": now_baku().isoformat(),
-        "last_error": None,
-    }
-    save_health(health)
+        health[domain] = {
+            "fails": 0,
+            "disabled": False,
+            "last_success": now_baku().isoformat(),
+            "last_error": None,
+        }
+        save_health(health)
 
 
 def record_site_failure(domain: str, url: str, error: str):
     if not domain:
         return
 
-    health = load_health()
-    item = health.get(domain, {})
-    fails = int(item.get("fails", 0)) + 1
+    should_deactivate = False
+    reason = ""
 
-    item.update({
-        "fails": fails,
-        "disabled": fails >= MAX_SITE_FAILS,
-        "last_fail": now_baku().isoformat(),
-        "last_url": url,
-        "last_error": clean_text(error)[:300],
-    })
-    health[domain] = item
-    save_health(health)
+    with HEALTH_LOCK:
+        health = load_health()
+        item = health.get(domain, {})
+        fails = int(item.get("fails", 0)) + 1
 
-    print(f"⏩ {domain} açılmadı ({fails}/{MAX_SITE_FAILS}) | {error}", flush=True)
+        item.update({
+            "fails": fails,
+            "disabled": fails >= MAX_SITE_FAILS,
+            "last_fail": now_baku().isoformat(),
+            "last_url": url,
+            "last_error": clean_text(error)[:300],
+        })
+        health[domain] = item
+        save_health(health)
 
-    if fails >= MAX_SITE_FAILS:
-        deactivate_site_in_files(domain, f"{fails} ardıcıl açılma xətası: {clean_text(error)[:150]}")
+        print(f"⏩ {domain} açılmadı ({fails}/{MAX_SITE_FAILS}) | {error}", flush=True)
+
+        if fails >= MAX_SITE_FAILS:
+            should_deactivate = True
+            reason = f"{fails} ardıcıl açılma xətası: {clean_text(error)[:150]}"
+
+    if should_deactivate:
+        deactivate_site_in_files(domain, reason)
 
 
 def init_db():
-    conn = sqlite3.connect(DB_FILE)
+    conn = sqlite3.connect(DB_FILE, check_same_thread=False)
     conn.execute("""
     CREATE TABLE IF NOT EXISTS sent_news (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -216,22 +232,24 @@ DB = init_db()
 
 
 def was_sent(link: str) -> bool:
-    row = DB.execute("SELECT 1 FROM sent_news WHERE link=?", (normalize_url(link),)).fetchone()
-    return row is not None
+    with DB_LOCK:
+        row = DB.execute("SELECT 1 FROM sent_news WHERE link=?", (normalize_url(link),)).fetchone()
+        return row is not None
 
 
 def mark_sent(link: str, title: str, source: str, published_at: datetime | None):
-    DB.execute(
-        "INSERT OR IGNORE INTO sent_news(link, title, source, published_at, sent_at) VALUES (?, ?, ?, ?, ?)",
-        (
-            normalize_url(link),
-            clean_text(title),
-            source,
-            published_at.isoformat() if published_at else None,
-            now_baku().isoformat(),
-        ),
-    )
-    DB.commit()
+    with DB_LOCK:
+        DB.execute(
+            "INSERT OR IGNORE INTO sent_news(link, title, source, published_at, sent_at) VALUES (?, ?, ?, ?, ?)",
+            (
+                normalize_url(link),
+                clean_text(title),
+                source,
+                published_at.isoformat() if published_at else None,
+                now_baku().isoformat(),
+            ),
+        )
+        DB.commit()
 
 
 def load_global_keywords() -> list[str]:
@@ -703,15 +721,16 @@ def send_telegram(message: str) -> bool:
 
     api_url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     try:
-        response = requests.post(
-            api_url,
+        with TELEGRAM_LOCK:
+            response = requests.post(
+                api_url,
             data={
                 "chat_id": CHAT_ID,
                 "text": message,
                 "disable_web_page_preview": False,
             },
-            timeout=20,
-        )
+                timeout=20,
+            )
         print(f"Telegram status: {response.status_code} | {response.text[:200]}", flush=True)
         if response.status_code == 429:
             retry_after = response.json().get("parameters", {}).get("retry_after", 30)
@@ -763,69 +782,93 @@ def collect_candidates(session: requests.Session, site: dict, patterns_data: dic
     return unique_candidates(merged)[:MAX_CANDIDATES_PER_SITE], True, None
 
 
+def process_site(index: int, total: int, site: dict, patterns_data: dict) -> int:
+    print(f"[{index}/{total}] Yoxlanır: {site['name']} | {site['url']}", flush=True)
+
+    session = requests.Session()
+    session.headers.update(HEADERS)
+
+    candidates, site_opened, fetch_error = collect_candidates(session, site, patterns_data)
+
+    if not site_opened:
+        record_site_failure(site["domain"], site["url"], fetch_error or "Sayt açılmadı")
+        return 0
+
+    record_site_success(site["domain"])
+    print(f"{site['domain']} | uyğun namizəd sayı: {len(candidates)}", flush=True)
+
+    if not candidates:
+        return 0
+
+    for item in candidates:
+        if was_sent(item["link"]):
+            print(f"Təkrar xəbər keçildi: {item['link']}", flush=True)
+            continue
+
+        title_dt = parse_datetime(item.get("title"))
+        article_dt = extract_publish_time_from_article(session, item["link"], item.get("rss_published"))
+        published_dt = choose_best_datetime(title_dt, article_dt)
+        print(
+            f"Namizəd: {item['title'][:80]} | title_tarix: {title_dt} | article_tarix: {article_dt} | seçilən: {published_dt}",
+            flush=True,
+        )
+
+        if not is_recent_today(published_dt):
+            print("Bugünkü son 1 saat xəbəri deyil, keçildi.", flush=True)
+            continue
+
+        # İki paralel worker eyni xəbəri eyni anda göndərməsin deyə burada yenidən yoxlayırıq.
+        if was_sent(item["link"]):
+            print(f"Təkrar xəbər keçildi: {item['link']}", flush=True)
+            continue
+
+        message = build_message(item, published_dt)
+        if send_telegram(message):
+            mark_sent(item["link"], item["title"], item["source"], published_dt)
+            print(f"✅ Göndərildi və bazaya yazıldı: {item['source']} | {item['title'][:80]}", flush=True)
+            return 1
+
+        print("Telegram göndərilmədi; bazaya yazılmadı.", flush=True)
+
+    print("Bu saytdan göndəriləcək yeni son xəbər yoxdur.", flush=True)
+    return 0
+
+
 def check_sites(once_limit_sites: int | None = None) -> int:
-    sent_count = 0
     sites = load_sites()
     patterns_data = load_patterns()
 
     if once_limit_sites:
         sites = sites[:once_limit_sites]
 
-    session = requests.Session()
-    session.headers.update(HEADERS)
+    print(
+        f"Monitorinq başladı | paralel işçi: {MAX_WORKERS} | son {NEWS_TIME_LIMIT_MINUTES} dəqiqə | {now_baku().strftime('%d.%m.%Y %H:%M:%S')} AZT",
+        flush=True,
+    )
 
-    print(f"Monitorinq başladı | son {NEWS_TIME_LIMIT_MINUTES} dəqiqə | {now_baku().strftime('%d.%m.%Y %H:%M:%S')} AZT", flush=True)
+    sent_count = 0
+    max_workers = max(1, min(MAX_WORKERS, len(sites) or 1))
 
-    for index, site in enumerate(sites, start=1):
-        print(f"[{index}/{len(sites)}] Yoxlanır: {site['name']} | {site['url']}", flush=True)
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {
+            executor.submit(process_site, index, len(sites), site, patterns_data): site
+            for index, site in enumerate(sites, start=1)
+        }
 
-        candidates, site_opened, fetch_error = collect_candidates(session, site, patterns_data)
+        for future in as_completed(futures):
+            site = futures[future]
+            try:
+                sent_count += int(future.result() or 0)
+            except Exception as e:
+                print(f"⚠️ Worker xətası: {site.get('domain')} | {e}", flush=True)
 
-        if not site_opened:
-            record_site_failure(site["domain"], site["url"], fetch_error or "Sayt açılmadı")
-            continue
-
-        record_site_success(site["domain"])
-        print(f"Uyğun namizəd sayı: {len(candidates)}", flush=True)
-
-        if not candidates:
-            continue
-
-        sent_for_this_site = False
-
-        for item in candidates:
-            if was_sent(item["link"]):
-                print(f"Təkrar xəbər keçildi: {item['link']}", flush=True)
-                continue
-
-            title_dt = parse_datetime(item.get("title"))
-            article_dt = extract_publish_time_from_article(session, item["link"], item.get("rss_published"))
-            published_dt = choose_best_datetime(title_dt, article_dt)
-            print(
-                f"Namizəd: {item['title'][:80]} | title_tarix: {title_dt} | article_tarix: {article_dt} | seçilən: {published_dt}",
-                flush=True,
-            )
-
-            if not is_recent_today(published_dt):
-                print("Bugünkü son 1 saat xəbəri deyil, keçildi.", flush=True)
-                continue
-
-            message = build_message(item, published_dt)
-            if send_telegram(message):
-                mark_sent(item["link"], item["title"], item["source"], published_dt)
-                sent_count += 1
-                sent_for_this_site = True
-                print(f"✅ Göndərildi və bazaya yazıldı: {item['source']} | {item['title'][:80]}", flush=True)
+            if sent_count >= MAX_SEND_PER_RUN:
+                print("Bu dövr üçün göndərmə limiti tamamlandı. Qalan worker-lər tamamlananda dövr bağlanacaq.", flush=True)
+                # Artıq başlamamış task-ları ləğv etməyə çalışırıq.
+                for pending in futures:
+                    if not pending.done():
+                        pending.cancel()
                 break
-            else:
-                print("Telegram göndərilmədi; bazaya yazılmadı.", flush=True)
-
-        if not sent_for_this_site:
-            print("Bu saytdan göndəriləcək yeni son xəbər yoxdur.", flush=True)
-
-        if sent_count >= MAX_SEND_PER_RUN:
-            print("Bu dövr üçün göndərmə limiti tamamlandı.", flush=True)
-            break
 
     print(f"Monitorinq tamamlandı | göndərilən xəbər sayı: {sent_count}", flush=True)
     return sent_count
