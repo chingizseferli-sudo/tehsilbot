@@ -28,6 +28,7 @@ CONFIG_FILES = [
 
 PATTERNS_FILE = "patterns.json"
 DB_FILE = "site_monitor.db"
+KEYWORDS_FILE = "keywords.json"
 
 conn = sqlite3.connect(DB_FILE)
 cursor = conn.cursor()
@@ -41,7 +42,6 @@ CREATE TABLE IF NOT EXISTS posts (
 """)
 conn.commit()
 
-KEYWORDS_FILE = "keywords.json"
 
 def load_keywords():
     try:
@@ -186,24 +186,32 @@ def load_patterns():
 
 GLOBAL_KEYWORDS = load_keywords()
 
+
 def keyword_match(title, keywords):
     title_lower = title.lower()
 
     all_keywords = set()
 
     for k in GLOBAL_KEYWORDS:
-        all_keywords.add(k.lower())
+        k = str(k).strip().lower()
+        if k:
+            all_keywords.add(k)
 
     for k in keywords:
-        all_keywords.add(k.lower())
+        k = str(k).strip().lower()
+        if k:
+            all_keywords.add(k)
 
-    score = 0
+    matched_keywords = []
 
-    for keyword in all_keywords:
+    for keyword in sorted(all_keywords, key=len, reverse=True):
         if keyword in title_lower:
-            score += 1
+            matched_keywords.append(keyword)
 
-    return score >= 1
+    if matched_keywords:
+        return True, matched_keywords
+
+    return False, []
 
 
 def is_bad_link(title, link):
@@ -382,13 +390,16 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
                 if is_bad_link(title, link):
                     continue
 
-                if not keyword_match(title, keywords):
+                matched, matched_keywords = keyword_match(title, keywords)
+
+                if not matched:
                     continue
 
                 results.append({
                     "title": title,
                     "link": link,
-                    "source": get_domain(page_url)
+                    "source": get_domain(page_url),
+                    "matched_keywords": matched_keywords
                 })
 
     return unique_items(results)
@@ -423,13 +434,16 @@ def extract_links_by_selector(page_url, page_html, selector, keywords):
             if is_bad_link(title, link):
                 continue
 
-            if not keyword_match(title, keywords):
+            matched, matched_keywords = keyword_match(title, keywords)
+
+            if not matched:
                 continue
 
             results.append({
                 "title": title,
                 "link": link,
-                "source": get_domain(page_url)
+                "source": get_domain(page_url),
+                "matched_keywords": matched_keywords
             })
 
     return unique_items(results)
@@ -460,13 +474,16 @@ def extract_links_by_patterns(page_url, page_html, keywords, patterns):
         if is_bad_link(title, link):
             continue
 
-        if not keyword_match(title, keywords):
+        matched, matched_keywords = keyword_match(title, keywords)
+
+        if not matched:
             continue
 
         results.append({
             "title": title,
             "link": link,
-            "source": get_domain(page_url)
+            "source": get_domain(page_url),
+            "matched_keywords": matched_keywords
         })
 
     return unique_items(results)
@@ -504,13 +521,16 @@ def extract_links_fallback(page_url, page_html, keywords):
         if is_bad_link(title, link):
             continue
 
-        if not keyword_match(title, keywords):
+        matched, matched_keywords = keyword_match(title, keywords)
+
+        if not matched:
             continue
 
         results.append({
             "title": title,
             "link": link,
-            "source": get_domain(page_url)
+            "source": get_domain(page_url),
+            "matched_keywords": matched_keywords
         })
 
     return unique_items(results)
@@ -591,6 +611,7 @@ def check_sites():
             title = item["title"]
             link = item["link"]
             source = item["source"]
+            matched_keywords = item.get("matched_keywords", [])
 
             if exists(link):
                 continue
@@ -605,6 +626,8 @@ def check_sites():
                 print(f"Köhnə xəbər keçildi: {title[:70]} | {published_time}", flush=True)
                 continue
 
+            matched_keywords_text = ", ".join(matched_keywords) if matched_keywords else "Açar söz tapılmadı"
+
             message = f"""
 🆕 Yeni uyğun xəbər
 
@@ -613,6 +636,9 @@ def check_sites():
 
 🌐 Mənbə:
 {source}
+
+🔎 Açar sözlər:
+{matched_keywords_text}
 
 🕒 Tarix və saat:
 {published_time}
@@ -624,7 +650,7 @@ def check_sites():
             send_telegram(message)
             save(link, title, source)
 
-            print(f"Göndərildi: {source} | {title[:70]}", flush=True)
+            print(f"Göndərildi: {source} | {title[:70]} | Açar sözlər: {matched_keywords_text}", flush=True)
 
             sent_count += 1
             sent_for_this_site = True
