@@ -22,7 +22,7 @@ jobs:
 
       - name: Sayt siyahılarını təmizlə
         run: |
-          python cleanup_sites.py
+          python -u cleanup_sites.py
 
       - name: Dəyişiklikləri commit et
         run: |
