@@ -1,10 +1,18 @@
 {
   "edu.gov.az": [
-    "/az/"
+    "/az/",
+    "/news/",
+    "/az/news-and-updates/",
+    "/az/mektebdenkenar-tehsil/",
+    "/az/xususi-tehsil_323/",
+    "/az/mektebeqeder-tehsildoc/",
+    "/az/sitemap/"
   ],
   "dim.gov.az": [
     "/az/",
-    "/storage/"
+    "/storage/",
+    "/news/",
+    "/storage/postFile/"
   ],
   "arti.edu.az": [
     "/2026/",
@@ -63,11 +71,20 @@
     "/hitech/",
     "/culture/",
     "/unusual/",
-    "/showbiz/"
+    "/showbiz/",
+    "/autonews/",
+    "/autonews/1838122.html/",
+    "/azerinews/",
+    "/topnews/",
+    "/videonews/",
+    "/fotonews/"
   ],
   "modern.az": [
     "/az/",
-    "/cdn-cgi/"
+    "/cdn-cgi/",
+    "/az/xeberler/",
+    "/az/son-xeberler/",
+    "/az/tehsil/"
   ],
   "tehsil365.news": [
     "/az/"
@@ -89,19 +106,59 @@
   ],
   "medianews.az": [
     "/r/",
-    "/2022/"
+    "/2022/",
+    "/geyimi-ile-sosial-mediani-iki-yere-boldu/",
+    "/tecili-xestexanaya-yerlesdirilen-jurnalist-ile-bagli-son-xeber/",
+    "/yol-berbad-veziyyetdedir-avtobus-da-taksi-de-gelmir-video/",
+    "/r/media/",
+    "/r/tehsil/",
+    "/ebola-ile-bagli-ciddi-xeberdarliq/",
+    "/azerbaycanin-en-tehsilli-ve-en-tehsilsiz-rayonlari/",
+    "/news/",
+    "/inadkar-ulagin-postamenti/"
   ],
   "jam-news.net": [
-    "/topic/"
+    "/topic/",
+    "/fake-news-in-armenia-claims-curtain-programme-can-manipulate-election-results/",
+    "/news-from-georgia-azerbaijan-armenia-25-29-may-2026/"
   ],
   "banco.az": [
-    "/az/"
+    "/az/",
+    "/ru/news/",
+    "/ru/news-cat/",
+    "/ru/allnews/",
+    "/news/",
+    "/ru/sitemap/"
   ],
   "mod.gov.az": [
-    "/az/"
+    "/az/",
+    "/az/azerbaycan-ordusunun-multimedia-merkezi-046/",
+    "/az/milli-tehlukesizlik-ve-herbi-elmler-jurnali-245/",
+    "/az/azerbaycan-ordusunun-herbi-elm-ve-tehsil-sistemi-326/",
+    "/az/xeberler-arxivi-141/",
+    "/az/xeberler-791/",
+    "/az/elmi-eserler-jurnali-967/",
+    "/az/elmi-praktik-konfranslar-471/",
+    "/az/herbi-elmi-tedqiqat-institutu-276/",
+    "/az/cebhe-xeberleri-arxivi-283/",
+    "/az/news/"
   ],
   "1news.az": [
-    "/news/"
+    "/news/",
+    "/news/20260530111738135-PSZH-zashcitil-titul-Ligi-CHempionov-v-Budapeshte-Arsenal-drognul-v-serii-penalti/",
+    "/news/20260530100836839-Posolstvo-Azerbaidzhana-v-SSHA-organizovalo-v-TSentre-Kennedi-ofitsialnyi-priem-posvyashcennyi-28-maya-FOTO/",
+    "/news/20260530073749326-Britanskii-ministr-Azerbaidzhan-vazhnyi-partner-Soedinennogo-Korolevstva-v-sfere-bezopasnosti-i-diplomatii/",
+    "/news/20260530064930711-Azerbaidzhan-vyshel-v-1-8-finala-CHE-po-mini-futbolu-s-pervogo-mesta-v-gruppe/",
+    "/1news-tv/",
+    "/news/20260530111523230-Iz-za-silnogo-vetra-v-Baku-povalilos-41-derevo-FOTO/",
+    "/news/20260530093534246-CHelovek-knigi-i-tverdykh-printsipov-k-36-i-godovshcine-gibeli-Azhdara-KHanbabaeva/",
+    "/news/20260529232806893-V-prigorodakh-Baku-i-na-Absheronskom-poluostrove-vozmozhen-grad/",
+    "/news/20260530052755941-AZAL-vypolnil-pervyi-v-etom-sezone-aviareis-iz-Gyandzhi-v-Sankt-Peterburg/",
+    "/news/20260531084725456-Tramp-priznal-chto-peregovory-mezhdu-SSHA-i-Iranom-prodvigayutsya-medlenno/",
+    "/news/20260530114929476-V-Nigerii-za-mesyats-vyyavleno-bolee-3000-sluchaev-zarazheniya-kholeroi/",
+    "/news/20260530113645858-Legkoatletki-Azerbaidzhana-zavoevali-chetyre-medali-na-chempionate-malykh-stran/",
+    "/news/20260530103156552-V-Brazilii-rassleduyut-sluchai-s-podozreniem-na-likhoradku-Ebola/",
+    "/news/20260530094920275-Alen-Simonyan-prizval-k-mirnomu-sosushcestvovaniyu-i-razvitiyu-torgovli-s-Azerbaidzhanom-VIDEO/"
   ],
   "science.gov.az": [
     "/az/",
@@ -120,10 +177,28 @@
     "/395866/",
     "/395861/",
     "/395862/",
-    "/395856/"
+    "/395856/",
+    "/xeberler/",
+    "/395970/qeyri-sabit-hava-bu-tarixedek-davam-edecek-xeberdarliq/",
+    "/395948/sad-xeber-bu-tarixden-et-ucuzlasacaq/",
+    "/son-xeberler/",
+    "/sosial-xeberler/",
+    "/iqtisadiyyat-xeberleri/",
+    "/siyaset-xeberleri/",
+    "/hadise-xeberleri/",
+    "/kriminal-xeberler/",
+    "/medeniyyet-xeberleri/",
+    "/sou-biznes-xeberleri/",
+    "/idman-xeberleri/",
+    "/maraqli-xeberler/"
   ],
   "president.az": [
-    "/az/"
+    "/az/",
+    "/az/news/",
+    "/az/articles/",
+    "/az/first_vice_president_news/",
+    "/ru/news/",
+    "/en/news/"
   ],
   "bbc.com": [
     "/news/",
@@ -135,7 +210,17 @@
     "/sport/",
     "/pages/",
     "/business/",
-    "/technology/"
+    "/technology/",
+    "/news/articles/",
+    "/news/world/",
+    "/news/videos/",
+    "/watch-live-news/",
+    "/news/us-canada/",
+    "/news/uk/",
+    "/news/in_pictures/",
+    "/news/bbcindepth/",
+    "/news/bbcverify/",
+    "/news/northern_ireland/"
   ],
   "ru.trend.az": [
     "/azerbaijan/",
@@ -168,12 +253,29 @@
     "/tags/",
     "/armiya/",
     "/ekonomika/",
-    "/proisshestviye/"
+    "/proisshestviye/",
+    "/news/",
+    "/socium/tysyaci-abiturientov-iii-gruppy-riskuyut-ne-postupit-v-vuzy-zavysennye-bally-596321/",
+    "/politika/euronews-podgotovil-specreportaz-posvyashhyonnyi-itogam-wuf13-video-597094/"
   ],
   "ru.axar.az": [
     "/news/",
     "/section/",
-    "/cdn-cgi/"
+    "/cdn-cgi/",
+    "/news/vmire/",
+    "/news/politika/",
+    "/news/sport/",
+    "/news/socium/",
+    "/news/zdorove/",
+    "/news/aktualno/",
+    "/news/ekonomika/",
+    "/news/proisshestviya/",
+    "/news/nauka/",
+    "/news/kultura/",
+    "/news/shoubiznes/",
+    "/news/tehnologii/",
+    "/news/socialnyeseti/",
+    "/news/foto/"
   ],
   "caliber.az": [
     "/post/"
@@ -188,14 +290,34 @@
     "/20260415/",
     "/20260408/",
     "/20241211/",
-    "/20260527/"
+    "/20260527/",
+    "/xinhuanews/",
+    "/xinhuanews/index.htm/"
   ],
   "minval.az": [
     "/news/",
-    "/r/"
+    "/r/",
+    "/news/124536146/",
+    "/news/124536124/",
+    "/news/124536122/",
+    "/news/124536116/",
+    "/news/124476948/",
+    "/news/124468369/",
+    "/news/124465377/",
+    "/news/124320110/",
+    "/news/124319484/",
+    "/news/124459487/",
+    "/news/124457840/",
+    "/news/124455541/",
+    "/news/124449878/",
+    "/news/124536157/"
   ],
   "operativmm.az": [
-    "/az/"
+    "/az/",
+    "/az/post/",
+    "/az/son-xeberler/",
+    "/ru/post/",
+    "/en/post/"
   ],
   "axar.az": [
     "/news/",
@@ -203,7 +325,19 @@
     "/cdn-cgi/"
   ],
   "birbank.az": [
-    "/news/"
+    "/news/",
+    "/news/bir-kredit-bokt-mmc-2025-ci-il-uezr-maliyy-goest-ricil-rini-aciqlayib/",
+    "/news/kreditinizi-birbank-a-g-tirin-6-d-k-endirim-qazanin/",
+    "/news/birbank-dan-onlayn-nagd-kredit-r-smil-sdirin-1000-bonus-qazanmaq-sansi-ld-edin/",
+    "/news/Ictimai-neqliyyatda-odenislere/",
+    "/news/birbank-v-visa-il-fifa-duenya-cempionati-2026-nin-final-oyununda-istirak-sansi-qazanin/",
+    "/news/birbank-in-s-yah-t-marafonu-kampaniyasi-il-duenyani-k-sf-edin/",
+    "/news/birbank-invest-l-pasa-bank-s-hmdari-ol/",
+    "/news/birbank-in-qazandiran-bahar-kampaniyasi-il-lav-bonuslar-qazanin/",
+    "/news/birbank-invest-2-0-t-qdim-olundu-az-rbaycan-kapital-bazarinda-yeni-investisiya-imkanlari/",
+    "/news/kapital-bank-dan-novruz-fuers-ti-nagd-kreditl-r-6-d-k-endirim/",
+    "/news/birbanklilar-uecuen-daha-bir-uestuenluek-artiq-dv-q-bzini-skan-etm-y-g-r-k-yoxdur/",
+    "/news/birbank-in-yeni-il-lotereyasinda-m-nzilin-sahibi-b-lli-oldu/"
   ],
   "abzas.org": [
     "/az/"
@@ -297,7 +431,8 @@
   ],
   "kaspiliseyi.edu.az": [
     "/az/",
-    "/cdn-cgi/"
+    "/cdn-cgi/",
+    "/az/news/"
   ],
   "alinino.az": [
     "/collection/",
@@ -308,7 +443,9 @@
     "/baku/"
   ],
   "qebele-ih.gov.az": [
-    "/az/"
+    "/az/",
+    "/az/news/",
+    "/az/news.html/"
   ],
   "jurnal.adhti.edu.az": [
     "/pdf/"
@@ -317,7 +454,8 @@
     "/courses/",
     "/programs/",
     "/blog/",
-    "/hedef/"
+    "/hedef/",
+    "/hedef/guzestli-tehsil/"
   ],
   "tusi.edu.az": [
     "/az/"
@@ -330,5 +468,226 @@
   ],
   "lider.edu.az": [
     "/az/"
+  ],
+  "ru.apa.az": [
+    "/news/",
+    "/all-news/",
+    "/news/wuf13/",
+    "/news/social/",
+    "/news/incident/",
+    "/news/weather-forecast/",
+    "/news/religion/",
+    "/news/media/",
+    "/news/III-sector/",
+    "/news/army/",
+    "/news/science-and-education/",
+    "/news/climate-news/",
+    "/paid-news/",
+    "/politic/official-news/",
+    "/media/"
+  ],
+  "habr.com": [
+    "/en/news/",
+    "/en/articles/",
+    "/en/posts/",
+    "/ru/articles/"
+  ],
+  "tezadlar.az": [
+    "/rovsen-necef-ve-abduqani-sanginov-banm-de-tehsil-alan-ozbek-telebelerle-gorusubler/",
+    "/elmar-qasimov-buraxilis-imtahanlarinda-yuksek-bal-toplayan-genclerle-ve-onlarin-valideyleri-ile-gorusub/",
+    "/mina-partlayisindan-zerer-cekenlerin-aile-uzvlerinin-tehsil-haqqini-dovlet-odeyecek-son-qerar/"
+  ],
+  "redaktor.az": [
+    "/news/",
+    "/news/news/",
+    "/news/country/",
+    "/news/namaz/"
+  ],
+  "bakunews.az": [
+    "/tehsil/",
+    "/cemiyyet/31675-yagintili-hava-mayin-sonunadek-davam-edecek-temperatur-6-dereceyedek-enecek-xeberdarlq.html/",
+    "/tehsil/31415-siyezende-tehsil-sistemi-silkelenir.html/",
+    "/tehsil/31274-xacmazda-usaq-baxcasinda-qalmaqal-qanun-pozuntulari-niye-ort-basdir-edilir.html/",
+    "/tehsil/31238-drs-yox-jurnal-var-gnc-regional-kollecind-novbti-qanun-pozuntusu-iddias-video-v-sndlrl-gundmd.html/"
+  ],
+  "big.az": [
+    "/585315-mektebe-telefon-getiren-sagirdlerle-bagli-vacib-xeber.html/",
+    "/585312-qeyri-sabit-hava-bu-tarixedek-davam-edecek-xeberdarliq.html/",
+    "/585279-sad-xeber-bu-tarixden-et-ucuzlasacaq.html/",
+    "/xeber/",
+    "/xeberler/",
+    "/maraqli-xeberler/",
+    "/sou-biznes-xeberleri/",
+    "/saglamliq-xeberleri/",
+    "/turizm-xeberleri/",
+    "/idman-xeberleri/",
+    "/mini-futbol-xeberleri/",
+    "/islam-xeberleri/",
+    "/585374-issiz-sexslere-vacib-xeber-bu-halda-pul-alacaqlar.html/",
+    "/585270-centcom-hormuz-bogazinda-herbi-emeliyyatlarla-bagli-xeberdarliq-edib.html/",
+    "/585253-bakiya-ve-abseron-yarimadasina-dolu-dusmesi-ehtimali-var-xeberdarliq.html/"
+  ],
+  "russiancouncil.ru": [
+    "/news/",
+    "/news/obyavleny-pobediteli-i-laureaty-konkursa-molodykh-zhurnalistov-mezhdunarodnikov-2025/",
+    "/news/v-press-tsentre-rossiya-segodnya-predstavili-doklad-rsmd-i-fudanskogo-universiteta-rossiysko-kitaysk/",
+    "/news/v-rsmd-sostoyalas-mezhdunarodnaya-konferentsiya-rossiya-latinskaya-amerika-sotrudnichestvo-dlya-sozd/",
+    "/news/pir-tsentr-i-mgimo-podgotovili-tsifrovoe-izdanie-ezhegodnika-security-index-global-edition-tom-2-202/",
+    "/news/kruglyy-stol-rossiya-i-kitay-regionalnye-interesy/",
+    "/news/vstrecha-sotrudnikov-rsmd-s-prepodavatelyami-i-studentami-urfu/",
+    "/news/v-ekaterinburge-obsudili-perspektivy-mezhvuzovskogo-sotrudnichestva-rossii-i-kitaya/",
+    "/news/seminar-deyatelnost-arkticheskogo-soveta-v-sovremennykh-mezhdunarodnykh-usloviyakh/",
+    "/news/kruglyy-stol-rsmd-i-tpp-rf-rossiya-braziliya-2026-novye-rubezhi-it-i-investitsionnogo-sotrudnichestv/",
+    "/news/kruglyy-stol-rsmd-i-posolstva-oae-politicheskoe-sotrudnichestvo-rossii-i-oae-v-kontekste-menyayushch/",
+    "/news/eksperty-rsmd-obsudili-predvybornuyu-situatsiyu-v-armenii-i-vliyanie-vneregionalnykh-sil-na-situatsi/",
+    "/en/news/",
+    "/news/ushel-iz-zhizni-v-m-sergeev/",
+    "/sitemap/"
+  ],
+  "idman.biz": [
+    "/az/news/",
+    "/az/latest/"
+  ],
+  "ukr.net": [
+    "/news/",
+    "/news/details/",
+    "/news/companies.html/",
+    "/news/main.html/",
+    "/news/russianaggression.html/",
+    "/news/politics.html/",
+    "/news/economics.html/",
+    "/news/criminal.html/",
+    "/news/society.html/",
+    "/news/technologies.html/",
+    "/news/science.html/",
+    "/news/auto.html/",
+    "/news/sport.html/",
+    "/news/health.html/",
+    "/news/show_business.html/"
+  ],
+  "football24.ua": [
+    "/tags/lch-topnews-98295/",
+    "/news/",
+    "/tags/apl-top-news-334075/",
+    "/ru/news/",
+    "/news/42-richna-lehenda-bavariyi-zavershyv-karyeru-dopomih-komandi-zberehty-propysku-v-eliti-u-proshchalnomu-matchi-945199/",
+    "/tags/chs-top-news-344094/",
+    "/news/peremozhets-lihy-chempioniv-ofitsiyno-zavershyv-karyeru-stavav-bronzovym-pryzerom-chs-z-belhiyeyu-944251/",
+    "/news/pszh-arsenal-ohlyad-finalu-lihy-chempioniv-945032/"
+  ],
+  "cbctv.az": [
+    "/news/",
+    "/news/5626/",
+    "/news/5885/",
+    "/news/5886/",
+    "/news/5893/",
+    "/news/5899/",
+    "/news/5902/",
+    "/news/5910/",
+    "/news/5917/",
+    "/news/5918/",
+    "/news/134097/",
+    "/news/134096/",
+    "/news/134095/",
+    "/news/134094/",
+    "/news/134091/"
+  ],
+  "culture.ru": [
+    "/news/",
+    "/news/259237/",
+    "/news/259235/",
+    "/news/259234/",
+    "/news/259233/",
+    "/news/259231/",
+    "/news/259230/",
+    "/news/259229/",
+    "/news/259227/",
+    "/news/259224/",
+    "/news/259223/",
+    "/news/259220/",
+    "/news/259222/",
+    "/news/259217/",
+    "/news/259214/"
+  ],
+  "arzuw.news": [
+    "/v-adres-prezidenta-turkmenistana-postupili-pozdravlenija/"
+  ],
+  "meydan.tv": [
+    "/az/article/",
+    "/az/media-refi/"
+  ],
+  "rus.azattyq-ruhy.kz": [
+    "/news/",
+    "/news/109329-vel-sebia-agressivno-astanchanina-arestovali-za-mat-v-avtobuse-video/",
+    "/news/109332-detskie-ploshchadki-futbolnye-zony-i-alleia-raion-saryarka-v-astane-preobrazilsia-ko-dniu-zashchity-detei/",
+    "/news/109325-kosy-ne-drala-no-vse-znaiu-nazym-kakharman-anonsirovala-knigu-o-liubovnitsakh-bishimbaeva/",
+    "/news/109331-zaderzhali-na-granitse-bolee-200-tonn-opasnogo-zerna-pytalis-vvezti-v-kazakhstan-iz-rossii/"
+  ],
+  "vesselfinder.com": [
+    "/news/",
+    "/news/29218-Al-Seer-Marine-Secures-AED-760-million-from-ADCB-to-Accelerate-Portfolio-Expansion/",
+    "/news/29217-The-Port-of-Gothenburg-gains-new-direct-service-to-Asia/",
+    "/news/29216-Fratelli-Cosulich-holds-steelcutting-ceremony-for-Lucia-Cosulich-chemical-tanker/",
+    "/news/29215-eCap-Marine-to-provide-hydrogen-power-solutions-to-Samskip-and-Mre-Sj-vessels/",
+    "/news/29214-Wattlab-and-HGK-Shipping-team-up-for-worlds-first-hybrid-solar-powered-inland-shipping-vessel/",
+    "/news/29213-Ocean-Installer-wins-significant-contract-with-Vr-Energi-to-develop-Balder-Phase-VI-at-the-Balder-field/",
+    "/news/29212-Christening-of-the-first-of-two-CSOVs-for-Bernhard-Schulte-Offshore/",
+    "/news/29211-Two-Alpha-Gas-carriers-to-get-enhanced-operational-support-with-Wrtsil-Lifecycle-Agreement/",
+    "/news/29210-Floating-Nuclear-Power-Plants-in-the-Mediterranean-Sea-to-be-Evaluated-by-ABS-Core-Power-and-Athlos/",
+    "/news/29209-Subsea7-awarded-contract-offshore-Egypt/"
+  ],
+  "gov.pl": [
+    "/news/"
+  ],
+  "peshesinifleri.edu.az": [
+    "/az/news-detail/",
+    "/az/news/"
+  ],
+  "libinfo.bsu.edu.az": [
+    "/az/news/"
+  ],
+  "cs.bsu.edu.az": [
+    "/az/news/",
+    "/az/newsarchive/"
+  ],
+  "sehiyye.gov.az": [
+    "/media/",
+    "/tibbi-tehsil/",
+    "/tibbi-tehsil/davamli-tibbi-tehsil/",
+    "/media/canli-efirler/",
+    "/tibbi-tehsil/tibbi-tedris-muessiseleri/",
+    "/media/xeberler-ve-yenilikler/",
+    "/media/elanlar/",
+    "/en/media/",
+    "/ru/media/",
+    "/sitemap/",
+    "/media/saglam-radio-efirl-r/"
+  ],
+  "mia.gov.az": [
+    "/az/news/",
+    "/news/",
+    "/az/sitemap/"
+  ],
+  "veteran.gov.az": [
+    "/az/newspapers/",
+    "/storage/newspapers/",
+    "/az/news/"
+  ],
+  "orientalstudies.az": [
+    "/index.php/elmi-f-aliyy-t/"
+  ],
+  "bakuinform.az": [
+    "/ru/news/"
+  ],
+  "ekosu.az": [
+    "/cop-29-uzre-fealiyyet-planina-esasen-azmiu-nun-st-ve-mks-fakultesinde-elmi-seminar-kecirilmisdir/",
+    "/azmiu-nun-meliorasiya-ve-su-teserrufati-tikintisi-kafedrasinin-elmi-seminari-kecirilmisdir/",
+    "/azmiu-nun-meliorasiya-ve-su-teserrufati-tikintisi-kafedrasinin-cop-29-uzre-fealiyyet-planina-esasen-azerbaycanin-ekoloji-problemleri-ve-onun-helli-yollari-adli-elmi-seminari-kecirilmisdir/"
+  ],
+  "ashgabat.mfa.gov.az": [
+    "/az/news/",
+    "/news/",
+    "/en/news/",
+    "/tkm/news/"
   ]
 }
