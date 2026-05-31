@@ -77,7 +77,8 @@
     "/azerinews/",
     "/topnews/",
     "/videonews/",
-    "/fotonews/"
+    "/fotonews/",
+    "/autonews/1838265.html/"
   ],
   "modern.az": [
     "/az/",
@@ -158,7 +159,12 @@
     "/news/20260530114929476-V-Nigerii-za-mesyats-vyyavleno-bolee-3000-sluchaev-zarazheniya-kholeroi/",
     "/news/20260530113645858-Legkoatletki-Azerbaidzhana-zavoevali-chetyre-medali-na-chempionate-malykh-stran/",
     "/news/20260530103156552-V-Brazilii-rassleduyut-sluchai-s-podozreniem-na-likhoradku-Ebola/",
-    "/news/20260530094920275-Alen-Simonyan-prizval-k-mirnomu-sosushcestvovaniyu-i-razvitiyu-torgovli-s-Azerbaidzhanom-VIDEO/"
+    "/news/20260530094920275-Alen-Simonyan-prizval-k-mirnomu-sosushcestvovaniyu-i-razvitiyu-torgovli-s-Azerbaidzhanom-VIDEO/",
+    "/news/20260531130016520-Kakaya-budet-pogoda-v-pervyi-den-iyunya-PROGNOZ/",
+    "/news/20260531123011753-V-Azerbaidzhane-na-usynovlenie-peredano-78-detei/",
+    "/news/20260531114513538-Tramp-potreboval-uzhestochit-usloviya-soglasheniya-mezhdu-SSHA-i-Iranom/",
+    "/news/20260531111518206-Sneg-grad-i-veter-FAKTICHESKAYA-POGODA/",
+    "/news/20260531132841882-V-Bardinskom-raione-v-tyazhyolom-DTP-postradali-10-chelovek/"
   ],
   "science.gov.az": [
     "/az/",
@@ -256,7 +262,9 @@
     "/proisshestviye/",
     "/news/",
     "/socium/tysyaci-abiturientov-iii-gruppy-riskuyut-ne-postupit-v-vuzy-zavysennye-bally-596321/",
-    "/politika/euronews-podgotovil-specreportaz-posvyashhyonnyi-itogam-wuf13-video-597094/"
+    "/politika/euronews-podgotovil-specreportaz-posvyashhyonnyi-itogam-wuf13-video-597094/",
+    "/proisshestviye/v-bardinskom-raione-v-tyazyolom-dtp-postradali-10-celovek-597143/",
+    "/v-mire/poyavilis-kadry-zaxvata-izrailskoi-armiei-kreposti-bofor-v-livane-597139/"
   ],
   "ru.axar.az": [
     "/news/",
@@ -310,7 +318,11 @@
     "/news/124457840/",
     "/news/124455541/",
     "/news/124449878/",
-    "/news/124536157/"
+    "/news/124536157/",
+    "/news/124536174/",
+    "/news/124536162/",
+    "/news/124536180/",
+    "/news/124536179/"
   ],
   "operativmm.az": [
     "/az/",
@@ -484,7 +496,8 @@
     "/news/climate-news/",
     "/paid-news/",
     "/politic/official-news/",
-    "/media/"
+    "/media/",
+    "/proisshestvie/v-bardinskom-raione-v-tyazyolom-dtp-postradali-10-celovek-654551/"
   ],
   "habr.com": [
     "/en/news/",
@@ -525,7 +538,10 @@
     "/islam-xeberleri/",
     "/585374-issiz-sexslere-vacib-xeber-bu-halda-pul-alacaqlar.html/",
     "/585270-centcom-hormuz-bogazinda-herbi-emeliyyatlarla-bagli-xeberdarliq-edib.html/",
-    "/585253-bakiya-ve-abseron-yarimadasina-dolu-dusmesi-ehtimali-var-xeberdarliq.html/"
+    "/585253-bakiya-ve-abseron-yarimadasina-dolu-dusmesi-ehtimali-var-xeberdarliq.html/",
+    "/585389-hava-ile-bagli-novbeti-xeberdarliq.html/",
+    "/585384-pensiyacilar-qaziler-ve-sehid-aileleri-ucun-sad-xeber-yeni-layihenin-detallari-aciqlandi.html/",
+    "/585381-muellimlere-vacib-xeber-onlar-yayda-bu-qeder-mezuniyyete-cixacaq-ve-pul-alacaqlar.html/"
   ],
   "russiancouncil.ru": [
     "/news/",
@@ -590,7 +606,12 @@
     "/news/134096/",
     "/news/134095/",
     "/news/134094/",
-    "/news/134091/"
+    "/news/134091/",
+    "/news/134104/",
+    "/news/134103/",
+    "/news/134102/",
+    "/news/134101/",
+    "/news/134100/"
   ],
   "culture.ru": [
     "/news/",
@@ -689,5 +710,31 @@
     "/news/",
     "/en/news/",
     "/tkm/news/"
+  ],
+  "sesqazeti.az": [
+    "/news/",
+    "/news/world/",
+    "/news/politics/",
+    "/news/social/",
+    "/news/society/",
+    "/newspaper_archive/",
+    "/latest/",
+    "/news/main/",
+    "/news/news/",
+    "/news/arashdirma/",
+    "/news/sport/",
+    "/news/economy/",
+    "/news/interview/",
+    "/news/culture/",
+    "/news/articles/"
+  ],
+  "azerbaijan-news.az": [
+    "/az/posts/",
+    "/az/butun-xeberler/"
+  ],
+  "samux-ih.gov.az": [
+    "/az/news/",
+    "/az/news.html/",
+    "/news.html/"
   ]
 }
