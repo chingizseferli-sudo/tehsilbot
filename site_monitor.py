@@ -5,12 +5,15 @@ import os
 import re
 import time
 import sqlite3
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import requests
 from bs4 import BeautifulSoup
 from lxml import html
 from urllib.parse import urljoin, urlparse
 from datetime import datetime, timedelta
 from dateutil import parser
+from email.utils import parsedate_to_datetime
 from zoneinfo import ZoneInfo
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
@@ -20,6 +23,8 @@ CHECK_INTERVAL_SECONDS = 60
 MAX_SEND_PER_RUN = 10
 MAX_LINKS_PER_SITE = 1
 NEWS_TIME_LIMIT_HOURS = 1
+MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
+REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "10"))
 
 CONFIG_FILES = [
     "courier_config_clean.json",
@@ -35,6 +40,7 @@ BAKU_TZ = ZoneInfo("Asia/Baku")
 STRICT_WORDS = {
     "dim",
     "tkta",
+    "arti",
     "pisa",
     "timss",
     "pirls",
@@ -43,8 +49,6 @@ STRICT_WORDS = {
     "kollec",
     "rektor",
     "dekan",
-    "arti",
-    "miq",
     "magistr",
     "doktorant",
     "abituriyent",
@@ -57,7 +61,10 @@ STRICT_WORDS = {
     "elm"
 }
 
-conn = sqlite3.connect(DB_FILE)
+DB_LOCK = threading.Lock()
+TELEGRAM_LOCK = threading.Lock()
+
+conn = sqlite3.connect(DB_FILE, check_same_thread=False)
 cursor = conn.cursor()
 
 cursor.execute("""
@@ -87,15 +94,16 @@ def send_telegram(message):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
     try:
-        r = requests.post(
-            url,
-            data={
-                "chat_id": CHAT_ID,
-                "text": message,
-                "disable_web_page_preview": False
-            },
-            timeout=15
-        )
+        with TELEGRAM_LOCK:
+            r = requests.post(
+                url,
+                data={
+                    "chat_id": CHAT_ID,
+                    "text": message,
+                    "disable_web_page_preview": False
+                },
+                timeout=15
+            )
 
         print("Telegram:", r.status_code, flush=True)
 
@@ -122,16 +130,18 @@ def get_domain(url):
 
 
 def exists(link):
-    cursor.execute("SELECT link FROM posts WHERE link=?", (link,))
-    return cursor.fetchone() is not None
+    with DB_LOCK:
+        cursor.execute("SELECT link FROM posts WHERE link=?", (link,))
+        return cursor.fetchone() is not None
 
 
 def save(link, title, source):
-    cursor.execute(
-        "INSERT OR IGNORE INTO posts (link, title, source) VALUES (?, ?, ?)",
-        (link, title, source)
-    )
-    conn.commit()
+    with DB_LOCK:
+        cursor.execute(
+            "INSERT OR IGNORE INTO posts (link, title, source) VALUES (?, ?, ?)",
+            (link, title, source)
+        )
+        conn.commit()
 
 
 def unique_items(items):
@@ -359,14 +369,108 @@ def is_bad_link(title, link):
     return False
 
 
+AZ_MONTHS = {
+    "yanvar": 1, "fevral": 2, "mart": 3, "aprel": 4, "may": 5, "iyun": 6,
+    "iyul": 7, "avqust": 8, "sentyabr": 9, "oktyabr": 10, "noyabr": 11, "dekabr": 12,
+    "yan": 1, "fev": 2, "mar": 3, "apr": 4, "iyn": 6, "iyl": 7, "avq": 8,
+    "sen": 9, "okt": 10, "noy": 11, "dek": 12,
+}
+
+
+def parse_az_datetime(value):
+    text = clean_text(str(value or "")).lower()
+    if not text:
+        return None
+
+    text = text.replace("—", "-").replace("–", "-")
+
+    patterns = [
+        # 30 may 2026, 22:10
+        r"(\d{1,2})\s+([a-zəöğıçşü]+)\s+(\d{4})\s*[,\-]?\s*(\d{1,2})[:.](\d{2})",
+        # 30.05.2026 22:10
+        r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})\s*[,\-]?\s*(\d{1,2})[:.](\d{2})",
+        # 22:10 - 30 may, 2026
+        r"(\d{1,2})[:.](\d{2})\s*[,\-]?\s*(\d{1,2})\s+([a-zəöğıçşü]+)\s*,?\s*(\d{4})",
+        # 22:10 - 30.05.2026
+        r"(\d{1,2})[:.](\d{2})\s*[,\-]?\s*(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})",
+    ]
+
+    for idx, pattern in enumerate(patterns):
+        m = re.search(pattern, text, re.IGNORECASE)
+        if not m:
+            continue
+
+        try:
+            groups = m.groups()
+
+            if idx == 0:
+                day, month_name, year, hour, minute = groups
+                month = AZ_MONTHS.get(month_name)
+            elif idx == 1:
+                day, month, year, hour, minute = groups
+                month = int(month)
+            elif idx == 2:
+                hour, minute, day, month_name, year = groups
+                month = AZ_MONTHS.get(month_name)
+            else:
+                hour, minute, day, month, year = groups
+                month = int(month)
+
+            if not month:
+                continue
+
+            return datetime(
+                int(year), int(month), int(day), int(hour), int(minute), tzinfo=BAKU_TZ
+            )
+        except Exception:
+            continue
+
+    # Tarix var, saat yoxdur. Bu xəbəri son 1 saat kimi saymırıq, amma log üçün oxuyuruq.
+    date_only_patterns = [
+        r"(\d{1,2})\s+([a-zəöğıçşü]+)\s+(\d{4})",
+        r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})",
+    ]
+
+    for idx, pattern in enumerate(date_only_patterns):
+        m = re.search(pattern, text, re.IGNORECASE)
+        if not m:
+            continue
+
+        try:
+            groups = m.groups()
+
+            if idx == 0:
+                day, month_name, year = groups
+                month = AZ_MONTHS.get(month_name)
+            else:
+                day, month, year = groups
+                month = int(month)
+
+            if not month:
+                continue
+
+            return datetime(int(year), int(month), int(day), 0, 0, tzinfo=BAKU_TZ)
+        except Exception:
+            continue
+
+    return None
+
+
 def parse_datetime_to_baku(published_time):
+    text = clean_text(str(published_time or ""))
+
+    if not text or "tarix tapılmadı" in text.lower():
+        return None
+
+    az_dt = parse_az_datetime(text)
+    if az_dt:
+        return az_dt
+
     try:
-        text = str(published_time).strip().lower()
-
-        if not text or "tarix tapılmadı" in text:
-            return None
-
-        dt = parser.parse(text, fuzzy=True, dayfirst=True)
+        try:
+            dt = parsedate_to_datetime(text)
+        except Exception:
+            dt = parser.parse(text, fuzzy=True, dayfirst=True)
 
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=BAKU_TZ)
@@ -399,40 +503,53 @@ def is_today_news(published_time):
 
 
 def is_recent_news(published_time):
-    try:
-        dt = parse_datetime_to_baku(published_time)
+    dt = parse_datetime_to_baku(published_time)
 
-        if not dt:
-            return False
-
-        now_baku = datetime.now(BAKU_TZ)
-
-        if dt.date() != now_baku.date():
-            print(
-                f"Bugünkü xəbər deyil, keçildi: {published_time} | bugün: {now_baku.date()}",
-                flush=True
-            )
-            return False
-
-        diff = now_baku - dt
-
-        if diff.total_seconds() < 0:
-            print(f"Gələcək tarix kimi göründü, keçildi: {published_time}", flush=True)
-            return False
-
-        if diff.days > 0:
-            print(f"Gün fərqi var, xəbər köhnədir: {published_time}", flush=True)
-            return False
-
-        hours = diff.total_seconds() / 3600
-        print(f"Tarix yoxlanır: {published_time} | fərq: {hours:.1f} saat", flush=True)
-
-        return diff <= timedelta(hours=NEWS_TIME_LIMIT_HOURS)
-
-    except Exception as e:
-        print(f"Tarix yoxlama xətası: {published_time} | {e}", flush=True)
+    if not dt:
         return False
 
+    now_baku = datetime.now(BAKU_TZ)
+
+    if dt.date() != now_baku.date():
+        print(
+            f"Bugünkü xəbər deyil, keçildi: {published_time} | bugün: {now_baku.date()}",
+            flush=True
+        )
+        return False
+
+    diff = now_baku - dt
+
+    if diff.total_seconds() < 0:
+        print(f"Gələcək tarix kimi göründü, keçildi: {published_time}", flush=True)
+        return False
+
+    if diff <= timedelta(hours=NEWS_TIME_LIMIT_HOURS):
+        hours = diff.total_seconds() / 3600
+        print(f"Tarix uyğundur: {published_time} | fərq: {hours:.2f} saat", flush=True)
+        return True
+
+    hours = diff.total_seconds() / 3600
+    print(f"Köhnə xəbər keçildi: {published_time} | fərq: {hours:.2f} saat", flush=True)
+    return False
+
+
+def choose_publish_time(title, article_time):
+    title_dt = parse_datetime_to_baku(title)
+    article_dt = parse_datetime_to_baku(article_time)
+
+    # Əgər məqalə tarixi 00:00-dır, başlıqda isə saat varsa, başlıqdakı saat daha etibarlıdır.
+    if title_dt and article_dt:
+        if article_dt.hour == 0 and article_dt.minute == 0 and (title_dt.hour != 0 or title_dt.minute != 0):
+            return title_dt.strftime("%d.%m.%Y %H:%M")
+        return article_dt.strftime("%d.%m.%Y %H:%M")
+
+    if article_dt:
+        return article_dt.strftime("%d.%m.%Y %H:%M")
+
+    if title_dt:
+        return title_dt.strftime("%d.%m.%Y %H:%M")
+
+    return None
 
 def extract_publish_time_from_article(article_url):
     headers = {
@@ -441,7 +558,7 @@ def extract_publish_time_from_article(article_url):
     }
 
     try:
-        r = requests.get(article_url, headers=headers, timeout=10)
+        r = requests.get(article_url, headers=headers, timeout=REQUEST_TIMEOUT)
         r.encoding = r.apparent_encoding
         tree = html.fromstring(r.text)
 
@@ -632,7 +749,7 @@ def fetch_site(site, patterns_data):
     try:
         print(f"Sayt açılır: {page_url}", flush=True)
 
-        r = requests.get(page_url, headers=headers, timeout=12)
+        r = requests.get(page_url, headers=headers, timeout=REQUEST_TIMEOUT)
         print(f"Status: {r.status_code}", flush=True)
 
         if r.status_code != 200:
@@ -667,58 +784,74 @@ def fetch_site(site, patterns_data):
     return unique_items(items)
 
 
-def check_sites():
-    sent_count = 0
-    sites = load_sites()
-    patterns_data = load_patterns()
+def process_site(index, total, site, patterns_data):
+    started = time.time()
+    result = {
+        "sent": 0,
+        "site": site.get("name"),
+        "url": site.get("url"),
+        "candidates": 0,
+        "reason": "unknown",
+    }
 
-    print(f"Yüklənən sayt sayı: {len(sites)}", flush=True)
+    print(f"[{index}/{total}] Yoxlanır: {site['name']} | {site['url']}", flush=True)
 
-    for site in sites:
-        print(f"Yoxlanır: {site['name']} | {site['url']}", flush=True)
-
+    try:
         items = fetch_site(site, patterns_data)
+    except Exception as e:
+        print(f"❌ [{index}/{total}] {site['name']} | sayt emalı xətası: {e}", flush=True)
+        result["reason"] = "site_error"
+        return result
 
-        print(f"Tapılan uyğun link sayı: {len(items)}", flush=True)
+    result["candidates"] = len(items)
+    print(f"[{index}/{total}] {site['name']} | uyğun link sayı: {len(items)}", flush=True)
 
-        if not items:
-            print("Bu saytda uyğun xəbər tapılmadı.", flush=True)
+    if not items:
+        result["reason"] = "no_candidate"
+        elapsed = time.time() - started
+        print(
+            f"📊 [{index}/{total}] {site['name']} | namizəd=0 | göndərildi=0 | nəticə=uyğun xəbər yoxdur | vaxt={elapsed:.1f}s",
+            flush=True
+        )
+        return result
+
+    limit = site.get("limit", MAX_LINKS_PER_SITE)
+
+    for item in items[:limit]:
+        title = item["title"]
+        link = item["link"]
+        source = item["source"]
+        matched_keywords = item.get("matched_keywords", [])
+
+        if exists(link):
+            print(f"[{index}/{total}] Təkrar xəbər keçildi: {link}", flush=True)
+            result["reason"] = "duplicate"
             continue
 
-        limit = site.get("limit", MAX_LINKS_PER_SITE)
-        sent_for_this_site = False
+        article_time = extract_publish_time_from_article(link)
+        published_time = choose_publish_time(title, article_time)
 
-        for item in items[:limit]:
-            title = item["title"]
-            link = item["link"]
-            source = item["source"]
-            matched_keywords = item.get("matched_keywords", [])
+        print(
+            f"[{index}/{total}] Xəbər: {title[:80]} | article_tarix: {article_time} | seçilən tarix: {published_time} | Link: {link}",
+            flush=True
+        )
 
-            if exists(link):
-                continue
+        if not published_time:
+            print(f"[{index}/{total}] Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
+            result["reason"] = "no_date"
+            continue
 
-            published_time = extract_publish_time_from_article(link)
+        if not is_today_news(published_time):
+            result["reason"] = "not_today"
+            continue
 
-            print(
-                f"Xəbər: {title[:70]} | Çıxarılan tarix: {published_time} | Link: {link}",
-                flush=True
-            )
+        if not is_recent_news(published_time):
+            result["reason"] = "old_news"
+            continue
 
-            if not published_time:
-                print(f"Tarix tapılmadı, xəbər keçildi: {title[:70]}", flush=True)
-                continue
+        matched_keywords_text = ", ".join(matched_keywords) if matched_keywords else "Açar söz tapılmadı"
 
-            if not is_today_news(published_time):
-                print(f"Bugünkü xəbər deyil, keçildi: {title[:70]} | {published_time}", flush=True)
-                continue
-
-            if not is_recent_news(published_time):
-                print(f"Köhnə xəbər keçildi: {title[:70]} | {published_time}", flush=True)
-                continue
-
-            matched_keywords_text = ", ".join(matched_keywords) if matched_keywords else "Açar söz tapılmadı"
-
-            message = f"""
+        message = f"""
 🆕 Yeni uyğun xəbər
 
 📌 Başlıq:
@@ -737,26 +870,100 @@ def check_sites():
 {link}
 """
 
-            send_telegram(message)
-            save(link, title, source)
+        send_telegram(message)
+        save(link, title, source)
 
-            print(
-                f"Göndərildi: {source} | {title[:70]} | Açar sözlər: {matched_keywords_text}",
-                flush=True
-            )
+        print(
+            f"✅ [{index}/{total}] Göndərildi: {source} | {title[:70]} | Açar sözlər: {matched_keywords_text}",
+            flush=True
+        )
 
-            sent_count += 1
-            sent_for_this_site = True
+        result["sent"] = 1
+        result["reason"] = "sent"
+        elapsed = time.time() - started
+        print(
+            f"📊 [{index}/{total}] {site['name']} | namizəd={len(items)} | göndərildi=1 | nəticə=telegram | vaxt={elapsed:.1f}s",
+            flush=True
+        )
+        time.sleep(1)
+        return result
 
-            time.sleep(1)
-            break
+    elapsed = time.time() - started
+    print(
+        f"📊 [{index}/{total}] {site['name']} | namizəd={len(items)} | göndərildi=0 | nəticə={result['reason']} | vaxt={elapsed:.1f}s",
+        flush=True
+    )
+    return result
 
-        if not sent_for_this_site:
-            print("Bu saytda yeni uyğun xəbər yoxdur.", flush=True)
 
-        if sent_count >= MAX_SEND_PER_RUN:
-            print("Bu dövr üçün göndərmə limiti tamamlandı.", flush=True)
-            return
+def check_sites():
+    started = time.time()
+    sites = load_sites()
+    patterns_data = load_patterns()
+    total = len(sites)
+
+    print(f"Yüklənən sayt sayı: {total}", flush=True)
+    print(
+        f"Monitorinq başladı | worker={MAX_WORKERS} | son {NEWS_TIME_LIMIT_HOURS} saat | {datetime.now(BAKU_TZ).strftime('%d.%m.%Y %H:%M:%S')} AZT",
+        flush=True
+    )
+
+    sent_count = 0
+    stats = {
+        "sent": 0,
+        "no_candidate": 0,
+        "duplicate": 0,
+        "no_date": 0,
+        "not_today": 0,
+        "old_news": 0,
+        "site_error": 0,
+        "unknown": 0,
+    }
+
+    max_workers = max(1, min(MAX_WORKERS, total or 1))
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {
+            executor.submit(process_site, index, total, site, patterns_data): site
+            for index, site in enumerate(sites, start=1)
+        }
+
+        for future in as_completed(futures):
+            try:
+                result = future.result() or {}
+            except Exception as e:
+                print(f"Worker xətası: {e}", flush=True)
+                stats["site_error"] += 1
+                continue
+
+            sent = int(result.get("sent", 0) or 0)
+            reason = result.get("reason", "unknown")
+
+            sent_count += sent
+            stats["sent"] += sent
+
+            if reason != "sent":
+                stats[reason] = stats.get(reason, 0) + 1
+
+            if sent_count >= MAX_SEND_PER_RUN:
+                print("Bu dövr üçün göndərmə limiti tamamlandı. Qalan başladılmış yoxlamalar tamamlanacaq.", flush=True)
+                break
+
+    elapsed = time.time() - started
+
+    print("=" * 60, flush=True)
+    print("📈 MONİTORİNQ YEKUNU", flush=True)
+    print(f"🌐 Sayt sayı: {total}", flush=True)
+    print(f"⚙️ Worker sayı: {max_workers}", flush=True)
+    print(f"📤 Göndərilən xəbər: {sent_count}", flush=True)
+    print(f"🔎 Uyğun xəbər olmayan sayt: {stats.get('no_candidate', 0)}", flush=True)
+    print(f"🔁 Təkrar keçilən: {stats.get('duplicate', 0)}", flush=True)
+    print(f"🕒 Tarix tapılmayan: {stats.get('no_date', 0)}", flush=True)
+    print(f"📅 Bugünkü olmayan: {stats.get('not_today', 0)}", flush=True)
+    print(f"⏩ Köhnə xəbər: {stats.get('old_news', 0)}", flush=True)
+    print(f"❌ Sayt/worker xətası: {stats.get('site_error', 0)}", flush=True)
+    print(f"⏱️ Ümumi vaxt: {elapsed:.1f} saniyə", flush=True)
+    print("=" * 60, flush=True)
 
 
 print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
