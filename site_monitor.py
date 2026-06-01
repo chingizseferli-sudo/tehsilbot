@@ -38,27 +38,9 @@ KEYWORDS_FILE = "keywords.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
 
 STRICT_WORDS = {
-    "dim",
-    "tkta",
-    "arti",
-    "pisa",
-    "timss",
-    "pirls",
-    "bağça",
-    "lisey",
-    "kollec",
-    "rektor",
-    "dekan",
-    "magistr",
-    "doktorant",
-    "abituriyent",
-    "tələbə",
-    "şagird",
-    "müəllim",
-    "məktəb",
-    "sinif",
-    "dərs",
-    "elm"
+    "dim", "tkta", "arti", "pisa", "timss", "pirls", "bağça", "lisey", "kollec",
+    "rektor", "dekan", "magistr", "doktorant", "abituriyent", "tələbə", "şagird",
+    "müəllim", "məktəb", "sinif", "dərs", "elm"
 }
 
 DB_LOCK = threading.Lock()
@@ -89,7 +71,7 @@ def load_keywords():
 def send_telegram(message):
     if not BOT_TOKEN or not CHAT_ID:
         print("BOT_TOKEN və ya CHAT_ID yoxdur.", flush=True)
-        return
+        return False
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
@@ -110,13 +92,20 @@ def send_telegram(message):
         if r.status_code == 429:
             retry_after = r.json().get("parameters", {}).get("retry_after", 30)
             time.sleep(retry_after + 2)
+            return False
+
+        if r.status_code == 400 and "migrate_to_chat_id" in r.text:
+            print("Telegram qrupu supergroup-a keçib. CHAT_ID-ni migrate_to_chat_id ilə yenilə.", flush=True)
+
+        return r.status_code == 200
 
     except Exception as e:
         print("Telegram xətası:", e, flush=True)
+        return False
 
 
 def clean_text(text):
-    return re.sub(r"\s+", " ", text or "").strip()
+    return re.sub(r"\s+", " ", str(text or "")).strip()
 
 
 def normalize_text(text):
@@ -283,17 +272,10 @@ def is_probably_section_url(link):
         return True
 
     section_paths = [
-        "news", "xeber", "xeberler", "xəbərlər",
-        "media", "media/news",
-        "category", "kateqoriya",
-        "archive", "arxiv",
-        "allnews", "all-news", "newsarchive",
-        "latest", "lastnews", "son-xeberler",
-        "az/news", "az/xeber", "az/xeberler", "az/xəbərlər",
-        "az/metbuat/xeberler",
-        "az/page/media/news",
-        "az/news-and-updates",
-        "p/news",
+        "news", "xeber", "xeberler", "xəbərlər", "media", "media/news", "category",
+        "kateqoriya", "archive", "arxiv", "allnews", "all-news", "newsarchive", "latest",
+        "lastnews", "son-xeberler", "az/news", "az/xeber", "az/xeberler", "az/xəbərlər",
+        "az/metbuat/xeberler", "az/page/media/news", "az/news-and-updates", "p/news",
         "tehsil", "elm", "elm-ve-tehsil"
     ]
 
@@ -301,13 +283,8 @@ def is_probably_section_url(link):
         return True
 
     bad_section_words = [
-        "news", "xeber", "xeberler", "xəbərlər",
-        "category", "kateqoriya",
-        "archive", "arxiv",
-        "latest", "lastnews",
-        "allnews", "all-news",
-        "son-xeberler",
-        "media"
+        "news", "xeber", "xeberler", "xəbərlər", "category", "kateqoriya", "archive",
+        "arxiv", "latest", "lastnews", "allnews", "all-news", "son-xeberler", "media"
     ]
 
     parts = [p for p in path.split("/") if p]
@@ -316,11 +293,8 @@ def is_probably_section_url(link):
         return True
 
     if len(parts) <= 2 and any(path.endswith(word) for word in [
-        "news", "xeber", "xeberler", "xəbərlər",
-        "media/news", "allnews", "all-news",
-        "latest", "lastnews", "son-xeberler",
-        "category", "kateqoriya",
-        "archive", "arxiv"
+        "news", "xeber", "xeberler", "xəbərlər", "media/news", "allnews", "all-news",
+        "latest", "lastnews", "son-xeberler", "category", "kateqoriya", "archive", "arxiv"
     ]):
         return True
 
@@ -332,23 +306,19 @@ def is_bad_link(title, link):
     link_lower = link.lower()
 
     bad_words = [
-        "ana səhifə", "haqqımızda", "əlaqə", "reklam",
-        "giriş", "qeydiyyat", "axtarış", "abunə",
-        "facebook", "instagram", "youtube", "telegram",
-        "twitter", "linkedin", "rss", "bütün xəbərlər",
-        "daha çox", "arxiv", "kateqoriya", "bütün bölmələr",
-        "menu", "menyu"
+        "ana səhifə", "haqqımızda", "əlaqə", "reklam", "giriş", "qeydiyyat",
+        "axtarış", "abunə", "facebook", "instagram", "youtube", "telegram",
+        "twitter", "linkedin", "rss", "bütün xəbərlər", "daha çox", "arxiv",
+        "kateqoriya", "bütün bölmələr", "menu", "menyu"
     ]
 
     bad_domains = [
-        "facebook.com", "instagram.com", "youtube.com",
-        "t.me", "twitter.com", "x.com", "linkedin.com"
+        "facebook.com", "instagram.com", "youtube.com", "t.me", "twitter.com", "x.com", "linkedin.com"
     ]
 
     bad_extensions = [
-        ".jpg", ".jpeg", ".png", ".gif", ".webp",
-        ".pdf", ".doc", ".docx", ".xls", ".xlsx",
-        ".zip", ".rar", ".mp4", ".mp3"
+        ".jpg", ".jpeg", ".png", ".gif", ".webp", ".pdf", ".doc", ".docx",
+        ".xls", ".xlsx", ".zip", ".rar", ".mp4", ".mp3"
     ]
 
     if len(title) < 15:
@@ -385,13 +355,9 @@ def parse_az_datetime(value):
     text = text.replace("—", "-").replace("–", "-")
 
     patterns = [
-        # 30 may 2026, 22:10
         r"(\d{1,2})\s+([a-zəöğıçşü]+)\s+(\d{4})\s*[,\-]?\s*(\d{1,2})[:.](\d{2})",
-        # 30.05.2026 22:10
         r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})\s*[,\-]?\s*(\d{1,2})[:.](\d{2})",
-        # 22:10 - 30 may, 2026
         r"(\d{1,2})[:.](\d{2})\s*[,\-]?\s*(\d{1,2})\s+([a-zəöğıçşü]+)\s*,?\s*(\d{4})",
-        # 22:10 - 30.05.2026
         r"(\d{1,2})[:.](\d{2})\s*[,\-]?\s*(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})",
     ]
 
@@ -425,7 +391,18 @@ def parse_az_datetime(value):
         except Exception:
             continue
 
-    # Tarix var, saat yoxdur. Bu xəbəri son 1 saat kimi saymırıq, amma log üçün oxuyuruq.
+    # Başlığın əvvəlində yalnız saat varsa: "12:02 Günəş aktivliyi..."
+    time_only = re.search(r"^\s*(\d{1,2})[:.](\d{2})(?:\s|$)", text)
+    if time_only:
+        try:
+            hour = int(time_only.group(1))
+            minute = int(time_only.group(2))
+            if 0 <= hour <= 23 and 0 <= minute <= 59:
+                today = datetime.now(BAKU_TZ).date()
+                return datetime(today.year, today.month, today.day, hour, minute, tzinfo=BAKU_TZ)
+        except Exception:
+            pass
+
     date_only_patterns = [
         r"(\d{1,2})\s+([a-zəöğıçşü]+)\s+(\d{4})",
         r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})",
@@ -537,19 +514,16 @@ def choose_publish_time(title, article_time):
     title_dt = parse_datetime_to_baku(title)
     article_dt = parse_datetime_to_baku(article_time)
 
-    # Əgər məqalə tarixi 00:00-dır, başlıqda isə saat varsa, başlıqdakı saat daha etibarlıdır.
-    if title_dt and article_dt:
-        if article_dt.hour == 0 and article_dt.minute == 0 and (title_dt.hour != 0 or title_dt.minute != 0):
-            return title_dt.strftime("%d.%m.%Y %H:%M")
-        return article_dt.strftime("%d.%m.%Y %H:%M")
+    # Başlıqda tarix/saat varsa, onu əsas götürürük.
+    # Çünki səhifədəki date/time çox vaxt yenilənmə və ya cari saat olur.
+    if title_dt:
+        return title_dt.strftime("%d.%m.%Y %H:%M")
 
     if article_dt:
         return article_dt.strftime("%d.%m.%Y %H:%M")
 
-    if title_dt:
-        return title_dt.strftime("%d.%m.%Y %H:%M")
-
     return None
+
 
 def extract_publish_time_from_article(article_url):
     headers = {
@@ -562,8 +536,6 @@ def extract_publish_time_from_article(article_url):
         r.encoding = r.apparent_encoding
         tree = html.fromstring(r.text)
 
-        # og:updated_time qəsdən istifadə olunmur.
-        # Çünki çox vaxt xəbərin yayım tarixi yox, səhifənin yenilənmə tarixi olur.
         possible_xpaths = [
             "//time/@datetime",
             "//time/text()",
@@ -602,13 +574,10 @@ def is_article_like_link(link):
     link_lower = link.lower()
 
     article_patterns = [
-        "/news/", "/xeber/", "/xeberler/", "/xəbərlər/",
-        "/az/news/", "/az/xeber/", "/az/xeberler/", "/az/xəbərlər/",
-        "/post/", "/article/", "/read/", "/item/",
-        "/son-xeber/", "/sosial/", "/resmi-xeber/",
-        "/hadise/", "/politic/", "/world/", "/economy/",
-        "/education/", "/elm/", "/tehsil/",
-        "/2024/", "/2025/", "/2026/"
+        "/news/", "/xeber/", "/xeberler/", "/xəbərlər/", "/az/news/", "/az/xeber/",
+        "/az/xeberler/", "/az/xəbərlər/", "/post/", "/article/", "/read/", "/item/",
+        "/son-xeber/", "/sosial/", "/resmi-xeber/", "/hadise/", "/politic/",
+        "/world/", "/economy/", "/education/", "/elm/", "/tehsil/", "/2024/", "/2025/", "/2026/"
     ]
 
     return any(pattern in link_lower for pattern in article_patterns)
@@ -828,11 +797,12 @@ def process_site(index, total, site, patterns_data):
             result["reason"] = "duplicate"
             continue
 
+        title_time = parse_datetime_to_baku(title)
         article_time = extract_publish_time_from_article(link)
         published_time = choose_publish_time(title, article_time)
 
         print(
-            f"[{index}/{total}] Xəbər: {title[:80]} | article_tarix: {article_time} | seçilən tarix: {published_time} | Link: {link}",
+            f"[{index}/{total}] Xəbər: {title[:80]} | title_tarix: {title_time} | article_tarix: {article_time} | seçilən tarix: {published_time} | Link: {link}",
             flush=True
         )
 
@@ -870,23 +840,26 @@ def process_site(index, total, site, patterns_data):
 {link}
 """
 
-        send_telegram(message)
-        save(link, title, source)
+        if send_telegram(message):
+            save(link, title, source)
 
-        print(
-            f"✅ [{index}/{total}] Göndərildi: {source} | {title[:70]} | Açar sözlər: {matched_keywords_text}",
-            flush=True
-        )
+            print(
+                f"✅ [{index}/{total}] Göndərildi: {source} | {title[:70]} | Açar sözlər: {matched_keywords_text}",
+                flush=True
+            )
 
-        result["sent"] = 1
-        result["reason"] = "sent"
-        elapsed = time.time() - started
-        print(
-            f"📊 [{index}/{total}] {site['name']} | namizəd={len(items)} | göndərildi=1 | nəticə=telegram | vaxt={elapsed:.1f}s",
-            flush=True
-        )
-        time.sleep(1)
-        return result
+            result["sent"] = 1
+            result["reason"] = "sent"
+            elapsed = time.time() - started
+            print(
+                f"📊 [{index}/{total}] {site['name']} | namizəd={len(items)} | göndərildi=1 | nəticə=telegram | vaxt={elapsed:.1f}s",
+                flush=True
+            )
+            time.sleep(1)
+            return result
+
+        print(f"[{index}/{total}] Telegram göndərilmədi, xəbər bazaya yazılmadı.", flush=True)
+        result["reason"] = "telegram_error"
 
     elapsed = time.time() - started
     print(
@@ -917,6 +890,7 @@ def check_sites():
         "not_today": 0,
         "old_news": 0,
         "site_error": 0,
+        "telegram_error": 0,
         "unknown": 0,
     }
 
@@ -962,6 +936,7 @@ def check_sites():
     print(f"📅 Bugünkü olmayan: {stats.get('not_today', 0)}", flush=True)
     print(f"⏩ Köhnə xəbər: {stats.get('old_news', 0)}", flush=True)
     print(f"❌ Sayt/worker xətası: {stats.get('site_error', 0)}", flush=True)
+    print(f"📨 Telegram xətası: {stats.get('telegram_error', 0)}", flush=True)
     print(f"⏱️ Ümumi vaxt: {elapsed:.1f} saniyə", flush=True)
     print("=" * 60, flush=True)
 
