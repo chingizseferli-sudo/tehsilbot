@@ -78,7 +78,10 @@
     "/topnews/",
     "/videonews/",
     "/fotonews/",
-    "/autonews/1838265.html/"
+    "/autonews/1838265.html/",
+    "/azerinews/1838505.html/",
+    "/autonews/1838490.html/",
+    "/azerinews/1838480.html/"
   ],
   "modern.az": [
     "/az/",
@@ -116,12 +119,15 @@
     "/ebola-ile-bagli-ciddi-xeberdarliq/",
     "/azerbaycanin-en-tehsilli-ve-en-tehsilsiz-rayonlari/",
     "/news/",
-    "/inadkar-ulagin-postamenti/"
+    "/inadkar-ulagin-postamenti/",
+    "/rayonlara-istirahete-getmek-isteyenler-bu-xeberi-mutleq-oxusun/",
+    "/kulekli-hava-ile-bagli-sari-ve-narinci-xeberdarliq-verilib-1/"
   ],
   "jam-news.net": [
     "/topic/",
     "/fake-news-in-armenia-claims-curtain-programme-can-manipulate-election-results/",
-    "/news-from-georgia-azerbaijan-armenia-25-29-may-2026/"
+    "/news-from-georgia-azerbaijan-armenia-25-29-may-2026/",
+    "/washington-post-georgia-moving-towards-authoritarianism-and-closer-ties-with-iran/"
   ],
   "banco.az": [
     "/az/",
@@ -264,7 +270,9 @@
     "/socium/tysyaci-abiturientov-iii-gruppy-riskuyut-ne-postupit-v-vuzy-zavysennye-bally-596321/",
     "/politika/euronews-podgotovil-specreportaz-posvyashhyonnyi-itogam-wuf13-video-597094/",
     "/proisshestviye/v-bardinskom-raione-v-tyazyolom-dtp-postradali-10-celovek-597143/",
-    "/v-mire/poyavilis-kadry-zaxvata-izrailskoi-armiei-kreposti-bofor-v-livane-597139/"
+    "/v-mire/poyavilis-kadry-zaxvata-izrailskoi-armiei-kreposti-bofor-v-livane-597139/",
+    "/proisshestviye/v-bardinskom-raione-v-tyazyolom-dtp-postradali-10-celovek-obnovleno-597143/",
+    "/ekonomika/bolgariya-zaversaet-proekt-po-rassireniyu-postavok-azerbaidzanskogo-gaza-v-evropu-597319/"
   ],
   "ru.axar.az": [
     "/news/",
@@ -283,7 +291,8 @@
     "/news/shoubiznes/",
     "/news/tehnologii/",
     "/news/socialnyeseti/",
-    "/news/foto/"
+    "/news/foto/",
+    "/news/kriminal/"
   ],
   "caliber.az": [
     "/post/"
@@ -497,7 +506,8 @@
     "/paid-news/",
     "/politic/official-news/",
     "/media/",
-    "/proisshestvie/v-bardinskom-raione-v-tyazyolom-dtp-postradali-10-celovek-654551/"
+    "/proisshestvie/v-bardinskom-raione-v-tyazyolom-dtp-postradali-10-celovek-654551/",
+    "/proisshestvie/v-bardinskom-raione-v-tyazyolom-dtp-postradali-10-celovek-obnovleno-654551/"
   ],
   "habr.com": [
     "/en/news/",
@@ -508,7 +518,8 @@
   "tezadlar.az": [
     "/rovsen-necef-ve-abduqani-sanginov-banm-de-tehsil-alan-ozbek-telebelerle-gorusubler/",
     "/elmar-qasimov-buraxilis-imtahanlarinda-yuksek-bal-toplayan-genclerle-ve-onlarin-valideyleri-ile-gorusub/",
-    "/mina-partlayisindan-zerer-cekenlerin-aile-uzvlerinin-tehsil-haqqini-dovlet-odeyecek-son-qerar/"
+    "/mina-partlayisindan-zerer-cekenlerin-aile-uzvlerinin-tehsil-haqqini-dovlet-odeyecek-son-qerar/",
+    "/deleduzlar-yene-is-basinda-dim-bal-artiranlari-da-valideynlere-de-huquqi-mesuliyyetle-bagli-xeberdarliq-etdi/"
   ],
   "redaktor.az": [
     "/news/",
@@ -521,7 +532,11 @@
     "/cemiyyet/31675-yagintili-hava-mayin-sonunadek-davam-edecek-temperatur-6-dereceyedek-enecek-xeberdarlq.html/",
     "/tehsil/31415-siyezende-tehsil-sistemi-silkelenir.html/",
     "/tehsil/31274-xacmazda-usaq-baxcasinda-qalmaqal-qanun-pozuntulari-niye-ort-basdir-edilir.html/",
-    "/tehsil/31238-drs-yox-jurnal-var-gnc-regional-kollecind-novbti-qanun-pozuntusu-iddias-video-v-sndlrl-gundmd.html/"
+    "/tehsil/31238-drs-yox-jurnal-var-gnc-regional-kollecind-novbti-qanun-pozuntusu-iddias-video-v-sndlrl-gundmd.html/",
+    "/cemiyyet/31732-azerbaycanda-sabah-guclu-kulek-esecek-xeberdarlq.html/",
+    "/dunya/31717-sepah-serik-adasina-hucum-xeberinden-sonra-abs-hava-bazasina-zerbe-endirdiyini-bildirib.html/",
+    "/tehsil/31707-dm-saxta-hesablar-vasitesile-vetendaslarin-aldadilmasi-barede-xeberdarliq-edib.html/",
+    "/cemiyyet/31705-lham-eliyevin-sosial-media-hesablarinda-usaqlarin-beynelxalq-mudafiesi-gunu-munasibetile-paylasim-edilib.html/"
   ],
   "big.az": [
     "/585315-mektebe-telefon-getiren-sagirdlerle-bagli-vacib-xeber.html/",
@@ -541,7 +556,9 @@
     "/585253-bakiya-ve-abseron-yarimadasina-dolu-dusmesi-ehtimali-var-xeberdarliq.html/",
     "/585389-hava-ile-bagli-novbeti-xeberdarliq.html/",
     "/585384-pensiyacilar-qaziler-ve-sehid-aileleri-ucun-sad-xeber-yeni-layihenin-detallari-aciqlandi.html/",
-    "/585381-muellimlere-vacib-xeber-onlar-yayda-bu-qeder-mezuniyyete-cixacaq-ve-pul-alacaqlar.html/"
+    "/585381-muellimlere-vacib-xeber-onlar-yayda-bu-qeder-mezuniyyete-cixacaq-ve-pul-alacaqlar.html/",
+    "/585439-ciyelek-bu-hallarda-olumcul-ola-biler-xeberdarliq.html/",
+    "/585432-beynelxalq-xeberdarliq-ebola-tehlukesi-boyuyur.html/"
   ],
   "russiancouncil.ru": [
     "/news/",
@@ -589,7 +606,8 @@
     "/news/42-richna-lehenda-bavariyi-zavershyv-karyeru-dopomih-komandi-zberehty-propysku-v-eliti-u-proshchalnomu-matchi-945199/",
     "/tags/chs-top-news-344094/",
     "/news/peremozhets-lihy-chempioniv-ofitsiyno-zavershyv-karyeru-stavav-bronzovym-pryzerom-chs-z-belhiyeyu-944251/",
-    "/news/pszh-arsenal-ohlyad-finalu-lihy-chempioniv-945032/"
+    "/news/pszh-arsenal-ohlyad-finalu-lihy-chempioniv-945032/",
+    "/news/vanat-zatsikavyv-shche-odyn-ispanskyy-klub-yakyy-hratyme-v-lch-vidoma-pozytsiya-zhyrony-945406/"
   ],
   "cbctv.az": [
     "/news/",
@@ -642,7 +660,9 @@
     "/news/109329-vel-sebia-agressivno-astanchanina-arestovali-za-mat-v-avtobuse-video/",
     "/news/109332-detskie-ploshchadki-futbolnye-zony-i-alleia-raion-saryarka-v-astane-preobrazilsia-ko-dniu-zashchity-detei/",
     "/news/109325-kosy-ne-drala-no-vse-znaiu-nazym-kakharman-anonsirovala-knigu-o-liubovnitsakh-bishimbaeva/",
-    "/news/109331-zaderzhali-na-granitse-bolee-200-tonn-opasnogo-zerna-pytalis-vvezti-v-kazakhstan-iz-rossii/"
+    "/news/109331-zaderzhali-na-granitse-bolee-200-tonn-opasnogo-zerna-pytalis-vvezti-v-kazakhstan-iz-rossii/",
+    "/news/109361-propavshego-muzhchinu-nashli-mertvym-spustia-chetyre-dnia-v-almatinskoi-oblasti/",
+    "/news/109367-zhitel-uralska-ugnal-toyota-camry-priamo-so-dvora-video/"
   ],
   "vesselfinder.com": [
     "/news/",
@@ -736,5 +756,53 @@
     "/az/news/",
     "/az/news.html/",
     "/news.html/"
+  ],
+  "todaypress.tv": [
+    "/az/xeberler/",
+    "/az/elm-ve-tehsil/"
+  ],
+  "newscenter.az": [
+    "/xeberlenti/"
+  ],
+  "moika78.ru": [
+    "/news/",
+    "/news/2026-06-01/",
+    "/news/2026-05-28/",
+    "/media/",
+    "/news/2018-08-27/"
+  ],
+  "aqrar-iqtisadiyyat.adau.edu.az": [
+    "/news/",
+    "/news/members-of-the-public-council-held-meetings-with-the-teaching-staff-and-students-of-adau-493/",
+    "/news/republican-scientific-conference-of-masters-students-and-young-researchers-held-at-adau-485/",
+    "/news/football-competition-organized-by-adaus-tgt-sports-club-482/",
+    "/news/the-examination-session-of-the-fall-semester-of-the-2025-2026-academic-year-has-started-at-adau-479/",
+    "/news/adau-held-a-master-class-on-the-topic-the-constitution-of-the-republic-of-azerbaijan-is-the-supreme-law-of-the-state-460/",
+    "/news/accessbank-held-a-presentation-on-financial-literacy-and-career-opportunities-for-adau-students-474/",
+    "/news/adau-student-takes-3rd-place-in-the-country-in-the-statistics-olympiad-453/",
+    "/news/more-than-1000-job-vacancies-were-listed-at-the-17th-career-fair-held-at-adau-463/",
+    "/news/interfaculty-knowledge-competition-was-held-465/",
+    "/news/adau-commemorates-khojaly-genocide-victims-466/",
+    "/news/a-total-of-285-new-textbooks-have-been-added-to-the-library-collection-of-adau-431/",
+    "/news/a-knowledge-competition-dedicated-to-the-memory-of-the-national-leader-heydar-aliyev-was-held-at-adau-426/",
+    "/news/the-next-seminar-was-organized-by-the-state-service-for-the-students-of-the-azerbaijan-state-agricultural-university-422/",
+    "/news/a-presentation-of-books-compiled-by-the-department-of-finance-and-accounting-has-been-held-418/"
+  ],
+  "muhendislik.adau.edu.az": [
+    "/news/",
+    "/xeberler/",
+    "/news/a-meeting-was-held-with-the-winners-of-the-young-agro-leaders-of-azerbaijan-scholarship-program-546/",
+    "/news/republican-scientific-conference-of-masters-students-and-young-researchers-held-at-adau-537/",
+    "/news/virtual-reality-real-results-a-new-vr-laboratory-opened-at-asau-534/",
+    "/xeberler/adau-tlbsi-magistraturaya-qbul-imtahannn-birinci-chdind-yuksk-ntic-ld-edib-530/",
+    "/news/adau-student-achieves-high-result-on-first-attempt-in-masters-admission-exam-531/",
+    "/news/unity-joy-and-tradition-unforgettable-moments-from-the-novruz-celebration-at-adau-528/",
+    "/news/adau-students-participate-in-training-at-the-corkci-factory-in-shamkir-525/",
+    "/news/a-meeting-was-held-with-students-studying-in-the-sabah-groups-522/",
+    "/news/commemorative-event-on-khojaly-the-revival-passing-through-our-blood-held-at-azerbaijan-state-agricultural-university-519/",
+    "/news/the-examination-session-of-the-fall-semester-of-the-2025-2026-academic-year-has-started-at-adau-516/",
+    "/news/adau-held-an-educational-event-on-protection-against-technogenic-accidents-513/",
+    "/news/a-group-of-adau-employees-visited-ege-university-509/",
+    "/news/the-tec-conference-was-held-at-the-department-of-energy-and-electrical-engineering-507/"
   ]
 }
