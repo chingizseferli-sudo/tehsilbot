@@ -43,6 +43,12 @@ STRICT_WORDS = {
     "müəllim", "məktəb", "sinif", "dərs", "elm"
 }
 
+NEWS_CATEGORIES = {
+    "sosial", "siyasət", "hadisə", "cəmiyyət", "iqtisadiyyat", "dünya",
+    "ölkə", "təhsil", "elm", "mədəniyyət", "idman", "kriminal",
+    "region", "bölgə", "maraqlı", "şou", "sağlamlıq", "texnologiya",
+}
+
 DB_LOCK = threading.Lock()
 TELEGRAM_LOCK = threading.Lock()
 
@@ -106,6 +112,48 @@ def send_telegram(message):
 
 def clean_text(text):
     return re.sub(r"\s+", " ", str(text or "")).strip()
+
+
+def clean_title_for_message(title):
+    title = clean_text(title)
+
+    # Başlıq əvvəlinə düşən kateqoriyanı silir:
+    # "SOSİAL 09:41 ..." -> "09:41 ..."
+    category_pattern = r"^(" + "|".join(re.escape(c) for c in NEWS_CATEGORIES) + r")\s+"
+    title = re.sub(category_pattern, "", title, flags=re.IGNORECASE)
+
+    # Başlıq əvvəlinə düşən saatı silir:
+    # "09:41 Müəllimlərin..." -> "Müəllimlərin..."
+    title = re.sub(r"^\d{1,2}[:.]\d{2}\s+", "", title)
+
+    # Bəzi saytlarda kateqoriya və saat tire ilə gəlir:
+    # "SOSİAL - 09:41 - Başlıq" kimi halları da təmizləyir.
+    title = re.sub(r"^[-–—|]+\s*", "", title)
+    title = re.sub(r"^\d{1,2}[:.]\d{2}\s*[-–—|]?\s*", "", title)
+
+    return clean_text(title)
+
+
+def clean_matched_keywords(keywords):
+    cleaned = []
+    seen = set()
+
+    for keyword in keywords or []:
+        normalized = normalize_text(keyword)
+        if not normalized:
+            continue
+
+        # Kateqoriya adları açar söz kimi göstərilməsin.
+        if normalized in NEWS_CATEGORIES:
+            continue
+
+        if normalized in seen:
+            continue
+
+        seen.add(normalized)
+        cleaned.append(keyword)
+
+    return cleaned
 
 
 def normalize_text(text):
@@ -599,13 +647,18 @@ def add_item(results, page_url, title, link, keywords):
     if not is_article_like_link(link):
         return
 
-    matched, matched_keywords = keyword_match(title, keywords)
+    # Açar söz yoxlamasında başlıq əvvəlinə düşən kateqoriya və saat nəzərə alınmır.
+    # Məsələn: "SOSİAL 09:41 Müəllimlərin..." -> "Müəllimlərin..."
+    title_for_keyword = clean_title_for_message(title)
+    matched, matched_keywords = keyword_match(title_for_keyword, keywords)
+    matched_keywords = clean_matched_keywords(matched_keywords)
 
-    if not matched:
+    if not matched_keywords:
         return
 
     results.append({
         "title": title,
+        "clean_title": title_for_keyword,
         "link": link,
         "source": get_domain(page_url),
         "matched_keywords": matched_keywords
@@ -819,13 +872,15 @@ def process_site(index, total, site, patterns_data):
             result["reason"] = "old_news"
             continue
 
+        clean_title = item.get("clean_title") or clean_title_for_message(title)
+        matched_keywords = clean_matched_keywords(matched_keywords)
         matched_keywords_text = ", ".join(matched_keywords) if matched_keywords else "Açar söz tapılmadı"
 
         message = f"""
 🆕 Yeni uyğun xəbər
 
 📌 Başlıq:
-{title}
+{clean_title}
 
 🌐 Mənbə:
 {source}
