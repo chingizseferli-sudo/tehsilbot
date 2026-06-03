@@ -39,9 +39,7 @@ KEYWORDS_FILE = "keywords.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
 
 STRICT_WORDS = {
-    "dim", "tkta", "arti", "pisa", "timss", "pirls", "bağça", "lisey", "kollec",
-    "rektor", "dekan", "magistr", "doktorant", "abituriyent", "tələbə", "şagird",
-    "müəllim", "məktəb", "sinif", "dərs", "elm"
+    "dim", "tkta", "arti", "pisa", "timss", "pirls", "bağça", "magistr", "elm", "miq", "diplom"
 }
 
 NEWS_CATEGORIES = {
