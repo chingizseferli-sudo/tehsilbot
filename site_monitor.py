@@ -6,6 +6,7 @@ import re
 import time
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import feedparser
 import requests
 from bs4 import BeautifulSoup
 from lxml import html
@@ -357,6 +358,7 @@ def load_sites():
                 all_sites.append({
                     "name": site.get("name") or get_domain(url),
                     "url": url,
+                    "rss_url": clean_text(site.get("rss_url", "")),
                     "xpaths": xpaths,
                     "selector": site.get("selector"),
                     "keywords": extract_keywords_from_rules(site),
@@ -776,6 +778,115 @@ def add_item(results, page_url, title, link, keywords):
     })
 
 
+
+def discover_rss_links(page_url, page_html):
+    rss_links = []
+
+    try:
+        soup = BeautifulSoup(page_html, "html.parser")
+
+        for tag in soup.find_all("link", href=True):
+            tag_type = (tag.get("type") or "").lower()
+            tag_title = (tag.get("title") or "").lower()
+            href = tag.get("href")
+
+            if not href:
+                continue
+
+            if "rss" in tag_type or "atom" in tag_type or "rss" in tag_title or "feed" in tag_title:
+                rss_links.append(urljoin(page_url, href))
+
+        root = f"{urlparse(page_url).scheme}://{urlparse(page_url).netloc}"
+
+        common_paths = [
+            "/rss",
+            "/rss.xml",
+            "/feed",
+            "/feed.xml",
+            "/atom.xml",
+            "/az/rss",
+            "/az/rss.xml",
+            "/az/feed",
+            "/az/feed.xml",
+            "/xeberler/rss",
+            "/news/rss",
+        ]
+
+        for path in common_paths:
+            rss_links.append(urljoin(root, path))
+
+    except Exception as e:
+        print(f"RSS link axtarışı xətası: {page_url} | {e}", flush=True)
+
+    return list(dict.fromkeys([x for x in rss_links if x and x.startswith("http")]))[:8]
+
+
+def extract_links_from_rss(site, rss_urls):
+    results = []
+    keywords = site.get("keywords", [])
+    page_url = site["url"]
+
+    for rss_url in rss_urls:
+        if not rss_url:
+            continue
+
+        try:
+            response = requests.get(
+                rss_url,
+                headers={
+                    "User-Agent": "Mozilla/5.0",
+                    "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8",
+                    "Referer": "https://www.google.com/",
+                },
+                timeout=REQUEST_TIMEOUT,
+                allow_redirects=True,
+            )
+
+            if response.status_code != 200:
+                continue
+
+            feed = feedparser.parse(response.text)
+
+            if not feed.entries:
+                continue
+
+            print(
+                f"RSS tapıldı: {rss_url} | xəbər sayı: {len(feed.entries)}",
+                flush=True
+            )
+
+            before_count = len(results)
+
+            for entry in feed.entries[:MAX_LINKS_PER_SITE * 3]:
+                title = clean_text(entry.get("title", ""))
+                link = entry.get("link", "")
+
+                add_item(results, page_url, title, link, keywords)
+
+                if results:
+                    last = results[-1]
+                    if last.get("link") == link or last.get("title") == title:
+                        last["rss_published"] = (
+                            entry.get("published")
+                            or entry.get("updated")
+                            or entry.get("created")
+                            or ""
+                        )
+
+                if len(results) >= MAX_LINKS_PER_SITE:
+                    break
+
+            added = len(results) - before_count
+            if added > 0:
+                print(f"RSS uyğun namizəd verdi: {site.get('name')} | {added}", flush=True)
+                break
+
+        except Exception as e:
+            print(f"RSS oxuma xətası: {rss_url} | {e}", flush=True)
+            continue
+
+    return unique_items(results)[:MAX_LINKS_PER_SITE]
+
 def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
     results = []
 
@@ -869,6 +980,7 @@ def extract_links_fallback(page_url, page_html, keywords):
 
 def fetch_site(site, patterns_data):
     page_url = site["url"]
+    rss_url = clean_text(site.get("rss_url", ""))
     selector = site.get("selector")
     xpaths = site.get("xpaths", [])
     keywords = site.get("keywords", [])
@@ -878,6 +990,13 @@ def fetch_site(site, patterns_data):
         "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8",
         "Referer": "https://www.google.com/"
     }
+
+    # 1) Əgər config-də rss_url varsa, əvvəl RSS yoxlanılır.
+    if rss_url:
+        print(f"RSS-first yoxlanır: {rss_url}", flush=True)
+        items = extract_links_from_rss(site, [rss_url])
+        if items:
+            return unique_items(items)
 
     try:
         print(f"Sayt açılır: {page_url}", flush=True)
@@ -898,6 +1017,15 @@ def fetch_site(site, patterns_data):
     domain = get_domain(page_url)
     site_patterns = patterns_data.get(domain, [])
 
+    # 2) Config-də rss_url yoxdursa, səhifənin içindən RSS tapmağa çalışırıq.
+    if not rss_url:
+        discovered_rss = discover_rss_links(page_url, page_html)
+        if discovered_rss:
+            items = extract_links_from_rss(site, discovered_rss)
+            if items:
+                return unique_items(items)
+
+    # 3) RSS nəticə vermirsə, əvvəlki mexanizmlər eyni qaydada işləyir.
     items = []
 
     if selector:
@@ -962,11 +1090,12 @@ def process_site(index, total, site, patterns_data):
             continue
 
         title_time = parse_datetime_to_baku(title)
-        article_time = extract_publish_time_from_article(link)
+        rss_time = item.get("rss_published")
+        article_time = rss_time or extract_publish_time_from_article(link)
         published_time = choose_publish_time(title, article_time)
 
         print(
-            f"[{index}/{total}] Xəbər: {title[:80]} | title_tarix: {title_time} | article_tarix: {article_time} | seçilən tarix: {published_time} | Link: {link}",
+            f"[{index}/{total}] Xəbər: {title[:80]} | title_tarix: {title_time} | rss_tarix: {rss_time} | article_tarix: {article_time} | seçilən tarix: {published_time} | Link: {link}",
             flush=True
         )
 
