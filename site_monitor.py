@@ -52,6 +52,39 @@ NEWS_CATEGORIES = {
 DB_LOCK = threading.Lock()
 TELEGRAM_LOCK = threading.Lock()
 
+def load_health():
+    try:
+        with open(HEALTH_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def save_health(data):
+    try:
+        with open(HEALTH_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        print("Health save xətası:", e, flush=True)
+
+def update_site_health(domain, status):
+    health = load_health()
+
+    if domain not in health:
+        health[domain] = {
+            "checked": 0,
+            "success": 0,
+            "no_candidate": 0,
+            "error": 0,
+            "last_check": None
+        }
+
+    health[domain]["checked"] += 1
+    health[domain]["last_check"] = datetime.now(BAKU_TZ).isoformat()
+
+    if status in health[domain]:
+        health[domain][status] += 1
+
+    save_health(health)
 
 def supabase_headers(extra=None):
     headers = {
