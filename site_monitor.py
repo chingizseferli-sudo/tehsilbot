@@ -1,5 +1,5 @@
 print("PYTHON STARTED", flush=True)
-
+HEALTH_FILE = "site_health.json"
 import json
 import os
 import re
