@@ -4,7 +4,6 @@ import json
 import os
 import re
 import time
-import sqlite3
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import requests
@@ -18,6 +17,8 @@ from zoneinfo import ZoneInfo
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 CHAT_ID = os.getenv("CHAT_ID", "").strip()
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
 
 CHECK_INTERVAL_SECONDS = 60
 MAX_SEND_PER_RUN = 10
@@ -32,7 +33,6 @@ CONFIG_FILES = [
 ]
 
 PATTERNS_FILE = "patterns.json"
-DB_FILE = "site_monitor.db"
 KEYWORDS_FILE = "keywords.json"
 
 BAKU_TZ = ZoneInfo("Asia/Baku")
@@ -52,17 +52,23 @@ NEWS_CATEGORIES = {
 DB_LOCK = threading.Lock()
 TELEGRAM_LOCK = threading.Lock()
 
-conn = sqlite3.connect(DB_FILE, check_same_thread=False)
-cursor = conn.cursor()
 
-cursor.execute("""
-CREATE TABLE IF NOT EXISTS posts (
-    link TEXT PRIMARY KEY,
-    title TEXT,
-    source TEXT
-)
-""")
-conn.commit()
+def supabase_headers(extra=None):
+    headers = {
+        "apikey": SUPABASE_SERVICE_ROLE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+        "Content-Type": "application/json",
+    }
+    if extra:
+        headers.update(extra)
+    return headers
+
+
+def supabase_ready():
+    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        print("SUPABASE_URL və ya SUPABASE_SERVICE_ROLE_KEY yoxdur. Təkrar xəbər bazası işləməyəcək.", flush=True)
+        return False
+    return True
 
 
 def load_keywords():
@@ -117,22 +123,21 @@ def clean_text(text):
 def clean_title_for_message(title):
     title = clean_text(title)
 
-    # Kateqoriyalar
-    title = re.sub(
-        r"^(SOSİAL|SİYASƏT|HADİSƏ|CƏMİYYƏT|İQTİSADİYYAT|DÜNYA|ÖLKƏ|TƏHSİL|ELM|MƏDƏNİYYƏT|İDMAN|KRİMİNAL)\s+",
-        "",
-        title,
-        flags=re.IGNORECASE
-    )
+    # Başlıq əvvəlinə düşən kateqoriyanı silir:
+    # "SOSİAL 09:41 ..." -> "09:41 ..."
+    category_pattern = r"^(" + "|".join(re.escape(c) for c in NEWS_CATEGORIES) + r")\s+"
+    title = re.sub(category_pattern, "", title, flags=re.IGNORECASE)
 
-    # Başdakı saat
-    title = re.sub(
-        r"^\d{1,2}[:.]\d{2}\s+",
-        "",
-        title
-    )
+    # Başlıq əvvəlinə düşən saatı silir:
+    # "09:41 Müəllimlərin..." -> "Müəllimlərin..."
+    title = re.sub(r"^\d{1,2}[:.]\d{2}\s+", "", title)
 
-    # Sondakı: 3 iyn 2026, 11:53
+    # Tire/ayırıcı qalıqları silir.
+    title = re.sub(r"^[-–—|]+\s*", "", title)
+    title = re.sub(r"^\d{1,2}[:.]\d{2}\s*[-–—|]?\s*", "", title)
+
+    # Başlığın sonunda qalan tarix+saatı silir:
+    # "... 3 iyn 2026, 11:53"
     title = re.sub(
         r"\s+\d{1,2}\s+[a-zəöğıçşü]+\s+\d{4}\s*,?\s*\d{1,2}[:.]\d{2}$",
         "",
@@ -140,14 +145,16 @@ def clean_title_for_message(title):
         flags=re.IGNORECASE
     )
 
-    # Sondakı: 03.06.2026 11:53
+    # Başlığın sonunda qalan rəqəmli tarix+saatı silir:
+    # "... 03.06.2026 11:53"
     title = re.sub(
         r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{4}\s+\d{1,2}[:.]\d{2}$",
         "",
         title
     )
 
-    # Sondakı: 03.06.2026
+    # Başlığın sonunda tək tarix qalıbsa silir:
+    # "... 03.06.2026"
     title = re.sub(
         r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{4}$",
         "",
@@ -190,18 +197,66 @@ def get_domain(url):
 
 
 def exists(link):
-    with DB_LOCK:
-        cursor.execute("SELECT link FROM posts WHERE link=?", (link,))
-        return cursor.fetchone() is not None
+    if not supabase_ready():
+        return False
+
+    try:
+        with DB_LOCK:
+            response = requests.get(
+                f"{SUPABASE_URL}/rest/v1/sent_news",
+                headers=supabase_headers(),
+                params={
+                    "select": "link",
+                    "link": f"eq.{link}",
+                    "limit": "1",
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+
+        if response.status_code != 200:
+            print(f"Supabase exists xətası: {response.status_code} | {response.text[:200]}", flush=True)
+            return False
+
+        return bool(response.json())
+
+    except Exception as e:
+        print(f"Supabase exists istisnası: {e}", flush=True)
+        return False
 
 
 def save(link, title, source):
-    with DB_LOCK:
-        cursor.execute(
-            "INSERT OR IGNORE INTO posts (link, title, source) VALUES (?, ?, ?)",
-            (link, title, source)
-        )
-        conn.commit()
+    if not supabase_ready():
+        return False
+
+    payload = {
+        "link": link,
+        "title": clean_text(title),
+        "source": source,
+    }
+
+    try:
+        with DB_LOCK:
+            response = requests.post(
+                f"{SUPABASE_URL}/rest/v1/sent_news",
+                headers=supabase_headers({"Prefer": "return=minimal"}),
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+            )
+
+        if response.status_code in (200, 201, 204):
+            print("Supabase yazıldı: sent_news", flush=True)
+            return True
+
+        if response.status_code == 409:
+            print("Supabase: xəbər artıq bazada var", flush=True)
+            return True
+
+        print(f"Supabase save xətası: {response.status_code} | {response.text[:300]}", flush=True)
+        return False
+
+    except Exception as e:
+        print(f"Supabase save istisnası: {e}", flush=True)
+        return False
 
 
 def unique_items(items):
@@ -1020,6 +1075,8 @@ def check_sites():
 
 
 print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
+if supabase_ready():
+    print("✅ Supabase bağlantı məlumatları yükləndi", flush=True)
 send_telegram("✅ Bot işə düşdü və saytları yoxlamağa başladı.")
 
 while True:
