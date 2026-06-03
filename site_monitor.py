@@ -117,19 +117,42 @@ def clean_text(text):
 def clean_title_for_message(title):
     title = clean_text(title)
 
-    # Başlıq əvvəlinə düşən kateqoriyanı silir:
-    # "SOSİAL 09:41 ..." -> "09:41 ..."
-    category_pattern = r"^(" + "|".join(re.escape(c) for c in NEWS_CATEGORIES) + r")\s+"
-    title = re.sub(category_pattern, "", title, flags=re.IGNORECASE)
+    # Kateqoriyalar
+    title = re.sub(
+        r"^(SOSİAL|SİYASƏT|HADİSƏ|CƏMİYYƏT|İQTİSADİYYAT|DÜNYA|ÖLKƏ|TƏHSİL|ELM|MƏDƏNİYYƏT|İDMAN|KRİMİNAL)\s+",
+        "",
+        title,
+        flags=re.IGNORECASE
+    )
 
-    # Başlıq əvvəlinə düşən saatı silir:
-    # "09:41 Müəllimlərin..." -> "Müəllimlərin..."
-    title = re.sub(r"^\d{1,2}[:.]\d{2}\s+", "", title)
+    # Başdakı saat
+    title = re.sub(
+        r"^\d{1,2}[:.]\d{2}\s+",
+        "",
+        title
+    )
 
-    # Bəzi saytlarda kateqoriya və saat tire ilə gəlir:
-    # "SOSİAL - 09:41 - Başlıq" kimi halları da təmizləyir.
-    title = re.sub(r"^[-–—|]+\s*", "", title)
-    title = re.sub(r"^\d{1,2}[:.]\d{2}\s*[-–—|]?\s*", "", title)
+    # Sondakı: 3 iyn 2026, 11:53
+    title = re.sub(
+        r"\s+\d{1,2}\s+[a-zəöğıçşü]+\s+\d{4}\s*,?\s*\d{1,2}[:.]\d{2}$",
+        "",
+        title,
+        flags=re.IGNORECASE
+    )
+
+    # Sondakı: 03.06.2026 11:53
+    title = re.sub(
+        r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{4}\s+\d{1,2}[:.]\d{2}$",
+        "",
+        title
+    )
+
+    # Sondakı: 03.06.2026
+    title = re.sub(
+        r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{4}$",
+        "",
+        title
+    )
 
     return clean_text(title)
 
