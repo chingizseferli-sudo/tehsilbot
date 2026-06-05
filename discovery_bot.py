@@ -13,8 +13,8 @@ DISCOVERED_FILE = "discovered_sites.json"
 CONFIG_FILE = "courier_config_clean.json"
 REVIEW_FILE = "review_sites.json"
 REJECTED_FILE = "rejected_sites.json"
-KEYWORDS_FILE = "keywords.json"
 PATTERNS_FILE = "patterns.json"
+KEYWORDS_FILE = "keywords.json"
 
 REQUEST_TIMEOUT = 12
 
@@ -24,71 +24,61 @@ HEADERS = {
 }
 
 DEFAULT_KEYWORDS = [
-    "təhsil", "məktəb", "müəllim", "şagird", "tələbə", "universitet",
-    "imtahan", "dim", "miq", "sertifikasiya", "magistratura", "doktorantura",
-    "olimpiada", "arti", "tkta", "elm", "dərs", "sinif",
+    "təhsil", "elm", "məktəb", "şagird", "müəllim", "universitet",
+    "imtahan", "tələbə", "magistratura", "sertifikasiya", "olimpiada",
+    "dim", "tkta", "arti", "kurikulum", "dərs", "sinif", "miq",
 ]
 
-# Discovery-nin əsas məqsədi artıq təhsil sözü ilə sayt tapmaq deyil.
-# Əvvəl xəbər saytlarını/RSS-ləri tapırıq, sonra açar söz uyğunluğunu əlavə score kimi yoxlayırıq.
-NEWS_DISCOVERY_QUERIES_FAST = [
+# Məqsəd: əvvəlcə xəbər saytını tapmaq. Açar söz ikinci mərhələdir.
+GENERAL_NEWS_QUERIES_FAST = [
     "Azərbaycan xəbər saytı",
     "Azərbaycan xəbər portalı",
     "son xəbərlər Azərbaycan",
-    "azərbaycan xəbərləri",
     "site:.az xəbər",
-    "site:.az xeber",
     "site:.az xəbərlər",
+    "site:.az xeber",
     "site:.az xeberler",
-    "site:.az news",
-    "site:.az media",
-    "site:.az son xəbərlər",
     "site:.az son xeberler",
-    "site:.az gündəm",
+    "site:.az media",
+    "site:.az news",
+    "site:.az latest news",
+    "site:.az RSS xəbər",
 ]
 
-NEWS_DISCOVERY_QUERIES_DEEP = NEWS_DISCOVERY_QUERIES_FAST + [
-    "Azərbaycan online xəbər portalı",
-    "Azərbaycan media portalı",
-    "Azərbaycan internet qəzeti",
-    "Azərbaycan informasiya agentliyi",
-    "site:.az all-news",
-    "site:.az latest",
-    "site:.az latest news",
-    "site:.az xəbərlər media",
-    "site:.az xeberler media",
+GENERAL_NEWS_QUERIES_DEEP = GENERAL_NEWS_QUERIES_FAST + [
+    "site:.az gündəm xəbərləri",
     "site:.az sosial xəbərlər",
     "site:.az cəmiyyət xəbərləri",
-    "site:.az təhsil xəbərləri",
-    "site:.az məktəb xəbərləri",
-    "site:.az müəllim xəbərləri",
-    "site:.az tələbə xəbərləri",
-    "site:.az universitet xəbərləri",
-    "site:.edu.az xəbər",
+    "site:.az region xəbərləri",
+    "site:.az ölkə xəbərləri",
+    "site:.az dünya xəbərləri",
+    "site:.az iqtisadiyyat xəbərləri",
+    "site:.az science news",
+    "site:.az education news",
     "site:.edu.az xəbərlər",
     "site:.edu.az news",
     "site:.edu.az media",
+    "site:.edu.az tələbə",
+    "site:.edu.az universitet xəbərləri",
 ]
 
-COMMON_NEWS_PATHS_FAST = [
-    "/news", "/xeber", "/xeberler", "/xəbərlər", "/media", "/media/news",
-    "/az/news", "/az/xeber", "/az/xeberler", "/az/xəbərlər",
-    "/son-xeberler", "/son-xeber", "/latest", "/all-news", "/allnews",
+EDU_CHECK_QUERIES_FAST = [
+    "təhsil xəbərləri Azərbaycan",
+    "məktəb xəbərləri Azərbaycan",
+    "müəllim xəbərləri Azərbaycan",
+    "şagird xəbərləri Azərbaycan",
+    "imtahan xəbərləri Azərbaycan",
+    "universitet xəbərləri Azərbaycan",
 ]
 
-COMMON_NEWS_PATHS_DEEP = COMMON_NEWS_PATHS_FAST + [
-    "/news/", "/xeber/", "/xeberler/", "/xəbərlər/", "/media/", "/media/news/",
-    "/az/news/", "/az/xeber/", "/az/xeberler/", "/az/xəbərlər/",
-    "/lastnews", "/newsarchive", "/az/newsarchive", "/p/news",
-    "/category/news", "/kateqoriya/xeberler", "/press", "/press-center",
-    "/press-centre", "/announcements", "/updates", "/az/updates",
-    "/tehsil", "/elm", "/elm-ve-tehsil",
-]
-
-RSS_PATHS = [
-    "/rss", "/rss.xml", "/feed", "/feed.xml", "/atom.xml",
-    "/az/rss", "/az/rss.xml", "/az/feed", "/az/feed.xml",
-    "/rss/all", "/rss/news", "/feed/news",
+EDU_CHECK_QUERIES_DEEP = EDU_CHECK_QUERIES_FAST + [
+    "DİM xəbərləri",
+    "MİQ xəbərləri",
+    "sertifikasiya müəllim xəbərləri",
+    "ali təhsil xəbərləri",
+    "peşə təhsili xəbərləri",
+    "tələbə xəbərləri",
+    "elm xəbərləri Azərbaycan",
 ]
 
 NEWS_SECTION_WORDS = [
@@ -98,22 +88,49 @@ NEWS_SECTION_WORDS = [
     "news", "latest", "latest news", "all news", "updates", "announcements",
 ]
 
+COMMON_NEWS_PATHS_FAST = [
+    "/news", "/xeber", "/xeberler", "/xəbərlər", "/media/news",
+    "/az/news", "/az/xeber", "/az/xeberler", "/az/xəbərlər",
+    "/son-xeberler", "/latest", "/all-news", "/media",
+]
+
+COMMON_NEWS_PATHS_DEEP = [
+    "/news", "/news/", "/xeber", "/xeber/", "/xeberler", "/xeberler/",
+    "/xəbərlər", "/xəbərlər/", "/az/news", "/az/news/", "/az/xeber",
+    "/az/xeber/", "/az/xeberler", "/az/xeberler/", "/az/xəbərlər",
+    "/az/xəbərlər/", "/media", "/media/news", "/media/news/", "/az/media",
+    "/az/media/news", "/az/media/news/", "/all-news", "/allnews", "/latest",
+    "/lastnews", "/son-xeberler", "/son-xeberler/", "/newsarchive",
+    "/az/newsarchive", "/p/news", "/tehsil", "/elm", "/elm-ve-tehsil",
+    "/press-relizler", "/press-release", "/announcements", "/elanlar", "/updates",
+]
+
+RSS_PATHS = [
+    "/rss", "/rss.xml", "/feed", "/feed.xml", "/atom.xml",
+    "/az/rss", "/az/rss.xml", "/az/feed", "/az/feed.xml",
+    "/rss/index.xml", "/feed/index.xml",
+]
+
 BAD_DOMAINS = [
     "facebook.com", "instagram.com", "youtube.com", "youtu.be", "t.me",
     "twitter.com", "x.com", "linkedin.com", "whatsapp.com", "google.com",
-    "wikipedia.org", "amazon.", "apple.com", "microsoft.com",
+    "news.google.com", "maps.google.com",
 ]
 
-BAD_WORDS = [
+# gov istənmir. Tam qadağa qoyuruq ki, discovery gov mənbələrini toplamasın.
+BLOCKED_DOMAIN_PARTS = [".gov.az"]
+
+BAD_URL_WORDS = [
     "facebook", "instagram", "youtube", "telegram", "login", "register",
     "search", "contact", "about", "elaqe", "haqqimizda", "reklam",
     "tag", "author", "wp-content", "uploads", "cdn-cgi", "pdf", "docx",
+    "privacy", "terms", "sitemap", "javascript:", "mailto:",
 ]
 
 ARTICLE_HINTS = [
     "/news/", "/xeber/", "/xeberler/", "/xəbərlər/", "/post/", "/article/",
-    "/read/", "/item/", "/son-xeber/", "/sosial/", "/cemiyyet/",
-    "/politika/", "/iqtisadiyyat/", "/dunya/", "/hadise/", "/gundem/",
+    "/read/", "/item/", "/son-xeber/", "/sosial/", "/cemiyyet/", "/cəmiyyət/",
+    "/hadise/", "/dunya/", "/ölke/", "/olke/", "/iqtisadiyyat/",
     "/education/", "/tehsil/", "/elm/", "/2024/", "/2025/", "/2026/",
 ]
 
@@ -132,22 +149,20 @@ BAD_PATTERNS = [
 def get_mode_settings(mode: str) -> dict:
     if mode == "deep":
         return {
-            "max_queries": 120,
+            "max_queries": 140,
             "max_entries_per_query": 80,
             "max_sections_per_source": 5,
-            "sleep": 0.18,
+            "sleep": 0.20,
             "paths": COMMON_NEWS_PATHS_DEEP,
-            "check_home_links": True,
             "build_patterns": True,
         }
 
     return {
-        "max_queries": 40,
+        "max_queries": 55,
         "max_entries_per_query": 40,
         "max_sections_per_source": 3,
         "sleep": 0.10,
         "paths": COMMON_NEWS_PATHS_FAST,
-        "check_home_links": True,
         "build_patterns": False,
     }
 
@@ -211,7 +226,20 @@ def is_bad_domain(url: str) -> bool:
     domain = clean_domain(url)
     if not domain:
         return True
-    return any(bad in domain for bad in BAD_DOMAINS)
+    if any(bad in domain for bad in BAD_DOMAINS):
+        return True
+    if any(part in domain for part in BLOCKED_DOMAIN_PARTS):
+        return True
+    return False
+
+
+def is_bad_url(url: str) -> bool:
+    u = str(url or "").lower()
+    if not u.startswith("http"):
+        return True
+    if any(bad in u for bad in BAD_URL_WORDS):
+        return True
+    return is_bad_domain(url)
 
 
 def google_news_rss(query: str) -> str:
@@ -223,30 +251,56 @@ def google_news_rss(query: str) -> str:
 
 
 def build_search_queries(mode: str) -> list[str]:
-    queries = NEWS_DISCOVERY_QUERIES_DEEP if mode == "deep" else NEWS_DISCOVERY_QUERIES_FAST
-    # Gov istənmir, ona görə qəti süzgəc.
-    return [q for q in queries if "gov" not in q.lower()]
+    queries = []
+    base_queries = GENERAL_NEWS_QUERIES_DEEP if mode == "deep" else GENERAL_NEWS_QUERIES_FAST
+    edu_queries = EDU_CHECK_QUERIES_DEEP if mode == "deep" else EDU_CHECK_QUERIES_FAST
+
+    # 1) Birinci hədəf: xəbər saytları.
+    queries.extend(base_queries)
+
+    # 2) İkinci hədəf: təhsil xəbəri verən saytları da qaçırmamaq.
+    queries.extend(edu_queries)
+
+    # 3) Açar sözlərin bəzilərindən əlavə sorğular düzəldirik, amma saytı yox, xəbər infrastrukturunu tapmaq üçün.
+    if mode == "deep":
+        for keyword in KEYWORDS[:40]:
+            queries.append(f"site:.az {keyword} xəbər")
+            queries.append(f"site:.az {keyword} xəbərlər")
+
+    out = []
+    seen = set()
+    for q in queries:
+        q = clean_text(q)
+        if not q:
+            continue
+        if "gov" in q.lower():
+            continue
+        if q.lower() in seen:
+            continue
+        seen.add(q.lower())
+        out.append(q)
+    return out
 
 
 def looks_like_news_url(url: str) -> bool:
     u = url.lower()
-    if any(bad in u for bad in BAD_WORDS):
+    if any(bad in u for bad in BAD_URL_WORDS):
         return False
     return any(hint in u for hint in [
         "news", "xeber", "xeberler", "xəbər", "xəbərlər", "media/news",
         "all-news", "allnews", "latest", "lastnews", "son-xeber", "newsarchive",
-        "p/news", "press", "gundem", "cemiyyet", "sosial",
+        "p/news", "press", "announcements", "updates",
     ])
 
 
 def is_article_like_url(url: str) -> bool:
     u = url.lower()
-    if any(bad in u for bad in BAD_WORDS):
+    if any(bad in u for bad in BAD_URL_WORDS):
         return False
     return any(hint in u for hint in ARTICLE_HINTS)
 
 
-def discover_rss_links(session: requests.Session, page_url: str, page_html: str | None = None) -> list[str]:
+def discover_rss_links(page_url: str, page_html: str | None = None) -> list[str]:
     rss_links = []
     root = base_url(page_url)
 
@@ -265,116 +319,113 @@ def discover_rss_links(session: requests.Session, page_url: str, page_html: str 
     for path in RSS_PATHS:
         rss_links.append(urljoin(root, path))
 
-    return list(dict.fromkeys(rss_links))[:10]
+    cleaned = []
+    for rss in rss_links:
+        if rss and rss.startswith("http") and rss not in cleaned and not is_bad_url(rss):
+            cleaned.append(rss)
+    return cleaned[:10]
 
 
-def test_rss(session: requests.Session, rss_url: str) -> tuple[bool, int, int]:
+def test_rss(session: requests.Session, rss_url: str) -> tuple[bool, int]:
     try:
         r = session.get(rss_url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
         if r.status_code != 200 or not r.text:
-            return False, 0, 0
+            return False, 0
         feed = feedparser.parse(r.text)
-        entries = feed.entries or []
-        count = len(entries)
-        keyword_hits = 0
-        for entry in entries[:20]:
-            text = f"{entry.get('title', '')} {entry.get('summary', '')}".lower()
-            if any(k in text for k in KEYWORDS):
-                keyword_hits += 1
-        return count >= 3, count, keyword_hits
+        count = len(feed.entries or [])
+        return count >= 3, count
     except Exception:
-        return False, 0, 0
+        return False, 0
 
 
-def find_working_rss(session: requests.Session, page_url: str, page_html: str | None = None) -> tuple[str | None, int, int]:
-    best_url = None
-    best_count = 0
-    best_hits = 0
-    for rss_url in discover_rss_links(session, page_url, page_html):
-        ok, count, hits = test_rss(session, rss_url)
-        if ok and count > best_count:
-            best_url = rss_url
-            best_count = count
-            best_hits = hits
-    return best_url, best_count, best_hits
+def find_working_rss(session: requests.Session, page_url: str, page_html: str | None = None) -> tuple[str | None, int]:
+    for rss_url in discover_rss_links(page_url, page_html):
+        ok, count = test_rss(session, rss_url)
+        if ok:
+            return rss_url, count
+    return None, 0
 
 
-def page_has_news_links(session: requests.Session, url: str) -> tuple[bool, int, int]:
+def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int, str]:
+    """Return: has_news, news_link_count, edu_keyword_count, html_text"""
     try:
         r = session.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
         if r.status_code != 200:
-            return False, 0, 0
+            return False, 0, 0, ""
 
-        soup = BeautifulSoup(r.text, "html.parser")
+        html_text = r.text or ""
+        soup = BeautifulSoup(html_text, "html.parser")
         news_count = 0
-        keyword_hits = 0
+        edu_count = 0
 
         for a in soup.find_all("a", href=True):
             text = clean_text(a.get_text(" ", strip=True))
             href = urljoin(url, a["href"]).split("#")[0]
 
-            if len(text) < 15:
+            if len(text) < 12:
                 continue
             if clean_domain(href) != clean_domain(url):
+                continue
+            if is_bad_url(href):
                 continue
 
             combined = f"{text.lower()} {href.lower()}"
             if looks_like_news_url(href) or is_article_like_url(href):
                 news_count += 1
             if any(k in combined for k in KEYWORDS):
-                keyword_hits += 1
+                edu_count += 1
 
-            if news_count >= 8:
-                return True, news_count, keyword_hits
+            if news_count >= 20 and edu_count >= 3:
+                return True, news_count, edu_count, html_text
 
-        return news_count >= 3, news_count, keyword_hits
+        return news_count >= 3, news_count, edu_count, html_text
     except Exception:
-        return False, 0, 0
+        return False, 0, 0, ""
 
 
 def find_news_sections(session: requests.Session, source_url: str, settings: dict) -> list[str]:
     root = base_url(source_url)
-    if not root:
+    if not root or is_bad_url(root):
         return []
 
     found = []
 
-    ok, _count, _hits = page_has_news_links(session, source_url)
+    ok, _news_count, _edu_count, _html = page_news_stats(session, source_url)
     if looks_like_news_url(source_url) and ok:
         found.append(source_url.rstrip("/"))
 
     for path in settings["paths"]:
         candidate = urljoin(root, path).rstrip("/")
-        if candidate in found:
+        if candidate in found or is_bad_url(candidate):
             continue
-        ok, _count, _hits = page_has_news_links(session, candidate)
+        ok, _news_count, _edu_count, _html = page_news_stats(session, candidate)
         if ok:
             found.append(candidate)
         if len(found) >= settings["max_sections_per_source"]:
             return found
 
-    if settings["check_home_links"]:
-        try:
-            r = session.get(root, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
-            if r.status_code == 200:
-                soup = BeautifulSoup(r.text, "html.parser")
-                for a in soup.find_all("a", href=True):
-                    text = clean_text(a.get_text(" ", strip=True)).lower()
-                    href = urljoin(root, a["href"]).split("#")[0].rstrip("/")
-                    if clean_domain(href) != clean_domain(root):
-                        continue
-                    combined = f"{text} {href.lower()}"
-                    if not any(word in combined for word in NEWS_SECTION_WORDS):
-                        continue
-                    if href in found:
-                        continue
-                    ok, _count, _hits = page_has_news_links(session, href)
-                    if ok:
-                        found.append(href)
-                    if len(found) >= settings["max_sections_per_source"]:
-                        break
-        except Exception:
-            pass
+    # Ana səhifədən “Xəbərlər / Media / News” linklərini tap.
+    try:
+        r = session.get(root, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+        if r.status_code == 200:
+            soup = BeautifulSoup(r.text, "html.parser")
+            for a in soup.find_all("a", href=True):
+                text = clean_text(a.get_text(" ", strip=True)).lower()
+                href = urljoin(root, a["href"]).split("#")[0].rstrip("/")
+                if href in found or is_bad_url(href):
+                    continue
+                if clean_domain(href) != clean_domain(root):
+                    continue
+                combined = f"{text} {href.lower()}"
+                if not any(word in combined for word in NEWS_SECTION_WORDS):
+                    continue
+                ok, _news_count, _edu_count, _html = page_news_stats(session, href)
+                if ok:
+                    found.append(href)
+                if len(found) >= settings["max_sections_per_source"]:
+                    break
+    except Exception:
+        pass
 
     return found
 
@@ -399,9 +450,10 @@ def guess_selector_and_xpath(session: requests.Session, url: str) -> tuple[str |
             for a in links[:5]:
                 href = urljoin(url, a.get("href"))
                 title = clean_text(a.get_text(" ", strip=True))
-                if len(title) >= 15 and clean_domain(href) == clean_domain(url) and is_article_like_url(href):
-                    has_article_link = True
-                    break
+                if len(title) >= 12 and clean_domain(href) == clean_domain(url) and not is_bad_url(href):
+                    if is_article_like_url(href) or looks_like_news_url(href):
+                        has_article_link = True
+                        break
 
             if not has_article_link:
                 continue
@@ -448,53 +500,71 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
     xpaths = []
     rss_url = None
     rss_count = 0
-    rss_keyword_hits = 0
     news_count = 0
-    page_keyword_hits = 0
+    edu_keyword_count = 0
+    html_text = ""
 
-    try:
-        r = session.get(section_url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
-        if r.status_code != 200:
-            return base_site_result(name, section_url, 0, "rejected", f"HTTP {r.status_code}")
-        html_text = r.text
-    except Exception as e:
-        return base_site_result(name, section_url, 0, "rejected", str(e)[:150])
+    if is_bad_url(section_url):
+        return {
+            "name": name,
+            "url": section_url,
+            "enabled": True,
+            "score": 0,
+            "status": "rejected",
+            "reason": "bad_url_or_gov_blocked",
+        }
 
-    rss_url, rss_count, rss_keyword_hits = find_working_rss(session, section_url, html_text)
-    if rss_url:
-        score += 55
-        reasons.append(f"RSS tapıldı ({rss_count})")
+    ok, news_count, edu_keyword_count, html_text = page_news_stats(session, section_url)
+    if not ok:
+        return {
+            "name": name or clean_domain(section_url),
+            "url": section_url,
+            "enabled": True,
+            "score": 0,
+            "status": "rejected",
+            "reason": f"news links insufficient: {news_count}",
+        }
 
-    ok, news_count, page_keyword_hits = page_has_news_links(session, section_url)
-    if ok:
-        score += 25
+    # Xəbər saytı olması əsasdır.
+    if news_count >= 10:
+        score += 30
+        reasons.append(f"çox xəbər linki var ({news_count})")
+    elif news_count >= 5:
+        score += 22
         reasons.append(f"xəbər linkləri var ({news_count})")
+    else:
+        score += 15
+        reasons.append(f"minimum xəbər linkləri var ({news_count})")
 
-    # Açar söz ən son mərhələdir: sayt/RSS tapılandan sonra əlavə keyfiyyət balı verir.
-    keyword_hits = max(rss_keyword_hits, page_keyword_hits)
-    if keyword_hits >= 3:
-        score += 20
-        reasons.append(f"təhsil açar sözü uyğunluğu var ({keyword_hits})")
-    elif keyword_hits >= 1:
-        score += 10
-        reasons.append(f"az açar söz uyğunluğu var ({keyword_hits})")
+    rss_url, rss_count = find_working_rss(session, section_url, html_text)
+    if rss_url:
+        score += 45
+        reasons.append(f"RSS tapıldı ({rss_count})")
 
     selector, xpaths, article_count = guess_selector_and_xpath(session, section_url)
     if selector:
-        score += 12
+        score += 15
         reasons.append(f"selector tapıldı: {selector}")
     elif xpaths:
-        score += 6
+        score += 7
         reasons.append("generic xpath əlavə edildi")
+
+    # Açar söz yalnız bonusdur, saytın qəbul olunması üçün əsas şərt deyil.
+    if edu_keyword_count >= 3:
+        score += 15
+        reasons.append(f"təhsil açar sözləri var ({edu_keyword_count})")
+    elif edu_keyword_count >= 1:
+        score += 6
+        reasons.append(f"az sayda təhsil açar sözü var ({edu_keyword_count})")
 
     domain = clean_domain(section_url)
     if domain.endswith(".edu.az"):
         score += 8
         reasons.append("edu.az domeni")
 
-    if score >= 75:
+    if score >= 70:
         status = "approved"
-    elif score >= 45:
+    elif score >= 40:
         status = "review"
     else:
         status = "rejected"
@@ -507,41 +577,21 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         "selector": selector,
         "xpaths": xpaths,
         "keywords": KEYWORDS,
-        "limit": 5,
+        "limit": 10,
         "score": score,
         "status": status,
         "analysis": {
             "rss_count": rss_count,
-            "rss_keyword_hits": rss_keyword_hits,
             "news_link_count": news_count,
-            "page_keyword_hits": page_keyword_hits,
+            "education_keyword_count": edu_keyword_count,
             "article_block_count": article_count,
             "reasons": reasons,
         },
-        "source_type": "news_site_discovery_rss_first",
+        "source_type": "discovered_news_site_first",
     }
 
 
-def base_site_result(name: str, url: str, score: int, status: str, reason: str) -> dict:
-    domain = clean_domain(url)
-    return {
-        "name": name or domain,
-        "url": url.rstrip("/"),
-        "enabled": True,
-        "rss_url": None,
-        "selector": None,
-        "xpaths": [],
-        "keywords": KEYWORDS,
-        "limit": 5,
-        "score": score,
-        "status": status,
-        "analysis": {"reasons": [reason]},
-        "source_type": "news_site_discovery_rss_first",
-    }
-
-
-def collect_existing_urls_and_domains() -> tuple[set[str], set[str]]:
-    urls = set()
+def collect_existing_domains() -> set[str]:
     domains = set()
     for filename in [DISCOVERED_FILE, CONFIG_FILE, REVIEW_FILE, REJECTED_FILE]:
         data = read_json(filename, {"sites": []})
@@ -549,12 +599,10 @@ def collect_existing_urls_and_domains() -> tuple[set[str], set[str]]:
             continue
         for site in data.get("sites", []):
             url = site.get("url", "")
-            if url:
-                urls.add(normalize_url(url))
             domain = clean_domain(url)
             if domain:
                 domains.add(domain)
-    return urls, domains
+    return domains
 
 
 def append_unique(filename: str, new_sites: list[dict]) -> int:
@@ -564,15 +612,18 @@ def append_unique(filename: str, new_sites: list[dict]) -> int:
     if "sites" not in data or not isinstance(data["sites"], list):
         data["sites"] = []
 
-    existing_urls = {normalize_url(site.get("url", "")) for site in data["sites"] if site.get("url")}
-
+    # Eyni domen bir dəfə saxlanır. Hədəf sayt bazası qurmaqdır.
+    existing_domains = {clean_domain(site.get("url", "")) for site in data["sites"] if site.get("url")}
     added = 0
+
     for site in new_sites:
-        u = normalize_url(site.get("url", ""))
-        if not u or u in existing_urls:
+        d = clean_domain(site.get("url", ""))
+        if not d:
+            continue
+        if d in existing_domains:
             continue
         data["sites"].append(site)
-        existing_urls.add(u)
+        existing_domains.add(d)
         added += 1
 
     write_json(filename, data)
@@ -582,23 +633,26 @@ def append_unique(filename: str, new_sites: list[dict]) -> int:
 def discover_sites(mode: str = "fast", add_to_config: bool = False):
     settings = get_mode_settings(mode)
 
-    print("🔍 Discovery başladı", flush=True)
+    print("🔍 Discovery 2.0 başladı", flush=True)
     print("Rejim:", mode, flush=True)
     print(f"Açar söz sayı: {len(KEYWORDS)}", flush=True)
 
-    known_urls, known_domains = collect_existing_urls_and_domains()
+    known_domains = collect_existing_domains()
     processed_domains = set()
     queries = build_search_queries(mode)[:settings["max_queries"]]
     print(f"Axtarış sorğusu sayı: {len(queries)}", flush=True)
 
-    approved_sites = []
-    review_sites = []
+    # Domain üzrə ən yaxşı section-u saxlayırıq.
+    best_by_domain = {}
     rejected_sites = []
 
     session = requests.Session()
     session.headers.update(HEADERS)
 
     for query in queries:
+        if "gov" in query.lower():
+            continue
+
         print("Axtarılır:", query, flush=True)
         try:
             feed = feedparser.parse(google_news_rss(query))
@@ -619,19 +673,15 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
 
             if not source_url or not str(source_url).startswith("http"):
                 continue
-            if is_bad_domain(source_url):
-                continue
-            if "gov" in clean_domain(source_url):
+            if is_bad_url(source_url):
                 continue
 
             domain = clean_domain(source_url)
             if not domain:
                 continue
-
-            # Eyni domeni bu dövrdə təkrar analiz etmə.
-            # Amma artıq config-də varsa, yenə də fərqli URL-ləri toplamağa icazə veririk.
-            if domain in processed_domains:
+            if domain in known_domains or domain in processed_domains:
                 continue
+
             processed_domains.add(domain)
 
             sections = find_news_sections(session, source_url, settings)
@@ -640,32 +690,33 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
                 continue
 
             for section_url in sections:
-                normalized = normalize_url(section_url)
-                if normalized in known_urls:
-                    continue
-                if "gov" in clean_domain(section_url):
+                section_domain = clean_domain(section_url)
+                if not section_domain or section_domain in known_domains:
                     continue
 
-                analyzed = analyze_section(session, source_name or clean_domain(section_url), section_url)
+                analyzed = analyze_section(session, source_name or section_domain, section_url)
                 status = analyzed.get("status")
-                score = analyzed.get("score", 0)
+                score = int(analyzed.get("score", 0) or 0)
 
-                if status == "approved":
-                    approved_sites.append(analyzed)
-                    known_urls.add(normalized)
-                    print(f"✅ APPROVED {score}: {analyzed['name']} | {section_url}", flush=True)
-                elif status == "review":
-                    review_sites.append(analyzed)
-                    known_urls.add(normalized)
-                    print(f"🟡 REVIEW {score}: {analyzed['name']} | {section_url}", flush=True)
+                if status in ("approved", "review"):
+                    old = best_by_domain.get(section_domain)
+                    if not old or score > int(old.get("score", 0) or 0):
+                        best_by_domain[section_domain] = analyzed
+                    print(f"✅ NAMİZƏD {status.upper()} {score}: {analyzed['name']} | {section_url}", flush=True)
                 else:
                     rejected_sites.append(analyzed)
-                    known_urls.add(normalized)
-                    print(f"🔴 REJECTED {score}: {analyzed['name']} | {section_url}", flush=True)
+                    print(f"🔴 REJECTED {score}: {analyzed.get('name')} | {section_url}", flush=True)
 
             time.sleep(settings["sleep"])
 
-    # discovered_sites artıq əsasən tapılmış işlək xəbər bölmələrini saxlayır.
+    approved_sites = []
+    review_sites = []
+    for site in best_by_domain.values():
+        if site.get("status") == "approved":
+            approved_sites.append(site)
+        else:
+            review_sites.append(site)
+
     discovered_added = append_unique(DISCOVERED_FILE, approved_sites + review_sites)
     review_added = append_unique(REVIEW_FILE, review_sites)
     rejected_added = append_unique(REJECTED_FILE, rejected_sites)
@@ -674,12 +725,12 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
     if add_to_config:
         config_added = append_unique(CONFIG_FILE, approved_sites)
 
-    print("\n===== DISCOVERY YEKUNU =====", flush=True)
+    print("\n===== DISCOVERY 2.0 YEKUNU =====", flush=True)
     print(f"✅ Approved: {len(approved_sites)} | config-ə əlavə: {config_added}", flush=True)
     print(f"🟡 Review: {len(review_sites)} | review faylına əlavə: {review_added}", flush=True)
     print(f"🔴 Rejected: {len(rejected_sites)} | rejected faylına əlavə: {rejected_added}", flush=True)
     print(f"📌 discovered_sites əlavə: {discovered_added}", flush=True)
-    print("============================\n", flush=True)
+    print("================================\n", flush=True)
 
     return approved_sites + review_sites
 
@@ -770,9 +821,9 @@ def build_patterns():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="TəhsilBot News Site + RSS Discovery Bot")
+    parser = argparse.ArgumentParser(description="TəhsilBot Discovery 2.0 - news sites first")
     parser.add_argument("--mode", choices=["fast", "deep"], default="fast")
-    parser.add_argument("--add-to-config", action="store_true", help="Approved saytları courier_config_clean.json-a əlavə edir")
+    parser.add_argument("--add-to-config", action="store_true", help="Yalnız approved saytları courier_config_clean.json faylına əlavə edir")
     parser.add_argument("--patterns", action="store_true", help="Pattern builder-i məcburi işə salır")
     args = parser.parse_args()
 
