@@ -229,28 +229,30 @@ def get_domain(url):
 
 
 def normalize_link(link):
-    link = str(link or "").strip()
+    link = clean_text(link)
+    if not link:
+        return ""
 
-    # Query parametrləri silir: ?utm_source=..., ?fbclid=...
-    link = link.split("?")[0]
+    # Query və anchor hissələrini silirik: ?utm=... və #...
+    link = link.split("?")[0].split("#")[0]
 
-    # Anchor hissəni silir: #comments və s.
-    link = link.split("#")[0]
-
-    # www fərqini aradan qaldırır
+    # www fərqini eyni sayırıq
     link = link.replace("://www.", "://")
 
-    # Sonda slash fərqini aradan qaldırır
+    # Son slash fərqini eyni sayırıq
     link = link.rstrip("/")
 
     return link.lower()
 
 
-def normalize_title_for_duplicate(title):
+def normalize_title_key(title):
     title = clean_title_for_message(title)
     title = normalize_text(title)
-    title = re.sub(r"[^a-zA-Z0-9əöğüçıƏÖĞÜÇŞşİı]+", " ", title)
+
+    # Başlıq sonundakı durğu və artıq boşluqları yumşaldırıq
+    title = re.sub(r"[^a-zA-Z0-9əöğüçıƏÖĞÜÇŞşİı\s]", " ", title)
     title = re.sub(r"\s+", " ", title).strip()
+
     return title
 
 
@@ -259,10 +261,13 @@ def exists(link, title=None):
         return False
 
     normalized_link = normalize_link(link)
-    normalized_title = normalize_title_for_duplicate(title or "")
+    title_key = normalize_title_key(title) if title else ""
+
+    if not normalized_link:
+        return False
 
     try:
-        # 1) Əvvəl link üzrə yoxla
+        # Əvvəl link üzrə yoxlayırıq
         with DB_LOCK:
             response = requests.get(
                 f"{SUPABASE_URL}/rest/v1/sent_news",
@@ -275,33 +280,34 @@ def exists(link, title=None):
                 timeout=REQUEST_TIMEOUT,
             )
 
-        if response.status_code != 200:
-            print(f"Supabase exists link xətası: {response.status_code} | {response.text[:200]}", flush=True)
-        elif response.json():
+        if response.status_code == 200 and response.json():
             print(f"⛔ Təkrar xəbər link üzrə bazada var: {normalized_link}", flush=True)
             return True
 
-        # 2) Sonra başlıq üzrə yoxla. Eyni xəbər fərqli URL-lə gəlsə, bloklansın.
-        if normalized_title:
+        if response.status_code != 200:
+            print(f"Supabase exists link xətası: {response.status_code} | {response.text[:200]}", flush=True)
+            return False
+
+        # Sonra başlıq üzrə yoxlayırıq. Bu, eyni xəbərin fərqli URL-lərlə gəlməsini azaldır.
+        if title_key:
             with DB_LOCK:
-                response = requests.get(
+                title_response = requests.get(
                     f"{SUPABASE_URL}/rest/v1/sent_news",
                     headers=supabase_headers(),
                     params={
                         "select": "link,title",
-                        "title": f"eq.{normalized_title}",
+                        "title": f"eq.{title_key}",
                         "limit": "1",
                     },
                     timeout=REQUEST_TIMEOUT,
                 )
 
-            if response.status_code != 200:
-                print(f"Supabase exists title xətası: {response.status_code} | {response.text[:200]}", flush=True)
-                return False
-
-            if response.json():
-                print(f"⛔ Təkrar xəbər başlıq üzrə bazada var: {normalized_title[:80]}", flush=True)
+            if title_response.status_code == 200 and title_response.json():
+                print(f"⛔ Təkrar xəbər başlıq üzrə bazada var: {title_key[:80]}", flush=True)
                 return True
+
+            if title_response.status_code != 200:
+                print(f"Supabase exists title xətası: {title_response.status_code} | {title_response.text[:200]}", flush=True)
 
         return False
 
@@ -310,16 +316,31 @@ def exists(link, title=None):
         return False
 
 
-def save(link, title, source):
+
+def reserve_news(link, title, source):
+    """
+    Ən vacib hissə budur:
+    Xəbəri Telegram-a göndərməzdən ƏVVƏL Supabase-də rezerv edirik.
+    Paralel worker-lər eyni xəbəri eyni anda görsə belə, unique link səbəbindən yalnız biri rezerv edə bilir.
+    """
     if not supabase_ready():
-        return False
+        # Supabase yoxdursa, bot dayanmasın. Amma bu halda təkrar qoruması zəif olacaq.
+        return True
 
     normalized_link = normalize_link(link)
-    normalized_title = normalize_title_for_duplicate(title)
+    title_key = normalize_title_key(title)
+
+    if not normalized_link:
+        print("Supabase reserve: link boşdur", flush=True)
+        return False
+
+    # Eyni başlıq fərqli URL-lə gəlibsə əvvəl yoxlayırıq.
+    if exists(normalized_link, title_key):
+        return False
 
     payload = {
         "link": normalized_link,
-        "title": normalized_title,
+        "title": title_key or clean_text(title),
         "source": source,
     }
 
@@ -333,19 +354,55 @@ def save(link, title, source):
             )
 
         if response.status_code in (200, 201, 204):
-            print("Supabase yazıldı: sent_news", flush=True)
+            print(f"✅ Supabase rezerv edildi: {normalized_link}", flush=True)
             return True
 
         if response.status_code == 409:
-            print("Supabase: xəbər artıq bazada var", flush=True)
-            return True
+            print(f"⛔ Supabase duplicate rezerv: {normalized_link}", flush=True)
+            return False
 
-        print(f"Supabase save xətası: {response.status_code} | {response.text[:300]}", flush=True)
+        print(f"Supabase reserve xətası: {response.status_code} | {response.text[:300]}", flush=True)
         return False
 
     except Exception as e:
-        print(f"Supabase save istisnası: {e}", flush=True)
+        print(f"Supabase reserve istisnası: {e}", flush=True)
         return False
+
+
+def release_reserved_news(link):
+    """Telegram göndərilməsə, rezervi silirik ki, növbəti dövrdə yenidən yoxlana bilsin."""
+    if not supabase_ready():
+        return False
+
+    normalized_link = normalize_link(link)
+    if not normalized_link:
+        return False
+
+    try:
+        with DB_LOCK:
+            response = requests.delete(
+                f"{SUPABASE_URL}/rest/v1/sent_news",
+                headers=supabase_headers(),
+                params={"link": f"eq.{normalized_link}"},
+                timeout=REQUEST_TIMEOUT,
+            )
+
+        if response.status_code in (200, 204):
+            print(f"Rezerv silindi: {normalized_link}", flush=True)
+            return True
+
+        print(f"Rezerv silinmədi: {response.status_code} | {response.text[:200]}", flush=True)
+        return False
+
+    except Exception as e:
+        print(f"Rezerv silmə istisnası: {e}", flush=True)
+        return False
+
+
+def save(link, title, source):
+    # Köhnə ad qalır ki, başqa yerdə çağırılsa işləsin.
+    return reserve_news(link, title, source)
+
 
 
 def unique_items(items):
@@ -1190,11 +1247,16 @@ def process_site(index, total, site, patterns_data):
 {link}
 """
 
-        if send_telegram(message):
-            save(link, title, source)
+        # ƏVVƏL Supabase-də rezerv edirik, sonra Telegram-a göndəririk.
+        # Bu, paralel worker-lərdə eyni xəbərin 3-4 dəfə getməsinin qarşısını alır.
+        if not reserve_news(link, clean_title, source):
+            print(f"[{index}/{total}] Təkrar/rezerv olunmuş xəbər keçildi: {link}", flush=True)
+            result["reason"] = "duplicate"
+            continue
 
+        if send_telegram(message):
             print(
-                f"✅ [{index}/{total}] Göndərildi: {source} | {title[:70]} | Açar sözlər: {matched_keywords_text}",
+                f"✅ [{index}/{total}] Göndərildi: {source} | {clean_title[:70]} | Açar sözlər: {matched_keywords_text}",
                 flush=True
             )
 
@@ -1208,7 +1270,8 @@ def process_site(index, total, site, patterns_data):
             time.sleep(1)
             return result
 
-        print(f"[{index}/{total}] Telegram göndərilmədi, xəbər bazaya yazılmadı.", flush=True)
+        release_reserved_news(link)
+        print(f"[{index}/{total}] Telegram göndərilmədi, rezerv geri silindi.", flush=True)
         result["reason"] = "telegram_error"
 
     elapsed = time.time() - started
