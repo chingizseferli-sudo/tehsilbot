@@ -228,28 +228,82 @@ def get_domain(url):
     return urlparse(url).netloc.replace("www.", "").lower()
 
 
-def exists(link):
+def normalize_link(link):
+    link = str(link or "").strip()
+
+    # Query parametrləri silir: ?utm_source=..., ?fbclid=...
+    link = link.split("?")[0]
+
+    # Anchor hissəni silir: #comments və s.
+    link = link.split("#")[0]
+
+    # www fərqini aradan qaldırır
+    link = link.replace("://www.", "://")
+
+    # Sonda slash fərqini aradan qaldırır
+    link = link.rstrip("/")
+
+    return link.lower()
+
+
+def normalize_title_for_duplicate(title):
+    title = clean_title_for_message(title)
+    title = normalize_text(title)
+    title = re.sub(r"[^a-zA-Z0-9əöğüçıƏÖĞÜÇŞşİı]+", " ", title)
+    title = re.sub(r"\s+", " ", title).strip()
+    return title
+
+
+def exists(link, title=None):
     if not supabase_ready():
         return False
 
+    normalized_link = normalize_link(link)
+    normalized_title = normalize_title_for_duplicate(title or "")
+
     try:
+        # 1) Əvvəl link üzrə yoxla
         with DB_LOCK:
             response = requests.get(
                 f"{SUPABASE_URL}/rest/v1/sent_news",
                 headers=supabase_headers(),
                 params={
-                    "select": "link",
-                    "link": f"eq.{link}",
+                    "select": "link,title",
+                    "link": f"eq.{normalized_link}",
                     "limit": "1",
                 },
                 timeout=REQUEST_TIMEOUT,
             )
 
         if response.status_code != 200:
-            print(f"Supabase exists xətası: {response.status_code} | {response.text[:200]}", flush=True)
-            return False
+            print(f"Supabase exists link xətası: {response.status_code} | {response.text[:200]}", flush=True)
+        elif response.json():
+            print(f"⛔ Təkrar xəbər link üzrə bazada var: {normalized_link}", flush=True)
+            return True
 
-        return bool(response.json())
+        # 2) Sonra başlıq üzrə yoxla. Eyni xəbər fərqli URL-lə gəlsə, bloklansın.
+        if normalized_title:
+            with DB_LOCK:
+                response = requests.get(
+                    f"{SUPABASE_URL}/rest/v1/sent_news",
+                    headers=supabase_headers(),
+                    params={
+                        "select": "link,title",
+                        "title": f"eq.{normalized_title}",
+                        "limit": "1",
+                    },
+                    timeout=REQUEST_TIMEOUT,
+                )
+
+            if response.status_code != 200:
+                print(f"Supabase exists title xətası: {response.status_code} | {response.text[:200]}", flush=True)
+                return False
+
+            if response.json():
+                print(f"⛔ Təkrar xəbər başlıq üzrə bazada var: {normalized_title[:80]}", flush=True)
+                return True
+
+        return False
 
     except Exception as e:
         print(f"Supabase exists istisnası: {e}", flush=True)
@@ -260,9 +314,12 @@ def save(link, title, source):
     if not supabase_ready():
         return False
 
+    normalized_link = normalize_link(link)
+    normalized_title = normalize_title_for_duplicate(title)
+
     payload = {
-        "link": link,
-        "title": clean_text(title),
+        "link": normalized_link,
+        "title": normalized_title,
         "source": source,
     }
 
@@ -1082,7 +1139,7 @@ def process_site(index, total, site, patterns_data):
         source = item["source"]
         matched_keywords = item.get("matched_keywords", [])
 
-        if exists(link):
+        if exists(link, title):
             print(f"[{index}/{total}] Təkrar xəbər keçildi: {link}", flush=True)
             result["reason"] = "duplicate"
             continue
