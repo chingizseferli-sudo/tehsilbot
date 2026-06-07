@@ -141,7 +141,9 @@
     "/all-news/"
   ],
   "nk.gov.az": [
-    "/az/"
+    "/az/",
+    "/az/xeberler/",
+    "/news/"
   ],
   "muallim.edu.az": [
     "/Regionlar/",
@@ -322,7 +324,9 @@
     "/casia/",
     "/scaucasus/",
     "/sections/",
-    "/tags/"
+    "/tags/",
+    "/latest/",
+    "/latest-premium/"
   ],
   "br.az": [
     "/politics/",
@@ -501,7 +505,9 @@
     "/uploads/"
   ],
   "preslib.az": [
-    "/az/"
+    "/az/",
+    "/az/news/",
+    "/news/"
   ],
   "adau.edu.az": [
     "/media_ru/",
@@ -548,10 +554,12 @@
     "/kurslar/smm-kursu-sosial-mediadan-qazanc-40115.html/",
     "/kurslar/sosial-media-menecer-smm-39912.html/",
     "/media/",
-    "/xaricde-tehsil/"
+    "/xaricde-tehsil/",
+    "/mediasiya+kursu/"
   ],
   "geostrategiya.az": [
-    "/pdf/"
+    "/pdf/",
+    "/news.php/"
   ],
   "eatda.edu.az": [
     "/xeberler/",
@@ -656,7 +664,9 @@
     "/az/"
   ],
   "kainat.edu.az": [
-    "/az/"
+    "/az/",
+    "/az/news/",
+    "/az/article/"
   ],
   "lider.edu.az": [
     "/az/"
@@ -872,7 +882,9 @@
     "/politics/109494-iz-almaty-v-oblast-mogut-postroit-linii-skytrain-tokaev-dal-poruchenie/",
     "/news/109520-akim-vko-podal-v-otstavku-posle-vstupleniia-v-silu-prigovora-zhaksylyku-omaru/",
     "/news/109533-korruptsionery-pedofily-i-terroristy-pod-amnistiiu-ne-popadut-deputat-abzal-kuspan/",
-    "/news/109600-vo-vremia-rodov-kazakhstanke-udalili-shest-opukholei/"
+    "/news/109600-vo-vremia-rodov-kazakhstanke-udalili-shest-opukholei/",
+    "/news/109739-davali-banany-tolko-dlia-foto-roditeli-ulichili-detsad-v-shymkente-v-obmane-s-pitaniem/",
+    "/news/109734-v-kazakhstane-peresmotreli-porogi-pensionnykh-nakoplenii-mintruda-obiasnilo-prichiny/"
   ],
   "vesselfinder.com": [
     "/news/",
@@ -984,7 +996,9 @@
     "/news/2026-04-17/",
     "/news/2026-06-03/",
     "/news/2026-06-04/",
-    "/news/2026-06-05/"
+    "/news/2026-06-05/",
+    "/news/2026-06-07/",
+    "/news/2026-06-06/"
   ],
   "aqrar-iqtisadiyyat.adau.edu.az": [
     "/news/",
@@ -1034,7 +1048,11 @@
     "/interview/v-azerbajdzhane-nas-postoyanno-priglashayut-na-chaj-istoriya-pary-puteshestvuyushej-po-miru-na-velosipedah/",
     "/politika/ot-gaza-do-zelenoj-energii-azerbajdzhan-zakreplyaet-za-soboj-rol-postavshika-na-desyatiletiya-vpered/",
     "/culture/yusif-ejvazov-o-sofi-loren-opernoj-rutine-i-teatralnoj-revolyucii-v-baku-intervyu-media-az/",
-    "/politika/andrej-babish-azerbajdzhan-krupnejshij-postavshik-syroj-nefti-v-chehiyu/"
+    "/politika/andrej-babish-azerbajdzhan-krupnejshij-postavshik-syroj-nefti-v-chehiyu/",
+    "/society/selfharm-pochemu-podrostki-prichinyayut-sebe-bol-media-az-beseduet-s-psihologom/",
+    "/economy/britanskaya-mediaorganizaciya-predstavila-obzor-bakinskoj-energeticheskoj-nedeli/",
+    "/politika/v-mid-rasskazali-o-sostoyanii-azerbajdzhancev-postradavshih-pri-porazhenii-sudov-v-azovskom-more/",
+    "/politika/obnarodovano-sostoyanie-postradavshih-grazhdan-azerbajdzhana-posle-ataki-bespilotnikov-v-azovskom-more/"
   ],
   "azertag.az": [
     "/xeber/",
@@ -1104,7 +1122,9 @@
     "/news/10000-listeners-at-bolshoi-and-mariinsky-at-one-moment/",
     "/news/otkryt-priem-zayavok-na-mezhdunarodnyj-konkurs-partitur/",
     "/news/gergiev-to-restore-directorate-of-imperial-theatres/",
-    "/articles/boris-pokrovsky-memory/"
+    "/articles/boris-pokrovsky-memory/",
+    "/news/skonchalsya-master-restavrator-valerij-grebennikov/",
+    "/articles/leopold-auer/"
   ],
   "film.ru": [
     "/articles/",
@@ -1204,7 +1224,8 @@
     "/latviyada-imtahansiz-tehsil/",
     "/latviyada-tehsil-almaq/",
     "/latviyada-tehsil-haqqi/",
-    "/qafqaz-muselmanlari-idaresi/"
+    "/qafqaz-muselmanlari-idaresi/",
+    "/kokelmek-ucun-ne-etmeli/"
   ],
   "icma.az": [
     "/news/",
@@ -1449,7 +1470,8 @@
     "/sosial/56285-mayin-30-u-ile-bagli-xeberdarliq.html/",
     "/sosial/56333-pensiya-ile-bagli-kritik-xeber-.html/",
     "/gundm/12196-nazirlik-builki-tehsil-sergisine-22-olkeden-150-dek-ishtirakchi-qatilacaq.html/",
-    "/sosial/56335-kimin-evinde-varsa-sad-xeber-.html/"
+    "/sosial/56335-kimin-evinde-varsa-sad-xeber-.html/",
+    "/siyast/56351-ilham-eliyeve-tebrikler-gelmekde-davam-edir.html/"
   ],
   "busaat.az": [
     "/onilliklerin-en-guclu-istisi-gozlenilir-xeberdarliq/",
@@ -1459,7 +1481,9 @@
     "/sabah-guclu-kulek-esecek-xeberdarliq-3/",
     "/media/",
     "/ehaliye-xeberdarliq-edildi-telefonla-danismayin-2/",
-    "/iyunun-pensiyalari-ile-bagli-vacib-xeber/"
+    "/iyunun-pensiyalari-ile-bagli-vacib-xeber/",
+    "/media-cnn-in-feyk-xeberi-ile-bagli-aciqlama-yaydi/",
+    "/prezidentin-sosial-media-hesablarinda-paylasim-edildi-foto/"
   ],
   "hit.az": [
     "/az/tehsil/",
@@ -1467,7 +1491,8 @@
     "/xeber/",
     "/xeberler/",
     "/xəbərlər/",
-    "/media/"
+    "/media/",
+    "/az/media/"
   ],
   "pressxeber.info": [
     "/tehsil/",
@@ -1476,7 +1501,8 @@
   "azadmedia.az": [
     "/lastnews/",
     "/gundem/129496-turk-dovltlri-arasnda-mediasiya-sahsi-guclnir-fotolar.html/",
-    "/dunya/133673-tramp-fox-news-u-tnqid-edib.html/"
+    "/dunya/133673-tramp-fox-news-u-tnqid-edib.html/",
+    "/cemiyyet/133750-arkadada-irvani-v-azadinin-yaradclna-hsr-olunan-elmi-konfrans-kecirilib.html/"
   ],
   "azfakt.com": [
     "/news.php/",
@@ -1538,7 +1564,8 @@
     "/w1101659/mecnun-memmedovun-diplomu-tesdiq-olunacaq-distant-tehsil-alan-nazir-haqda-sok-video/",
     "/all-news/",
     "/w1101911/dagliq-ve-dageteyi-rayonlarda-sel-gozlenilir-xeberdarliq/",
-    "/w1102015/hemin-xeber-dogru-deyil-teymur-bey-asurbeyovun-mulku-barede-resmimelumat-yayildi/"
+    "/w1102015/hemin-xeber-dogru-deyil-teymur-bey-asurbeyovun-mulku-barede-resmimelumat-yayildi/",
+    "/w1102047/media-cnn-in-israilin-iranla-apardigi-muharibe-zamani-guya-azerbaycan-erazisinden/"
   ],
   "ena.az": [
     "/az/news/"
@@ -1609,7 +1636,16 @@
     "/geleceyimizle-bagli-xeberdarliq/",
     "/qadinlar-ucun-sad-xeber-pensiya-ve-kreditlerle-bagli-yeni-teklifler/",
     "/xeberdarliq-362030/",
-    "/musterinin-sirri-aciqlanarsa-merkezi-bankdan-sert-xeberdarliq/"
+    "/musterinin-sirri-aciqlanarsa-merkezi-bankdan-sert-xeberdarliq/",
+    "/naxcivanda-kanalda-bogulan-elmir-taninmis-dirijorun-oglu-imis/",
+    "/bu-sexslere-vacib-xeberdarliq-tehluke-var/",
+    "/xeberdarliq-edildi-sabah-bezi-rayonlara-dolu-dusecek/",
+    "/pasinyan-bakiyagelmek-isteyir/",
+    "/milyonlarla-kend-sakinine-sad-xeber-evlere-kutlevi-kupca-verile-biler/",
+    "/tehlukeli-xeberdarliq-trilyonlarla-litr-su-gedecek/",
+    "/bu-sexsler-rayondan-bakiya-gelmeyecekler/",
+    "/pensiyacilara-sad-xeber-odenis-gunu-melum-oldu/",
+    "/alimden-bakiyla-bagli-qorxulu-xeberdarliq-daha-4-il-davam-edecek/"
   ],
   "qlobal.az": [
     "/az/xeberler/"
@@ -1738,7 +1774,9 @@
     "/az/alimlerden-xeberdarliq-rekord-istiler-gzlenilir/",
     "/az/bu-sexslere-xeberdarliq-ciddi-problem-yaranacaq/",
     "/az/tehsil-iscilerine-tehsilplus-kartlari-teqdim-olundu/",
-    "/az/azercell-ve-aws-den-azerbaycan-diline-ynelmis-texnoloji-yenilik/"
+    "/az/azercell-ve-aws-den-azerbaycan-diline-ynelmis-texnoloji-yenilik/",
+    "/az/ermenistanda-secki-menteqelerinde-bomba-xeberdarlii/",
+    "/az/pasinyan-azerbaycana-gelmek-isteyir/"
   ],
   "dilcilik.az": [
     "/xeber.php/",
@@ -1946,7 +1984,8 @@
     "/cemiyyet/63427-azerbaycanda-pensiya-yasi-ile-bagli-yeni-xeber.html/",
     "/tehsil/63432-sertifikasiyada-istirak-edecek-muellimlere-cagiris-saniyeolcenle-islemek-lazimdir.html/",
     "/tehsil/63435-bezi-mekteblerde-dersler-distant-formada-kecirilecek.html/",
-    "/cemiyyet/63437-kimin-evinde-varsa-sad-xeber-qiymet-artdi.html/"
+    "/cemiyyet/63437-kimin-evinde-varsa-sad-xeber-qiymet-artdi.html/",
+    "/tehsil/63482-bu-gun-i-ve-iv-ixtisas-qruplari-uzre-qebul-imtahani-basladi.html/"
   ],
   "au.edu.az": [
     "/az/news/"
@@ -1974,7 +2013,8 @@
     "/ruslan-eyyubovdan-xeber-var-is-baki-agir-cinayetler-mehkemesine-gedir/",
     "/maasla-bagli-muhum-xeber/",
     "/leyla-eliyeva-ve-arzu-eliyeva-inteqrasiya-telimli-internat-tipli-umumtehsil-mektebinde-olublar-foto/",
-    "/qizil-almaq-isteyenlere-vacib-xeber-qiymetler-bele-olacaq/"
+    "/qizil-almaq-isteyenlere-vacib-xeber-qiymetler-bele-olacaq/",
+    "/media-melumat-yaydi-foto/"
   ],
   "den.az": [
     "/elm/",
@@ -1985,7 +2025,11 @@
     "/elm/43124-birinci-sinfe-qebulla-bagli-serbest-secim-merhelesi-baslayir.html/",
     "/gundem/43123-reha-muhtar-kecmis-heyat-yoldasi-ile-bagli-bu-vesiyyeti-etmisdi-cenazeme-gelmesin-foto.html/",
     "/cemiyyet/43209-xezer-denizi-niye-suretle-geri-cekilir-bmt-ekspertleri-xeberdarliq-edir.html/",
-    "/gundem/43175-tramp-zelenski-ve-putinin-bir-araya-gelmesini-isteyir.html/"
+    "/gundem/43175-tramp-zelenski-ve-putinin-bir-araya-gelmesini-isteyir.html/",
+    "/hadise/43253-saray-qesebe-1-nomreli-tam-orta-mektebde-xosagelmez-hadiseye-aydinliq-getirilib-teferruataciqlama.html/",
+    "/hadise/43262-aci-xebere-doze-bilmedi-hadise-yerine-gederken-can-verdi.html/",
+    "/cemiyyet/43281-son-zeng-sevinci-facieye-cevrile-biler-yol-polisinden-sert-xeberdarliq-video.html/",
+    "/olke/43259-7-iyunda-yola-cixanlar-ucun-vacib-hava-xeberdarligi.html/"
   ],
   "bhos.edu.az": [
     "/news/",
@@ -2028,7 +2072,10 @@
     "/126003-etibarname-ile-alinan-avtomobillerle-bagli-xeberdarliq.html/",
     "/print:page,1,126003-etibarname-ile-alinan-avtomobillerle-bagli-xeberdarliq.html/",
     "/125998-son-deqiqe-avtobus-ve-metrodan-istifade-edenlere-sad-xeber.html/",
-    "/print:page,1,125998-son-deqiqe-avtobus-ve-metrodan-istifade-edenlere-sad-xeber.html/"
+    "/print:page,1,125998-son-deqiqe-avtobus-ve-metrodan-istifade-edenlere-sad-xeber.html/",
+    "/126045-media.html/",
+    "/126088-abs-den-avropaya-sert-xeberdarliq-tehlukeli-hucum-baslayib.html/",
+    "/126075-isti-yay-gunlerinde-bu-sehvi-qetiyyen-etmeyin-sok-xeberdarliq.html/"
   ],
   "tehsil.biz": [
     "/news/",
@@ -2192,7 +2239,10 @@
     "/172147-azerbaycan-media-tarixinde-baimov-faktoru.html/",
     "/172841-ieit-qlobal-iqtisadi-artimin-zeifleyeceyi-barede-xeberdarliq-etdi.html/",
     "/lastnews/",
-    "/172908-tramp-fox-news-telekanalini-karl-rouvu-efirden-kenarlasdirmaga-cagirib.html/"
+    "/172908-tramp-fox-news-telekanalini-karl-rouvu-efirden-kenarlasdirmaga-cagirib.html/",
+    "/172954-medianin-inkisafi-agentliyinden-cnn-in-yalanina-cavab.html/",
+    "/172943-texnologiya-sirketinden-xeberdarliq-suni-intellektin-eylec-pedalina-ehtiyaci-var.html/",
+    "/172933-abs-dan-yaxin-serqe-seyahet-xeberdarligi.html/"
   ],
   "rezonans.az": [
     "/sitemap.xml/",
@@ -2205,7 +2255,8 @@
   ],
   "m.mamul.am": [
     "/am/news/",
-    "/news/"
+    "/news/",
+    "/hy/news/"
   ],
   "toursoyuz.by": [
     "/news/"
@@ -2324,7 +2375,8 @@
     "/media-ucun/",
     "/bu-sexslere-xeberdarliq-ciddi-problem-yaranacaq/",
     "/xerceng-xestelerine-sad-xeber-bundan-sonra/",
-    "/ayda-1-2-defeden-artiq-yemek-olmaz-hekim-xeberdarliq-etdi/"
+    "/ayda-1-2-defeden-artiq-yemek-olmaz-hekim-xeberdarliq-etdi/",
+    "/bu-cur-boyuk-idman-ugurlari-tesadufen-erseye-gelmir/"
   ],
   "sportfm.az": [
     "/lastnews/",
@@ -2629,7 +2681,9 @@
     "/news/2291/",
     "/news/1781/",
     "/news/1766/",
-    "/news/1741/"
+    "/news/1741/",
+    "/news/5717/",
+    "/news/1740/"
   ],
   "tarixinstitutu.az": [
     "/news/",
@@ -2711,5 +2765,432 @@
     "/elm-ve-texnologiya/",
     "/tehsil/",
     "/aktual-xeber/"
+  ],
+  "sportinfo.az": [
+    "/idman_xeberleri/",
+    "/idman_xeberleri/neftci/",
+    "/idman_xeberleri/milli_komanda/",
+    "/idman_xeberleri/qarabag/",
+    "/idman_xeberleri/ispaniya/",
+    "/idman_xeberleri/problem/",
+    "/idman_xeberleri/sabah/",
+    "/idman_xeberleri/futzal/",
+    "/idman_xeberleri/ingiltere/",
+    "/idman_xeberleri/kose/",
+    "/idman_xeberleri/hadise/",
+    "/idman_xeberleri/gundem/",
+    "/idman_xeberleri/arashdirma/",
+    "/idman_xeberleri/qebele/",
+    "/idman_xeberleri/turan/",
+    "/idman_xeberleri/1_divizion/"
+  ],
+  "camera.az": [
+    "/news/",
+    "/news/novosti-produktsii/",
+    "/az/news/",
+    "/news/novosti-kompanii/",
+    "/news/poleznye-stati/"
+  ],
+  "turkustan.az": [
+    "/news/",
+    "/news/society/",
+    "/news/the-world/",
+    "/news/daily/",
+    "/news/incident/",
+    "/news/sports/",
+    "/news/interesting/",
+    "/news/health/",
+    "/news/politics/",
+    "/news/social/",
+    "/news/market/",
+    "/news/education/",
+    "/news/official/",
+    "/news/economy/",
+    "/news/culture/"
+  ],
+  "ona.az": [
+    "/az/butun-xeberler/",
+    "/az/all-news/"
+  ],
+  "32gun.az": [
+    "/news/",
+    "/all-news/",
+    "/news/67374/",
+    "/news/67371/",
+    "/news/67372/",
+    "/news/67373/",
+    "/news/67370/",
+    "/news/67366/",
+    "/news/67369/",
+    "/news/67365/",
+    "/news/67368/",
+    "/news/67363/",
+    "/news/67360/",
+    "/news/67362/",
+    "/news/67359/"
+  ],
+  "baki-baku.az": [
+    "/xeberler/",
+    "/xeber/",
+    "/yasamalda-vetendasin-evinin-xebersiz-sokulmesi-ile-bagli-iddialara-aydinliq-getirilib-resmi/",
+    "/xeberler-news/"
+  ],
+  "aqrobiocore.az": [
+    "/az/xeber/",
+    "/az/xeberler/",
+    "/en/xeberler/",
+    "/ru/xeberler/"
+  ],
+  "yelo.az": [
+    "/az/news/",
+    "/news/",
+    "/en/news/",
+    "/ru/news/"
+  ],
+  "holodom.az": [
+    "/news/",
+    "/news/29-frascold-yaglari-artiq-satishda.html/",
+    "/news/11-holodomaz-sayt-artq-faliyytd.html/"
+  ],
+  "wingchun.az": [
+    "/xəbərlər/"
+  ],
+  "lider-media.az": [
+    "/tehsil/",
+    "/lastnews/"
+  ],
+  "inter.az": [
+    "/xeber/",
+    "/memarliqla-yazilan-tehsil-tarixi-videorubrikasina-start-verilir-video/"
+  ],
+  "expressbank.az": [
+    "/az/news/"
+  ],
+  "law.bsu.edu.az": [
+    "/az/news/",
+    "/az/newsarchive/",
+    "/news/"
+  ],
+  "geography.bsu.edu.az": [
+    "/az/news/"
+  ],
+  "home-edu.az": [
+    "/xeberler/",
+    "/xeberler/223-ushaq-pulu-aile-ve-ushaq-muavineti-tarixi-ve-dunyada-bu-gun.html/",
+    "/xeberler/219-xezail-cangeli-oglu-muxtarov.html/",
+    "/xeberler/208-suruculuk-vesiqesinin-etibarliq-muddeti-2-il-mueyyen-edilib-.html/",
+    "/xeberler/199-azerbaydzhanskiy-yazyk-dlya-pusskoyazychnyh.html/",
+    "/xeberler/197-tatu-kurslari.html/"
+  ],
+  "meram.az": [
+    "/news/"
+  ],
+  "del.az": [
+    "/xəbərlər.html/"
+  ],
+  "oxuyan.az": [
+    "/xeberler/",
+    "/xeberler/tehsil/"
+  ],
+  "repetitorlar.az": [
+    "/xeber/",
+    "/xeberler/"
+  ],
+  "medkollec1.az": [
+    "/news/",
+    "/news/53-az-rbaydzan-tibb-universitetind-tibb-ikhtisaslar-uzr-yeni-t-dris-programlar-muzakir-olunub/",
+    "/news/52-s-hiyy-t-hsilind-yenilikl-r-yeni-program-uzr-muzakir-l-r/",
+    "/news/51-milli-onkolozhiya-i-nstitutunda-mamal-g-isi-ikhtisas-uzr-yeni-t-hsil-program-n-n-layih-si-muzakir-olunub/",
+    "/news/49-mama-pes-sinin-dz-miyy-td-rolu-v-h-miyy-ti/",
+    "/news/50-s-hiyy-nazirliyi-1-nomr-li-bak-tibb-kolledzind-t-m-l-h-yata-d-st-k-t-limi-kedzirilib/",
+    "/news/48-zh-ndz-mut-kh-ssisl-r-s-hiyy-sistemind-tibbi-kolledzl-rin-beyn-lkhalg-dialogu/",
+    "/news/47-tibbi-t-hsild-suni-i-ntellekt-v-i-nnovativ-yanasmalar-uzr-master-klass/",
+    "/news/46-t-l-b-l-rimiz-gazakh-standa-kedziril-n-beyn-lkhalg-onlayn-konfransda/",
+    "/news/44-korpu-layih-si-dz-rdziv-sind-t-l-b-l-rin-idar-etm-prosesind-istirak/"
+  ],
+  "autograph.az": [
+    "/mediakit.pdf/"
+  ],
+  "pediatr-nevroloq.az": [
+    "/az/xeber/"
+  ],
+  "soyqirim.az": [
+    "/news/",
+    "/az/news/",
+    "/en/news/",
+    "/ru/news/",
+    "/ar/news/",
+    "/news/17564/",
+    "/news/17557/",
+    "/news/17547/",
+    "/news/17396/",
+    "/news/17194/",
+    "/news/17131/",
+    "/news/16961/",
+    "/news/16511/",
+    "/news/16495/"
+  ],
+  "azcert.az": [
+    "/company/news/"
+  ],
+  "ictimaishura.az": [
+    "/posts/",
+    "/posts/az/",
+    "/multimedia/",
+    "/multimedia/az/"
+  ],
+  "ajb.az": [
+    "/news/"
+  ],
+  "metafizikajurnali.az": [
+    "/az/xeberler/"
+  ],
+  "zoologiya.az": [
+    "/az/news/",
+    "/news/",
+    "/az/article/",
+    "/az/sitemap/"
+  ],
+  "bbu.edu.az": [
+    "/az/news/",
+    "/en/news/",
+    "/ru/news/"
+  ],
+  "aesma.edu.az": [
+    "/az/post/"
+  ],
+  "4kids.az": [
+    "/ru/news/"
+  ],
+  "coders.edu.az": [
+    "/az/news/"
+  ],
+  "baytarliq.adau.edu.az": [
+    "/news/",
+    "/news/members-of-the-public-council-held-meetings-with-the-teaching-staff-and-students-of-adau-518/",
+    "/news/a-meeting-was-held-with-the-winners-of-the-young-agro-leaders-of-azerbaijan-scholarship-program-515/",
+    "/news/republican-scientific-conference-of-masters-students-and-young-researchers-held-at-adau-508/",
+    "/news/adau-employee-participated-in-international-conference-505/",
+    "/news/the-examination-session-of-the-fall-semester-of-the-2025-2026-academic-year-has-started-at-adau-502/",
+    "/news/excursion-organized-for-schoolchildren-at-adau-499/",
+    "/news/seminars-were-organized-for-students-of-the-faculty-of-veterinary-medicine-489/",
+    "/news/adau-holds-free-spaying-campaign-for-pets-485/",
+    "/news/adau-celebrates-100th-anniversary-of-azerbaijans-first-female-doctor-of-sciences-professor-shaqiba-ahmadova-481/",
+    "/news/adau-students-visited-azersun-holding-477/",
+    "/news/for-the-first-time-in-our-country-the-subject-biosecurity-and-bioprotection-will-be-taught-at-adau-449/",
+    "/news/a-training-session-titled-a-better-me-was-organized-447/",
+    "/news/events-dedicated-to-the-commemoration-day-of-the-national-leader-heydar-aliyev-were-held-at-the-faculties-of-engineering-and-veterinary-medicine-440/",
+    "/news/a-training-on-reducing-the-impact-of-climate-change-was-held-at-adau-438/"
+  ],
+  "journals.arti.edu.az": [
+    "/posts/",
+    "/post/",
+    "/article_processing/"
+  ],
+  "igaz.az": [
+    "/az/news/",
+    "/ru/news/",
+    "/en/news/",
+    "/az/sitemap/"
+  ],
+  "isi.az": [
+    "/az/news/",
+    "/en/news/",
+    "/ru/news/",
+    "/az/sitemap/"
+  ],
+  "etki.az": [
+    "/az/news/",
+    "/news/",
+    "/allnews/",
+    "/az/article/",
+    "/articles/",
+    "/pages/elmi-bolme/",
+    "/news/azerbaycan-respublikasi-sehiyye-nazirliyi-akad.-c.-abdullayev-adina-elmi-tedqiqat-kardiologiya-i̇nstitutu-2026-ci-il-ucun-doktoranturaya-sened-qebulu-elan-edi̇r/",
+    "/news/1-i̇yun-usaqlarin-beynelxalq-mudafiesi-gunu-2026/",
+    "/news/28-may-musteqillik-gunu-2026/",
+    "/news/qurban-bayraminiz-mubarek-2026/",
+    "/news/azerbaycan-respublikasi-sehiyye-nazirliyi-akad.-c.-m.-abdullayev-adina-elmi-tedqiqat-kardiologiya-i̇nstitutu-2026-ci-il-ucun-doktoranturaya-sened-qebulu-elan-edir/",
+    "/news/turk-dovletleri-kardio-onkologiya-konqresi-ve-birinci-beynelxalq-suni-i̇ntellekt-ve-robotik-kardiologiya-sammiti-kecirilib/",
+    "/news/20-may-tarixinde-elmi-tedqiqat-kardiologiya-i̇nstitutunda-emeliyyatsiz-qapaq-temiri:-mitral-qapaqda-teer-proseduru-movzusunda-kurs-da-kecirilib/",
+    "/news/20-may-tarixinde-milli-onkologiya-merkezinde-“suni-intellekt-desteyi-ile-ekq-serhi:-pmcardio-edu-esasinda-praktik-yanasma”-movzusunda-kurs-teskil-olunub/",
+    "/pages/elmi-sura/"
+  ],
+  "zoomuhendislik.adau.edu.az": [
+    "/news/",
+    "/news/knowledge-competition-held-at-adau-zirv-team-becomes-the-winner-400/",
+    "/news/urban-planning-and-urbanization-week-kicks-off-at-adau-398/",
+    "/news/a-regular-meeting-of-the-student-scientific-society-sss-was-held-at-the-department-of-general-and-special-zootechnics-402/",
+    "/news/members-of-the-public-council-held-meetings-with-the-teaching-staff-and-students-of-adau-393/",
+    "/news/a-meeting-was-held-with-the-winners-of-the-young-agro-leaders-of-azerbaijan-scholarship-program-390/",
+    "/news/republican-scientific-conference-of-masters-students-and-young-researchers-held-at-adau-380/",
+    "/news/festival-and-events-held-at-adau-on-the-occasion-of-international-womens-day-387/",
+    "/news/football-competition-organized-by-adaus-tgt-sports-club-377/",
+    "/news/the-examination-session-of-the-fall-semester-of-the-2025-2026-academic-year-has-started-at-adau-374/",
+    "/news/adau-students-visited-the-nizami-ganjavi-mausoleum-and-the-gala-gapylar-museum-complex-366/",
+    "/news/the-young-agro-leaders-of-azerbaijan-scholarship-has-been-launched-for-adau-students-358/",
+    "/news/student-enrollment-in-the-adau-ege-dual-diploma-program-was-100-357/",
+    "/news/measures-to-improve-the-veterinary-sector-discussed-in-ganja-360/",
+    "/news/employees-of-azersun-holding-have-met-with-students-of-the-agricultural-university-335/"
+  ],
+  "azpress.az": [
+    "/home/show-news/",
+    "/home/archive-news/"
+  ],
+  "kaspi.edu.az": [
+    "/az/newsd/",
+    "/az/news/",
+    "/en/news/"
+  ],
+  "millikitabxana.az": [
+    "/news/",
+    "/news/azerbaycan-milli-irsinin-incileri/",
+    "/about-us/reading-halls/",
+    "/ru/news/",
+    "/en/news/",
+    "/newspapers/",
+    "/news/asqabad/",
+    "/news/asqabadda-xalcaciliq-seneti/",
+    "/news/medeniyyey-korpusune-chevrilib/",
+    "/news/ashqabadda-ecemi-naxchivaninin-900-illiyi/",
+    "/news/turkmenistan-dovlet-universitetinde-semed-vurgunun-120-illiyi/",
+    "/news/ashqabadda-qala-konsert/",
+    "/news/ashqabadda-qala-konsert-kechirilib/",
+    "/news/ashqabadda-qala-konsert-teshkil-olunub/",
+    "/news/ashqabadda-qala-konsert-bash-tutub/"
+  ],
+  "bqu.edu.az": [
+    "/news_single/",
+    "/news/",
+    "/news_single/437/",
+    "/news_single/438/",
+    "/news_single/439/",
+    "/news_single/440/",
+    "/news_single/441/",
+    "/news_single/442/",
+    "/news_single/443/",
+    "/news_single/444/",
+    "/news_single/445/",
+    "/news_single/446/",
+    "/news_single/447/",
+    "/news_single/448/",
+    "/news_single/429/"
+  ],
+  "abiturient.az": [
+    "/news/",
+    "/news_f/",
+    "/news/55/",
+    "/news/54/",
+    "/news/53/",
+    "/news/51/",
+    "/news/50/",
+    "/news/49/",
+    "/news/48/",
+    "/news/47/",
+    "/news/46/",
+    "/news/45/",
+    "/news/44/",
+    "/news/43/",
+    "/news/42/"
+  ],
+  "gimiep.az": [
+    "/az/news/"
+  ],
+  "3alma.az": [
+    "/az/articles/",
+    "/az/sitemap/"
+  ],
+  "bakubookcenter.az": [
+    "/article/",
+    "/news/",
+    "/news/1/",
+    "/az/news/",
+    "/en/news/",
+    "/ru/news/",
+    "/news/2/",
+    "/article/935/",
+    "/article/933/",
+    "/article/930/",
+    "/article/929/",
+    "/article/927/",
+    "/article/928/",
+    "/article/924/",
+    "/article/914/"
+  ],
+  "cinecon.az": [
+    "/news/",
+    "/xeber/",
+    "/xeber/18/",
+    "/xeber/12/"
+  ],
+  "z-aliyeva.edu.az": [
+    "/az/news/"
+  ],
+  "lib.az": [
+    "/news_cat/",
+    "/news_cat/news/",
+    "/news_cat/9/",
+    "/news_cat/news_cat/",
+    "/news_cat/maps_cat/",
+    "/news_cat/language/",
+    "/news_cat/persons/",
+    "/news_cat/gallery/",
+    "/news_cat/about-us/",
+    "/news_cat/contact-us/"
+  ],
+  "ofis.az": [
+    "/emlak-xeberleri/",
+    "/emlak-xeberleri/sirketler-qrupuna-yaxin-daha-bir-mtk-tesis-edilib-2518/",
+    "/emlak-xeberleri/azerbaycanda-qeyri-qanuni-tikililerin-sayi-aciqlanib-2503/",
+    "/emlak-xeberleri/sirketler-qrupuna-yaxinda-daha-bir-mtk-tesis-edilib-2515/"
+  ],
+  "aqrobiznes.adau.edu.az": [
+    "/news/",
+    "/news/address-by-acting-rector-of-adau-zafar-gurbanov-in-connection-with-the-beginning-of-the-examination-session-of-the-fall-term-of-2022-2023-academic-year-303/",
+    "/news/students-studying-on-economic-specialties-took-part-in-knowledge-competition-at-azerbaijan-state-agricultural-university-adau-293/",
+    "/news/the-department-of-marketing-held-a-meeting-of-the-student-scientific-society-290/",
+    "/news/a-series-of-meetings-are-held-to-listen-to-the-opinions-of-students-287/",
+    "/news/the-2nd-issue-of-the-journal-scientific-works-of-adau-has-been-published-280/",
+    "/news/rules-of-use-of-web-of-science-282/",
+    "/news/masters-thesis-defence-has-started-284/",
+    "/news/masters-student-reports-autumn-1-and-spring-1-are-accepted-269/",
+    "/news/adau-students-continue-their-studies-around-the-world-264/",
+    "/news/aqta-representatives-met-with-the-students-of-azerbaijan-state-agricultural-university-258/",
+    "/news/aqro-international-agricultural-conference-will-be-held-250/",
+    "/news/a-series-of-sporting-events-was-held-at-the-azerbaijan-agricultural-university-to-commemorate-the-99th-anniversary-of-the-birth-of-national-leader-heydar-aliyev-248/",
+    "/news/ege-university-professor-janan-abay-held-a-seminar-for-young-teachers-and-students-at-adau-237/",
+    "/news/adau-held-a-volleyball-competition-236/"
+  ],
+  "deazmed.az": [
+    "/az/melumat-ve-xeberler/"
+  ],
+  "zeytunpharma.az": [
+    "/xeberler/",
+    "/news/",
+    "/xeberler/zeytun-pharmaceuticals-iso-ve-gdp-sertifikatlarini-yenileyib/",
+    "/xeberler/saglamliq-ve-texnologiyanin-zirvesi-beynelxalq-tedbirinde-istirak-etdik/",
+    "/xeberler/zeytun-pharmaceuticals-unec-de-teskil-olunan-emek-yarmarkasinda-istirak-etdi/",
+    "/xeberler/zeytun-pharmaceuticals-aturek-14-elmi-praktik-konfransina-destek-oldu/",
+    "/xeberler/emek-yarmarkasinda-geleceyin-eczacilari-ile-gorusduk/",
+    "/xeberler/zeytun-pharmaceuticals-1-n-tibb-kollecinde-tanitim-teqdimati-kecirib/",
+    "/xeberler/adau-da-telebelerle-karyera-ve-pese-inkisafi-gorusu-kecirilib/",
+    "/xeberler/zeytun-ve-scandens-arasinda-strateji-terefdasliq/",
+    "/xeberler/zeytun-pharmaceuticals-6-ci-beynelxalq-eczachiliq-konqresinde-ozbekistan-heyeti-ile-gorus-kechirib/",
+    "/xeberler/merck-sharp-dohme-sirketinin-qabaqcil-immunoterapevtik-preparati-olan-keytruda-artiq-azerbaycanda/",
+    "/xeberler/zeytun-pharmaceuticals-eurasian-pharma-awards-2025-mukafatina-layiq-gorulub/",
+    "/xeberler/azerbaycan-usaq-endokrinologiyasi-cemiyyetinin-1-ci-beynelxalq-konqresi-kechirilib/",
+    "/xeberler/insomniya-sindromu-movzusunda-elmi-praktik-seminar-kecirilib/"
+  ],
+  "mks.az": [
+    "/news/",
+    "/news/economic/",
+    "/news/news-taxes/",
+    "/news/finance/",
+    "/news/other/"
+  ],
+  "aztehsil.az": [
+    "/az/news/",
+    "/news/",
+    "/az/all-news/"
   ]
 }
