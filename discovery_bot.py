@@ -84,8 +84,15 @@ EDU_CHECK_QUERIES_DEEP = EDU_CHECK_QUERIES_FAST + [
 NEWS_SECTION_WORDS = [
     "xəbərlər", "xeberler", "xəbər", "xeber", "xəbər lenti", "xeber lenti",
     "son xəbərlər", "son xeberler", "bütün xəbərlər", "butun xeberler",
+    "yeniliklər", "yenilikler", "yenilik", "elanlar", "elan", "duyurular",
+    "duyuru", "bildirişlər", "bildirisler", "bildiriş", "bildiris",
     "media", "mətbuat", "metbuat", "press", "press center", "press-centre",
+    "press room", "pressroom", "newsroom", "media center", "media centre",
     "news", "latest", "latest news", "all news", "updates", "announcements",
+    "announcement", "events", "event", "notices", "notice", "blog", "posts",
+    "post", "articles", "article", "publications", "publication",
+    "research", "researches", "projects", "project", "conference",
+    "conferences", "seminars", "seminar", "science", "education",
 ]
 
 COMMON_NEWS_PATHS_FAST = [
@@ -102,13 +109,32 @@ COMMON_NEWS_PATHS_DEEP = [
     "/az/media/news", "/az/media/news/", "/all-news", "/allnews", "/latest",
     "/lastnews", "/son-xeberler", "/son-xeberler/", "/newsarchive",
     "/az/newsarchive", "/p/news", "/tehsil", "/elm", "/elm-ve-tehsil",
-    "/press-relizler", "/press-release", "/announcements", "/elanlar", "/updates",
+    "/press-relizler", "/press-release", "/announcements", "/announcement",
+    "/elanlar", "/updates", "/events", "/event", "/blog", "/posts",
+    "/articles", "/article", "/publications", "/publication", "/research",
+    "/newsroom", "/press", "/press-center", "/press-centre", "/duyurular",
+    "/duyuru", "/notices", "/notice", "/yenilikler", "/yeniliklər",
+    "/az/elanlar", "/az/duyurular", "/az/events", "/az/announcements",
+    "/az/updates", "/az/blog", "/az/publications", "/az/research",
 ]
 
 RSS_PATHS = [
     "/rss", "/rss.xml", "/feed", "/feed.xml", "/atom.xml",
     "/az/rss", "/az/rss.xml", "/az/feed", "/az/feed.xml",
     "/rss/index.xml", "/feed/index.xml",
+    "/?feed=rss2",
+    "/index.php?format=feed&type=rss",
+    "/az/index.php?format=feed&type=rss",
+    "/news?format=feed&type=rss",
+    "/xeber?format=feed&type=rss",
+    "/xeberler?format=feed&type=rss",
+    "/xəbərlər?format=feed&type=rss",
+    "/rss/news",
+    "/rss/news.xml",
+    "/news/rss",
+    "/feed/rss",
+    "/feeds",
+    "/feeds/posts/default",
 ]
 
 BAD_DOMAINS = [
@@ -289,7 +315,10 @@ def looks_like_news_url(url: str) -> bool:
     return any(hint in u for hint in [
         "news", "xeber", "xeberler", "xəbər", "xəbərlər", "media/news",
         "all-news", "allnews", "latest", "lastnews", "son-xeber", "newsarchive",
-        "p/news", "press", "announcements", "updates",
+        "p/news", "press", "announcements", "announcement", "updates",
+        "events", "event", "blog", "posts", "articles", "article",
+        "publications", "publication", "research", "newsroom", "duyurular",
+        "duyuru", "elanlar", "notices", "notice", "yenilikler", "yeniliklər",
     ])
 
 
@@ -346,6 +375,133 @@ def find_working_rss(session: requests.Session, page_url: str, page_html: str | 
     return None, 0
 
 
+def discover_sitemap_urls(session: requests.Session, root_url: str, limit: int = 60) -> list[str]:
+    """Sitemap içindən xəbər bölməsi və xəbər linklərinə oxşayan URL-ləri çıxarır."""
+    root = base_url(root_url)
+    if not root:
+        return []
+
+    sitemap_candidates = [
+        urljoin(root, "/sitemap.xml"),
+        urljoin(root, "/sitemap_index.xml"),
+        urljoin(root, "/sitemap-index.xml"),
+        urljoin(root, "/sitemap1.xml"),
+        urljoin(root, "/post-sitemap.xml"),
+        urljoin(root, "/page-sitemap.xml"),
+        urljoin(root, "/news-sitemap.xml"),
+    ]
+
+    found = []
+    checked_sitemaps = set()
+
+    def parse_sitemap(sitemap_url: str, depth: int = 0):
+        if depth > 1:
+            return
+        if sitemap_url in checked_sitemaps:
+            return
+        checked_sitemaps.add(sitemap_url)
+
+        try:
+            r = session.get(sitemap_url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+            if r.status_code != 200 or not r.text:
+                return
+
+            urls = re.findall(r"<loc>\s*(.*?)\s*</loc>", r.text, flags=re.I)
+            for item_url in urls:
+                item_url = clean_text(item_url)
+                if not item_url.startswith("http"):
+                    continue
+                if is_bad_url(item_url):
+                    continue
+                if clean_domain(item_url) != clean_domain(root):
+                    continue
+
+                if item_url.lower().endswith(".xml") and "sitemap" in item_url.lower():
+                    parse_sitemap(item_url, depth + 1)
+                    continue
+
+                if looks_like_news_url(item_url) or is_article_like_url(item_url):
+                    if item_url not in found:
+                        found.append(item_url.rstrip("/"))
+
+                if len(found) >= limit:
+                    return
+        except Exception:
+            return
+
+    for sitemap in sitemap_candidates:
+        parse_sitemap(sitemap, 0)
+        if len(found) >= limit:
+            break
+
+    return found[:limit]
+
+
+def extract_home_news_links(session: requests.Session, root: str, limit: int = 40) -> list[str]:
+    """Ana səhifədə xəbər/media/elan/yenilik mətnli linkləri daha ağıllı toplayır."""
+    found = []
+    try:
+        r = session.get(root, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+        if r.status_code != 200:
+            return []
+
+        soup = BeautifulSoup(r.text, "html.parser")
+        for a in soup.find_all("a", href=True):
+            text = clean_text(a.get_text(" ", strip=True)).lower()
+            href = urljoin(root, a["href"]).split("#")[0].rstrip("/")
+
+            if not href or href in found or is_bad_url(href):
+                continue
+            if clean_domain(href) != clean_domain(root):
+                continue
+
+            combined = f"{text} {href.lower()}"
+
+            if any(word in combined for word in NEWS_SECTION_WORDS) or looks_like_news_url(href):
+                found.append(href)
+
+            if len(found) >= limit:
+                break
+    except Exception:
+        pass
+
+    return found
+
+
+def crawl_second_level_news_sections(session: requests.Session, first_level_urls: list[str], settings: dict) -> list[str]:
+    """Tapılan birinci səviyyə bölmələrin içindən əlavə xəbər bölmələri tapır."""
+    found = []
+
+    for first_url in first_level_urls[:15]:
+        try:
+            r = session.get(first_url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+            if r.status_code != 200:
+                continue
+
+            soup = BeautifulSoup(r.text, "html.parser")
+            for a in soup.find_all("a", href=True):
+                text = clean_text(a.get_text(" ", strip=True)).lower()
+                href = urljoin(first_url, a["href"]).split("#")[0].rstrip("/")
+
+                if not href or href in found or is_bad_url(href):
+                    continue
+                if clean_domain(href) != clean_domain(first_url):
+                    continue
+
+                combined = f"{text} {href.lower()}"
+                if any(word in combined for word in NEWS_SECTION_WORDS) or looks_like_news_url(href) or is_article_like_url(href):
+                    ok, _news_count, _edu_count, _html = page_news_stats(session, href)
+                    if ok:
+                        found.append(href)
+
+                if len(found) >= settings["max_sections_per_source"]:
+                    return found
+        except Exception:
+            continue
+
+    return found
+
+
 def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int, str]:
     """Return: has_news, news_link_count, edu_keyword_count, html_text"""
     try:
@@ -390,42 +546,50 @@ def find_news_sections(session: requests.Session, source_url: str, settings: dic
 
     found = []
 
+    def add_candidate(candidate_url: str):
+        candidate_url = candidate_url.rstrip("/")
+        if not candidate_url or candidate_url in found or is_bad_url(candidate_url):
+            return False
+        if clean_domain(candidate_url) != clean_domain(root):
+            return False
+        ok, _news_count, _edu_count, _html = page_news_stats(session, candidate_url)
+        if ok:
+            found.append(candidate_url)
+            return True
+        return False
+
+    # 1) Gələn URL özü xəbər bölməsinə oxşayırsa yoxla.
     ok, _news_count, _edu_count, _html = page_news_stats(session, source_url)
     if looks_like_news_url(source_url) and ok:
         found.append(source_url.rstrip("/"))
 
+    # 2) Ən çox işlənən xəbər path-ləri yoxla.
     for path in settings["paths"]:
         candidate = urljoin(root, path).rstrip("/")
-        if candidate in found or is_bad_url(candidate):
-            continue
-        ok, _news_count, _edu_count, _html = page_news_stats(session, candidate)
-        if ok:
-            found.append(candidate)
+        add_candidate(candidate)
         if len(found) >= settings["max_sections_per_source"]:
             return found
 
-    # Ana səhifədən “Xəbərlər / Media / News” linklərini tap.
-    try:
-        r = session.get(root, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
-        if r.status_code == 200:
-            soup = BeautifulSoup(r.text, "html.parser")
-            for a in soup.find_all("a", href=True):
-                text = clean_text(a.get_text(" ", strip=True)).lower()
-                href = urljoin(root, a["href"]).split("#")[0].rstrip("/")
-                if href in found or is_bad_url(href):
-                    continue
-                if clean_domain(href) != clean_domain(root):
-                    continue
-                combined = f"{text} {href.lower()}"
-                if not any(word in combined for word in NEWS_SECTION_WORDS):
-                    continue
-                ok, _news_count, _edu_count, _html = page_news_stats(session, href)
-                if ok:
-                    found.append(href)
-                if len(found) >= settings["max_sections_per_source"]:
-                    break
-    except Exception:
-        pass
+    # 3) Ana səhifədən xəbər/media/elan/yenilik linklərini çıxar.
+    home_links = extract_home_news_links(session, root, limit=60)
+    for href in home_links:
+        add_candidate(href)
+        if len(found) >= settings["max_sections_per_source"]:
+            return found
+
+    # 4) İkinci səviyyə crawl: ana səhifədə tapılan bölmələrin içindən daha uyğun bölmələr tap.
+    second_level = crawl_second_level_news_sections(session, home_links, settings)
+    for href in second_level:
+        add_candidate(href)
+        if len(found) >= settings["max_sections_per_source"]:
+            return found
+
+    # 5) Sitemap-dan xəbər linklərinə/bölmələrə oxşayan URL-ləri yoxla.
+    sitemap_links = discover_sitemap_urls(session, root, limit=80)
+    for href in sitemap_links:
+        add_candidate(href)
+        if len(found) >= settings["max_sections_per_source"]:
+            return found
 
     return found
 
