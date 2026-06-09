@@ -398,6 +398,119 @@ def release_reserved_news(link):
         print(f"Rezerv silmə istisnası: {e}", flush=True)
         return False
 
+def get_or_create_monitor_source(site_name, source_domain, page_url):
+    if not supabase_ready():
+        return None
+
+    base_url = f"{urlparse(page_url).scheme}://{urlparse(page_url).netloc}"
+
+    try:
+        response = requests.get(
+            f"{SUPABASE_URL}/rest/v1/sources",
+            headers=supabase_headers(),
+            params={
+                "select": "id",
+                "base_url": f"eq.{base_url}",
+                "limit": "1",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if response.status_code == 200 and response.json():
+            return response.json()[0]["id"]
+
+        payload = {
+            "name": site_name or source_domain,
+            "base_url": base_url,
+            "latest_url": page_url,
+            "source_type": "news_site",
+            "status": "active",
+            "trust_level": "medium",
+        }
+
+        create_response = requests.post(
+            f"{SUPABASE_URL}/rest/v1/sources",
+            headers=supabase_headers({"Prefer": "return=representation"}),
+            json=payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if create_response.status_code in (200, 201):
+            data = create_response.json()
+            if data:
+                return data[0]["id"]
+
+        print(
+            f"Monitor source yaradılmadı: {create_response.status_code} | {create_response.text[:200]}",
+            flush=True,
+        )
+        return None
+
+    except Exception as e:
+        print(f"Monitor source xətası: {e}", flush=True)
+        return None
+
+
+def save_to_vizual_monitor(site, item, clean_title, published_time):
+    if not supabase_ready():
+        return False
+
+    link = normalize_link(item.get("link"))
+    if not link:
+        return False
+
+    source_id = get_or_create_monitor_source(
+        site.get("name"),
+        item.get("source"),
+        site.get("url"),
+    )
+
+    if not source_id:
+        print("Vizual Monitor: source_id tapılmadı", flush=True)
+        return False
+
+    published_at = None
+    dt = parse_datetime_to_baku(published_time)
+    if dt:
+        published_at = dt.isoformat()
+
+    payload = {
+        "source_id": source_id,
+        "title": clean_title,
+        "url": link,
+        "published_at": published_at,
+        "detected_at": datetime.now(BAKU_TZ).isoformat(),
+        "item_hash": normalize_link(link),
+        "status": "new",
+    }
+
+    try:
+        response = requests.post(
+            f"{SUPABASE_URL}/rest/v1/monitored_items",
+            headers=supabase_headers({
+                "Prefer": "resolution=ignore-duplicates,return=minimal"
+            }),
+            json=payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if response.status_code in (200, 201, 204):
+            print(f"✅ Vizual Monitor-a yazıldı: {clean_title[:80]}", flush=True)
+            return True
+
+        if response.status_code == 409:
+            print(f"⛔ Vizual Monitor duplicate: {link}", flush=True)
+            return False
+
+        print(
+            f"Vizual Monitor yazma xətası: {response.status_code} | {response.text[:300]}",
+            flush=True,
+        )
+        return False
+
+    except Exception as e:
+        print(f"Vizual Monitor istisnası: {e}", flush=True)
+        return False
 
 def save(link, title, source):
     # Köhnə ad qalır ki, başqa yerdə çağırılsa işləsin.
@@ -1250,11 +1363,13 @@ def process_site(index, total, site, patterns_data):
         # ƏVVƏL Supabase-də rezerv edirik, sonra Telegram-a göndəririk.
         # Bu, paralel worker-lərdə eyni xəbərin 3-4 dəfə getməsinin qarşısını alır.
         if not reserve_news(link, clean_title, source):
-            print(f"[{index}/{total}] Təkrar/rezerv olunmuş xəbər keçildi: {link}", flush=True)
-            result["reason"] = "duplicate"
-            continue
+    print(f"[{index}/{total}] Təkrar/rezerv olunmuş xəbər keçildi: {link}", flush=True)
+    result["reason"] = "duplicate"
+    continue
 
-        if send_telegram(message):
+save_to_vizual_monitor(site, item, clean_title, published_time)
+
+if send_telegram(message):
             print(
                 f"✅ [{index}/{total}] Göndərildi: {source} | {clean_title[:70]} | Açar sözlər: {matched_keywords_text}",
                 flush=True
