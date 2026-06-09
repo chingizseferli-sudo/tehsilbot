@@ -453,11 +453,11 @@ def get_or_create_monitor_source(site_name, source_domain, page_url):
 
 def save_to_vizual_monitor(site, item, clean_title, published_time):
     if not supabase_ready():
-        return False
+        return None
 
     link = normalize_link(item.get("link"))
     if not link:
-        return False
+        return None
 
     source_id = get_or_create_monitor_source(
         site.get("name"),
@@ -467,7 +467,7 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
 
     if not source_id:
         print("Vizual Monitor: source_id tapılmadı", flush=True)
-        return False
+        return None
 
     published_at = None
     dt = parse_datetime_to_baku(published_time)
@@ -480,7 +480,7 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
         "url": link,
         "published_at": published_at,
         "detected_at": datetime.now(BAKU_TZ).isoformat(),
-        "item_hash": normalize_link(link),
+        "item_hash": link,
         "status": "new",
     }
 
@@ -488,29 +488,121 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
         response = requests.post(
             f"{SUPABASE_URL}/rest/v1/monitored_items",
             headers=supabase_headers({
-                "Prefer": "resolution=ignore-duplicates,return=minimal"
+                "Prefer": "resolution=ignore-duplicates,return=representation"
             }),
             json=payload,
             timeout=REQUEST_TIMEOUT,
         )
 
-        if response.status_code in (200, 201, 204):
-            print(f"✅ Vizual Monitor-a yazıldı: {clean_title[:80]}", flush=True)
-            return True
+        if response.status_code in (200, 201):
+            data = response.json()
+            if data:
+                item_id = data[0].get("id")
+                print(f"✅ Vizual Monitor-a yazıldı: {clean_title[:80]}", flush=True)
+                return item_id
 
-        if response.status_code == 409:
-            print(f"⛔ Vizual Monitor duplicate: {link}", flush=True)
-            return False
+        if response.status_code in (204, 409):
+            existing = requests.get(
+                f"{SUPABASE_URL}/rest/v1/monitored_items",
+                headers=supabase_headers(),
+                params={
+                    "select": "id",
+                    "url": f"eq.{link}",
+                    "limit": "1",
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if existing.status_code == 200 and existing.json():
+                item_id = existing.json()[0].get("id")
+                print(f"⛔ Vizual Monitor duplicate, mövcud item istifadə olunur: {link}", flush=True)
+                return item_id
+
+            print(f"⛔ Vizual Monitor duplicate amma item_id tapılmadı: {link}", flush=True)
+            return None
 
         print(
             f"Vizual Monitor yazma xətası: {response.status_code} | {response.text[:300]}",
             flush=True,
         )
-        return False
+        return None
 
     except Exception as e:
         print(f"Vizual Monitor istisnası: {e}", flush=True)
-        return False
+        return None
+
+def match_user_monitors(item_id, title):
+    if not supabase_ready() or not item_id:
+        return 0
+
+    title_text = normalize_text(title)
+
+    try:
+        response = requests.get(
+            f"{SUPABASE_URL}/rest/v1/monitor_keywords",
+            headers=supabase_headers(),
+            params={
+                "select": "id,keyword,match_type,monitor_id,user_monitors(status)",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if response.status_code != 200:
+            print(f"Monitor keyword oxuma xətası: {response.status_code} | {response.text[:200]}", flush=True)
+            return 0
+
+        keywords = response.json() or []
+        matched_count = 0
+
+        for row in keywords:
+            monitor_status = (row.get("user_monitors") or {}).get("status")
+            if monitor_status != "active":
+                continue
+
+            keyword = normalize_text(row.get("keyword", ""))
+            if not keyword:
+                continue
+
+            if keyword not in title_text:
+                continue
+
+            payload = {
+                "monitor_id": row.get("monitor_id"),
+                "item_id": item_id,
+                "matched_keyword": row.get("keyword"),
+            }
+
+            match_response = requests.post(
+                f"{SUPABASE_URL}/rest/v1/monitor_matches",
+                headers=supabase_headers({
+                    "Prefer": "resolution=ignore-duplicates,return=minimal"
+                }),
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if match_response.status_code in (200, 201, 204):
+                matched_count += 1
+                print(
+                    f"✅ Monitor uyğunluğu yazıldı: {row.get('keyword')} | item={item_id}",
+                    flush=True,
+                )
+            elif match_response.status_code == 409:
+                print(
+                    f"⛔ Monitor uyğunluğu duplicate: {row.get('keyword')} | item={item_id}",
+                    flush=True,
+                )
+            else:
+                print(
+                    f"Monitor match yazma xətası: {match_response.status_code} | {match_response.text[:200]}",
+                    flush=True,
+                )
+
+        return matched_count
+
+    except Exception as e:
+        print(f"Monitor match istisnası: {e}", flush=True)
+        return 0
 
 def save(link, title, source):
     # Köhnə ad qalır ki, başqa yerdə çağırılsa işləsin.
