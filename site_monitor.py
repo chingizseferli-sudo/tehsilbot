@@ -1367,7 +1367,7 @@ def process_site(index, total, site, patterns_data):
             result["reason"] = "duplicate"
             continue
 
-            save_to_vizual_monitor(site, item, clean_title, published_time)
+        save_to_vizual_monitor(site, item, clean_title, published_time)
 
         if send_telegram(message):
             print(
