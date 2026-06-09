@@ -1363,13 +1363,13 @@ def process_site(index, total, site, patterns_data):
         # ƏVVƏL Supabase-də rezerv edirik, sonra Telegram-a göndəririk.
         # Bu, paralel worker-lərdə eyni xəbərin 3-4 dəfə getməsinin qarşısını alır.
         if not reserve_news(link, clean_title, source):
-    print(f"[{index}/{total}] Təkrar/rezerv olunmuş xəbər keçildi: {link}", flush=True)
-    result["reason"] = "duplicate"
-    continue
+            print(f"[{index}/{total}] Təkrar/rezerv olunmuş xəbər keçildi: {link}", flush=True)
+            result["reason"] = "duplicate"
+            continue
 
-save_to_vizual_monitor(site, item, clean_title, published_time)
+            save_to_vizual_monitor(site, item, clean_title, published_time)
 
-if send_telegram(message):
+        if send_telegram(message):
             print(
                 f"✅ [{index}/{total}] Göndərildi: {source} | {clean_title[:70]} | Açar sözlər: {matched_keywords_text}",
                 flush=True
