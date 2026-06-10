@@ -548,7 +548,10 @@ def match_user_monitors(item_id, title):
         )
 
         if response.status_code != 200:
-            print(f"Monitor keyword oxuma xətası: {response.status_code} | {response.text[:200]}", flush=True)
+            print(
+                f"Monitor keyword oxuma xətası: {response.status_code} | {response.text[:200]}",
+                flush=True,
+            )
             return 0
 
         keywords = response.json() or []
@@ -559,7 +562,9 @@ def match_user_monitors(item_id, title):
             if monitor_status != "active":
                 continue
 
-            keyword = normalize_text(row.get("keyword", ""))
+            keyword_original = row.get("keyword", "")
+            keyword = normalize_text(keyword_original)
+
             if not keyword:
                 continue
 
@@ -569,76 +574,46 @@ def match_user_monitors(item_id, title):
             payload = {
                 "monitor_id": row.get("monitor_id"),
                 "item_id": item_id,
-                "matched_keyword": row.get("keyword"),
+                "matched_keyword": keyword_original,
             }
 
             match_response = requests.post(
                 f"{SUPABASE_URL}/rest/v1/monitor_matches",
-                headers=supabase_headers({
-                    "Prefer": "resolution=ignore-duplicates,return=minimal"
-                }),
+                headers=supabase_headers(
+                    {"Prefer": "resolution=ignore-duplicates,return=representation"}
+                ),
                 json=payload,
                 timeout=REQUEST_TIMEOUT,
             )
 
-            if match_response.status_code in (200, 201, 204):
-    matched_count += 1
-    print(
-        f"✅ Monitor uyğunluğu yazıldı: {row.get('keyword')} | item={item_id}",
-        flush=True,
-    )
+            if match_response.status_code in (200, 201):
+                matched_count += 1
 
-    match_id = None
+                match_data = match_response.json() or []
+                match_id = match_data[0].get("id") if match_data else None
 
-    try:
-        match_lookup = requests.get(
-            f"{SUPABASE_URL}/rest/v1/monitor_matches",
-            headers=supabase_headers(),
-            params={
-                "select": "id",
-                "monitor_id": f"eq.{row.get('monitor_id')}",
-                "item_id": f"eq.{item_id}",
-                "limit": "1",
-            },
-            timeout=REQUEST_TIMEOUT,
-        )
-
-           if match_lookup.status_code == 200 and match_lookup.json():
-            match_id = match_lookup.json()[0].get("id")
-         except Exception as e:
-                print(f"Monitor match_id oxuma xətası: {e}", flush=True)
-
-           if match_id:
-        try:
-            alert_response = requests.post(
-                f"{SUPABASE_URL}/rest/v1/monitor_alerts",
-                headers=supabase_headers({
-                    "Prefer": "resolution=ignore-duplicates,return=minimal"
-                }),
-                json={
-                    "match_id": match_id,
-                    "channel": "web",
-                    "recipient": "admin",
-                    "status": "new",
-                    "sent_at": datetime.now(BAKU_TZ).isoformat(),
-                },
-                timeout=REQUEST_TIMEOUT,
-            )
-
-            if alert_response.status_code in (200, 201, 204):
-                print(f"🔔 Bildiriş yaradıldı: match={match_id}", flush=True)
-            else:
                 print(
-                    f"Bildiriş yazma xətası: {alert_response.status_code} | {alert_response.text[:200]}",
+                    f"✅ Monitor uyğunluğu yazıldı: {keyword_original} | item={item_id}",
                     flush=True,
                 )
-        except Exception as e:
-            print(f"Bildiriş istisnası: {e}", flush=True)
-            elif match_response.status_code == 409:
+
+                if match_id:
+                    create_monitor_alert(match_id)
+
+            elif match_response.status_code in (204, 409):
                 print(
-                    f"⛔ Monitor uyğunluğu duplicate: {row.get('keyword')} | item={item_id}",
+                    f"⛔ Monitor uyğunluğu duplicate: {keyword_original} | item={item_id}",
                     flush=True,
                 )
+
+                match_id = get_existing_monitor_match_id(
+                    row.get("monitor_id"),
+                    item_id,
+                )
+
+                if match_id:
+                    create_monitor_alert(match_id)
+
             else:
                 print(
                     f"Monitor match yazma xətası: {match_response.status_code} | {match_response.text[:200]}",
