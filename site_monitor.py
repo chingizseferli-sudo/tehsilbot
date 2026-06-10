@@ -531,6 +531,71 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
         print(f"Vizual Monitor istisnası: {e}", flush=True)
         return None
 
+def get_existing_monitor_match_id(monitor_id, item_id):
+    if not supabase_ready() or not monitor_id or not item_id:
+        return None
+
+    try:
+        response = requests.get(
+            f"{SUPABASE_URL}/rest/v1/monitor_matches",
+            headers=supabase_headers(),
+            params={
+                "select": "id",
+                "monitor_id": f"eq.{monitor_id}",
+                "item_id": f"eq.{item_id}",
+                "limit": "1",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if response.status_code == 200 and response.json():
+            return response.json()[0].get("id")
+
+        return None
+
+    except Exception as e:
+        print(f"Monitor match_id oxuma xətası: {e}", flush=True)
+        return None
+
+
+def create_monitor_alert(match_id):
+    if not supabase_ready() or not match_id:
+        return False
+
+    try:
+        response = requests.post(
+            f"{SUPABASE_URL}/rest/v1/monitor_alerts",
+            headers=supabase_headers(
+                {"Prefer": "resolution=ignore-duplicates,return=minimal"}
+            ),
+            json={
+                "match_id": match_id,
+                "channel": "web",
+                "recipient": "admin",
+                "status": "new",
+                "sent_at": datetime.now(BAKU_TZ).isoformat(),
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if response.status_code in (200, 201, 204):
+            print(f"🔔 Bildiriş yaradıldı: match={match_id}", flush=True)
+            return True
+
+        if response.status_code == 409:
+            print(f"⛔ Bildiriş duplicate: match={match_id}", flush=True)
+            return False
+
+        print(
+            f"Bildiriş yazma xətası: {response.status_code} | {response.text[:200]}",
+            flush=True,
+        )
+        return False
+
+    except Exception as e:
+        print(f"Bildiriş istisnası: {e}", flush=True)
+        return False
+
 def match_user_monitors(item_id, title):
     if not supabase_ready() or not item_id:
         return 0
