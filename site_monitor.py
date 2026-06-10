@@ -581,7 +581,7 @@ def match_user_monitors(item_id, title):
                 timeout=REQUEST_TIMEOUT,
             )
 
-            if match_response.status_code in (200, 201, 204):
+        if match_response.status_code in (200, 201, 204):
     matched_count += 1
     print(
         f"✅ Monitor uyğunluğu yazıldı: {row.get('keyword')} | item={item_id}",
