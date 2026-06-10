@@ -582,11 +582,58 @@ def match_user_monitors(item_id, title):
             )
 
             if match_response.status_code in (200, 201, 204):
-                matched_count += 1
+    matched_count += 1
+    print(
+        f"✅ Monitor uyğunluğu yazıldı: {row.get('keyword')} | item={item_id}",
+        flush=True,
+    )
+
+    match_id = None
+
+    try:
+        match_lookup = requests.get(
+            f"{SUPABASE_URL}/rest/v1/monitor_matches",
+            headers=supabase_headers(),
+            params={
+                "select": "id",
+                "monitor_id": f"eq.{row.get('monitor_id')}",
+                "item_id": f"eq.{item_id}",
+                "limit": "1",
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+
+           if match_lookup.status_code == 200 and match_lookup.json():
+            match_id = match_lookup.json()[0].get("id")
+         except Exception as e:
+                print(f"Monitor match_id oxuma xətası: {e}", flush=True)
+
+           if match_id:
+        try:
+            alert_response = requests.post(
+                f"{SUPABASE_URL}/rest/v1/monitor_alerts",
+                headers=supabase_headers({
+                    "Prefer": "resolution=ignore-duplicates,return=minimal"
+                }),
+                json={
+                    "match_id": match_id,
+                    "channel": "web",
+                    "recipient": "admin",
+                    "status": "new",
+                    "sent_at": datetime.now(BAKU_TZ).isoformat(),
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if alert_response.status_code in (200, 201, 204):
+                print(f"🔔 Bildiriş yaradıldı: match={match_id}", flush=True)
+            else:
                 print(
-                    f"✅ Monitor uyğunluğu yazıldı: {row.get('keyword')} | item={item_id}",
+                    f"Bildiriş yazma xətası: {alert_response.status_code} | {alert_response.text[:200]}",
                     flush=True,
                 )
+        except Exception as e:
+            print(f"Bildiriş istisnası: {e}", flush=True)
             elif match_response.status_code == 409:
                 print(
                     f"⛔ Monitor uyğunluğu duplicate: {row.get('keyword')} | item={item_id}",
