@@ -1,8 +1,11 @@
 import argparse
 import json
+import os
 import re
 import time
 from collections import Counter
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from urllib.parse import quote_plus, urljoin, urlparse
 
 import feedparser
@@ -17,6 +20,15 @@ PATTERNS_FILE = "patterns.json"
 KEYWORDS_FILE = "keywords.json"
 
 REQUEST_TIMEOUT = 12
+
+SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
+SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+BAKU_TZ = ZoneInfo("Asia/Baku")
+
+# Əvvəlki discovery versiyasında .gov.az bloklanırdı. Vizual.az üçün dövlət/qurum saytlarını da
+# izləmək lazım ola bilər. İstəsən Railway-də DISCOVERY_BLOCK_GOV=true qoyub yenə bloklaya bilərsən.
+DISCOVERY_BLOCK_GOV = os.getenv("DISCOVERY_BLOCK_GOV", "false").lower() == "true"
+
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (compatible; TehsilBotDiscovery/4.0)",
@@ -144,7 +156,7 @@ BAD_DOMAINS = [
 ]
 
 # gov istənmir. Tam qadağa qoyuruq ki, discovery gov mənbələrini toplamasın.
-BLOCKED_DOMAIN_PARTS = [".gov.az"]
+BLOCKED_DOMAIN_PARTS = [".gov.az"] if DISCOVERY_BLOCK_GOV else []
 
 BAD_URL_WORDS = [
     "facebook", "instagram", "youtube", "telegram", "login", "register",
@@ -191,6 +203,209 @@ def get_mode_settings(mode: str) -> dict:
         "paths": COMMON_NEWS_PATHS_FAST,
         "build_patterns": False,
     }
+
+
+def supabase_ready() -> bool:
+    if not SUPABASE_URL or not SUPABASE_SERVICE_ROLE_KEY:
+        print("Supabase env yoxdur: SUPABASE_URL və ya SUPABASE_SERVICE_ROLE_KEY", flush=True)
+        return False
+    return True
+
+
+def supabase_headers(extra=None) -> dict:
+    headers = {
+        "apikey": SUPABASE_SERVICE_ROLE_KEY,
+        "Authorization": f"Bearer {SUPABASE_SERVICE_ROLE_KEY}",
+        "Content-Type": "application/json",
+    }
+    if extra:
+        headers.update(extra)
+    return headers
+
+
+def source_monitor_method(site: dict) -> str:
+    if site.get("rss_url"):
+        return "rss"
+    if site.get("selector"):
+        return "selector"
+    if site.get("xpaths"):
+        return "xpath"
+    return "html"
+
+
+def source_trust_level(score: int) -> str:
+    if score >= 80:
+        return "high"
+    if score >= 50:
+        return "medium"
+    return "low"
+
+
+def discovery_status_for_site(site: dict) -> str:
+    status = site.get("status")
+    if status == "approved":
+        return "accepted"
+    if status == "review":
+        return "manual_needed"
+    return "rejected"
+
+
+def build_source_payload(site: dict) -> dict:
+    url = site.get("url", "")
+    score = int(site.get("score", 0) or 0)
+    method = source_monitor_method(site)
+    analysis = site.get("analysis", {}) if isinstance(site.get("analysis"), dict) else {}
+
+    return {
+        "name": site.get("name") or clean_domain(url),
+        "base_url": base_url(url),
+        "latest_url": url,
+        "rss_url": site.get("rss_url"),
+        "source_type": "news_site",
+        "status": "active" if site.get("status") in ("approved", "review") else "inactive",
+        "trust_level": source_trust_level(score),
+        "monitor_method": method,
+        "selector": site.get("selector"),
+        "article_pattern": ",".join(site.get("xpaths", [])[:3]) if site.get("xpaths") else None,
+        "discovery_status": discovery_status_for_site(site),
+        "discovery_score": score,
+        "last_discovered_at": datetime.now(BAKU_TZ).isoformat(),
+        "notes": "; ".join(analysis.get("reasons", []))[:1000] if analysis else site.get("reason"),
+    }
+
+
+def save_discovery_log(domain: str, url: str, status: str, reason: str = "", method: str = "", score: int = 0, sample_links=None):
+    if not supabase_ready():
+        return False
+
+    payload = {
+        "domain": domain,
+        "url": url,
+        "status": status,
+        "reason": reason,
+        "method": method,
+        "score": score,
+        "sample_links": sample_links or [],
+    }
+
+    try:
+        response = requests.post(
+            f"{SUPABASE_URL}/rest/v1/discovery_logs",
+            headers=supabase_headers({"Prefer": "return=minimal"}),
+            json=payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code not in (200, 201, 204):
+            print(f"Discovery log yazılmadı: {response.status_code} | {response.text[:200]}", flush=True)
+            return False
+        return True
+    except Exception as e:
+        print(f"Discovery log istisnası: {e}", flush=True)
+        return False
+
+
+def save_rejected_source(site: dict):
+    if not supabase_ready():
+        return False
+
+    url = site.get("url", "")
+    domain = clean_domain(url)
+    if not domain:
+        return False
+
+    payload = {
+        "domain": domain,
+        "url": url,
+        "reason": site.get("reason") or "; ".join((site.get("analysis") or {}).get("reasons", []))[:1000],
+        "checked_at": datetime.now(BAKU_TZ).isoformat(),
+    }
+
+    try:
+        response = requests.post(
+            f"{SUPABASE_URL}/rest/v1/rejected_sources",
+            headers=supabase_headers({"Prefer": "resolution=merge-duplicates,return=minimal"}),
+            params={"on_conflict": "domain"},
+            json=payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code not in (200, 201, 204):
+            print(f"Rejected source yazılmadı: {response.status_code} | {response.text[:200]}", flush=True)
+            return False
+        return True
+    except Exception as e:
+        print(f"Rejected source istisnası: {e}", flush=True)
+        return False
+
+
+def upsert_source_to_supabase(site: dict):
+    if not supabase_ready():
+        return False
+
+    payload = build_source_payload(site)
+    if not payload.get("base_url"):
+        return False
+
+    try:
+        response = requests.post(
+            f"{SUPABASE_URL}/rest/v1/sources",
+            headers=supabase_headers({"Prefer": "resolution=merge-duplicates,return=minimal"}),
+            params={"on_conflict": "base_url"},
+            json=payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if response.status_code in (200, 201, 204):
+            print(
+                f"✅ Supabase sources yazıldı: {payload.get('name')} | {payload.get('monitor_method')} | score={payload.get('discovery_score')}",
+                flush=True,
+            )
+            return True
+
+        print(f"Supabase sources yazma xətası: {response.status_code} | {response.text[:300]}", flush=True)
+        return False
+
+    except Exception as e:
+        print(f"Supabase sources istisnası: {e}", flush=True)
+        return False
+
+
+def sync_discovery_results_to_supabase(approved_sites: list[dict], review_sites: list[dict], rejected_sites: list[dict]):
+    if not supabase_ready():
+        print("Supabase sync keçildi: env yoxdur", flush=True)
+        return
+
+    accepted = 0
+    manual = 0
+    rejected = 0
+
+    for site in approved_sites:
+        domain = clean_domain(site.get("url", ""))
+        method = source_monitor_method(site)
+        score = int(site.get("score", 0) or 0)
+        if upsert_source_to_supabase(site):
+            accepted += 1
+        save_discovery_log(domain, site.get("url", ""), "accepted", "approved", method, score)
+
+    for site in review_sites:
+        domain = clean_domain(site.get("url", ""))
+        method = source_monitor_method(site)
+        score = int(site.get("score", 0) or 0)
+        if upsert_source_to_supabase(site):
+            manual += 1
+        save_discovery_log(domain, site.get("url", ""), "manual_needed", "review", method, score)
+
+    for site in rejected_sites:
+        domain = clean_domain(site.get("url", ""))
+        score = int(site.get("score", 0) or 0)
+        reason = site.get("reason") or "; ".join((site.get("analysis") or {}).get("reasons", []))
+        save_rejected_source(site)
+        save_discovery_log(domain, site.get("url", ""), "rejected", reason, "none", score)
+        rejected += 1
+
+    print("📦 Supabase discovery sync", flush=True)
+    print(f"✅ accepted: {accepted}", flush=True)
+    print(f"🟡 manual_needed: {manual}", flush=True)
+    print(f"🔴 rejected: {rejected}", flush=True)
 
 
 def read_json(filename: str, default):
@@ -889,6 +1104,8 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
     if add_to_config:
         config_added = append_unique(CONFIG_FILE, approved_sites)
 
+    sync_discovery_results_to_supabase(approved_sites, review_sites, rejected_sites)
+
     print("\n===== DISCOVERY 2.0 YEKUNU =====", flush=True)
     print(f"✅ Approved: {len(approved_sites)} | config-ə əlavə: {config_added}", flush=True)
     print(f"🟡 Review: {len(review_sites)} | review faylına əlavə: {review_added}", flush=True)
@@ -985,7 +1202,7 @@ def build_patterns():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="TəhsilBot Discovery 2.0 - news sites first")
+    parser = argparse.ArgumentParser(description="Vizual.az Discovery Engine - sources, logs, rejected_sources")
     parser.add_argument("--mode", choices=["fast", "deep"], default="fast")
     parser.add_argument("--add-to-config", action="store_true", help="Yalnız approved saytları courier_config_clean.json faylına əlavə edir")
     parser.add_argument("--patterns", action="store_true", help="Pattern builder-i məcburi işə salır")
