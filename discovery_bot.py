@@ -1297,7 +1297,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
                 score = int(analyzed.get("score", 0) or 0)
 
                 # Ana səhifədən xəbər linkləri çıxarıla bilirsə reject etmə.
-                if score >= 40:
+                if score >= 25:
                     analyzed["status"] = "review"
 
                     old = best_by_domain.get(domain)
