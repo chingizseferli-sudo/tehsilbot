@@ -1,42 +1,48 @@
 name: Deep Discovery
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "0 23 * * *"
+workflow_dispatch:
+schedule:
+- cron: "0 23 * * *"
 
 permissions:
-  contents: write
+contents: write
 
 jobs:
-  deep-discovery:
-    runs-on: ubuntu-latest
+deep-discovery:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Repo klonla
-        uses: actions/checkout@v4
+```
+env:
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
-      - name: Python quraşdır
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+steps:
+  - name: Repo klonla
+    uses: actions/checkout@v4
 
-      - name: Kitabxanaları quraşdır
-        run: |
-          pip install -r requirements.txt
+  - name: Python quraşdır
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.11"
 
-      - name: Deep Discovery işə sal
-        run: |
-          python discovery_bot.py --mode deep --add-to-config
+  - name: Kitabxanaları quraşdır
+    run: |
+      pip install -r requirements.txt
 
-      - name: Dəyişiklikləri commit et
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
+  - name: Deep Discovery işə sal
+    run: |
+      python discovery_bot.py --mode deep --add-to-config
 
-          git add discovered_sites.json courier_config_clean.json review_sites.json rejected_sites.json patterns.json
+  - name: Dəyişiklikləri commit et
+    run: |
+      git config --global user.name "github-actions"
+      git config --global user.email "github-actions@github.com"
 
-          git diff --staged --quiet || git commit -m "Deep discovery update"
+      git add discovered_sites.json courier_config_clean.json review_sites.json rejected_sites.json patterns.json
 
-          git pull --rebase origin main
-          git push origin main
+      git diff --staged --quiet || git commit -m "Deep discovery update"
+
+      git pull --rebase origin main
+      git push origin main
+```
