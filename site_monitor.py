@@ -558,43 +558,108 @@ def get_existing_monitor_match_id(monitor_id, item_id):
         return None
 
 
-def create_monitor_alert(match_id):
+def get_existing_monitor_alert_id(match_id):
     if not supabase_ready() or not match_id:
-        return False
+        return None
 
     try:
-        response = requests.post(
+        response = requests.get(
             f"{SUPABASE_URL}/rest/v1/monitor_alerts",
-            headers=supabase_headers(
-                {"Prefer": "resolution=ignore-duplicates,return=minimal"}
-            ),
-            json={
-                "match_id": match_id,
-                "channel": "web",
-                "recipient": "admin",
-                "status": "new",
-                "sent_at": datetime.now(BAKU_TZ).isoformat(),
+            headers=supabase_headers(),
+            params={
+                "select": "id",
+                "match_id": f"eq.{match_id}",
+                "limit": "1",
             },
             timeout=REQUEST_TIMEOUT,
         )
 
-        if response.status_code in (200, 201, 204):
-            print(f"🔔 Bildiriş yaradıldı: match={match_id}", flush=True)
-            return True
+        if response.status_code == 200 and response.json():
+            return response.json()[0].get("id")
 
-        if response.status_code == 409:
-            print(f"⛔ Bildiriş duplicate: match={match_id}", flush=True)
-            return False
+        if response.status_code != 200:
+            print(
+                f"Bildiriş mövcudluq yoxlama xətası: {response.status_code} | {response.text[:200]}",
+                flush=True,
+            )
 
-        print(
-            f"Bildiriş yazma xətası: {response.status_code} | {response.text[:200]}",
-            flush=True,
-        )
-        return False
+        return None
 
     except Exception as e:
-        print(f"Bildiriş istisnası: {e}", flush=True)
+        print(f"Bildiriş mövcudluq istisnası: {e}", flush=True)
+        return None
+
+
+def create_monitor_alert(match_id):
+    """
+    monitor_alerts üçün təhlükəsiz insert.
+
+    Əvvəlki versiyada `Prefer: resolution=ignore-duplicates` istifadə olunurdu.
+    Bəzi Supabase cədvəllərində unique constraint uyğun gəlməyəndə bu hissə səssiz və ya 400 xətası verə bilir.
+
+    Yeni məntiq:
+    1. Əvvəl match_id üzrə mövcud alert yoxlanılır.
+    2. Yoxdursa, sadə insert edilir.
+    3. Cədvəldə sent_at sütunu yoxdursa, avtomatik daha sadə payload ilə təkrar cəhd edilir.
+    """
+    if not supabase_ready() or not match_id:
         return False
+
+    existing_alert_id = get_existing_monitor_alert_id(match_id)
+    if existing_alert_id:
+        print(f"⛔ Bildiriş artıq mövcuddur: match={match_id}", flush=True)
+        return False
+
+    payload_variants = [
+        {
+            "match_id": match_id,
+            "channel": "web",
+            "recipient": "admin",
+            "status": "new",
+            "sent_at": datetime.now(BAKU_TZ).isoformat(),
+        },
+        {
+            "match_id": match_id,
+            "channel": "web",
+            "recipient": "admin",
+            "status": "new",
+        },
+        {
+            "match_id": match_id,
+            "status": "new",
+        },
+    ]
+
+    last_error = ""
+
+    for payload in payload_variants:
+        try:
+            response = requests.post(
+                f"{SUPABASE_URL}/rest/v1/monitor_alerts",
+                headers=supabase_headers({"Prefer": "return=representation"}),
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if response.status_code in (200, 201):
+                data = response.json() or []
+                alert_id = data[0].get("id") if data else None
+                print(f"🔔 Bildiriş yaradıldı: match={match_id} | alert={alert_id}", flush=True)
+                return True
+
+            if response.status_code == 409:
+                print(f"⛔ Bildiriş duplicate: match={match_id}", flush=True)
+                return False
+
+            last_error = f"{response.status_code} | {response.text[:300]}"
+            print(f"Bildiriş payload alınmadı, başqa variant sınanır: {last_error}", flush=True)
+
+        except Exception as e:
+            last_error = str(e)
+            print(f"Bildiriş insert istisnası, başqa variant sınanır: {e}", flush=True)
+
+    print(f"Bildiriş yazılmadı: match={match_id} | son xəta: {last_error}", flush=True)
+    return False
 
 def match_user_monitors(item_id, title):
     if not supabase_ready() or not item_id:
