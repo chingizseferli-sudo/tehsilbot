@@ -558,23 +558,98 @@ def build_search_queries(mode: str) -> list[str]:
 
 def looks_like_news_url(url: str) -> bool:
     u = url.lower()
+
     if any(bad in u for bad in BAD_URL_WORDS):
         return False
-    return any(hint in u for hint in [
-        "news", "xeber", "xeberler", "xəbər", "xəbərlər", "media/news",
-        "all-news", "allnews", "latest", "lastnews", "son-xeber", "newsarchive",
-        "p/news", "press", "announcements", "announcement", "updates",
-        "events", "event", "blog", "posts", "articles", "article",
-        "publications", "publication", "research", "newsroom", "duyurular",
-        "duyuru", "elanlar", "notices", "notice", "yenilikler", "yeniliklər",
-    ])
+
+    NEWS_HINTS = [
+        "news",
+        "xeber",
+        "xeberler",
+        "xəbər",
+        "xəbərlər",
+        "latest",
+        "lastnews",
+        "son-xeber",
+        "all-news",
+        "allnews",
+        "press",
+        "media",
+        "announcements",
+        "announcement",
+        "updates",
+        "update",
+        "events",
+        "event",
+        "blog",
+        "posts",
+        "articles",
+        "article",
+        "publications",
+        "publication",
+        "research",
+        "newsroom",
+        "duyurular",
+        "duyuru",
+        "elanlar",
+        "notice",
+        "notices",
+        "yenilikler",
+        "yeniliklər",
+        "gundem",
+        "gündəm",
+        "world",
+        "politics",
+        "economy",
+        "society",
+        "sport",
+        "sports",
+        "football",
+        "basketball",
+    ]
+
+    return any(hint in u for hint in NEWS_HINTS)
 
 
 def is_article_like_url(url: str) -> bool:
     u = url.lower()
+
     if any(bad in u for bad in BAD_URL_WORDS):
         return False
-    return any(hint in u for hint in ARTICLE_HINTS)
+
+    # Tarixli URL
+    if re.search(r"(20[2-9][0-9])", u):
+        return True
+
+    # Uzun slug
+    if re.search(
+        r"/(?:[a-z0-9əöğüşıç-]+-){2,}[a-z0-9əöğüşıç-]+/?$",
+        u,
+    ):
+        return True
+
+    # ID əsaslı xəbər
+    if re.search(r"/\d{4,}", u):
+        return True
+
+    ARTICLE_HINTS_EXTENDED = [
+        "news",
+        "xeber",
+        "article",
+        "story",
+        "post",
+        "read",
+        "content",
+        "football",
+        "sport",
+        "sports",
+        "world",
+        "economy",
+        "politics",
+        "society",
+    ]
+
+    return any(hint in u for hint in ARTICLE_HINTS_EXTENDED)
 
 
 def discover_rss_links(page_url: str, page_html: str | None = None) -> list[str]:
@@ -824,7 +899,7 @@ def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int
                 return True, len(news_links), len(edu_links), html_text
 
         # Çox vacib: əsas xəbər saytını itirməmək üçün 1 real link belə kifayətdir.
-        return len(news_links) >= 1, len(news_links), len(edu_links), html_text
+        return len(news_links) >= 1 or len(edu_links) >= 1, len(news_links), len(edu_links), html_text
 
     except Exception as e:
         print(f"page_news_stats xətası: {url} | {e}", flush=True)
