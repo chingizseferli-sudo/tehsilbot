@@ -753,9 +753,9 @@ def crawl_second_level_news_sections(session: requests.Session, first_level_urls
 def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int, str]:
     """Return: has_news, news_link_count, edu_keyword_count, html_text.
 
-    Köhnə versiya yalnız URL-də /news/, /xeber/ kimi pattern axtarırdı.
-    Bir çox Azərbaycan xəbər saytı isə xəbərləri ana səhifədə fərqli slug-larla verir.
-    Ona görə burada həm URL pattern, həm başlıq uzunluğu, həm tarixli slug, həm də ümumi xəbər sözləri nəzərə alınır.
+    Məqsəd saytın izlənə bilib-bilməyəcəyini yumşaq yoxlamaqdır.
+    Əsas xəbər saytları bəzən /news və /xeber pattern-i işlətmir.
+    Ona görə başlıq, slug, tarix, id və xəbər sözləri birlikdə qiymətləndirilir.
     """
     try:
         r = session.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
@@ -772,12 +772,14 @@ def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int
             "ana səhifə", "haqqımızda", "əlaqə", "reklam", "giriş",
             "qeydiyyat", "axtarış", "abunə", "facebook", "instagram",
             "youtube", "telegram", "twitter", "linkedin", "rss", "menu", "menyu",
+            "privacy", "terms", "cookie",
         ]
 
         news_words = [
             "xəbər", "xeber", "son xəbər", "son xeber", "gündəm", "gundem",
             "siyasət", "cəmiyyət", "cemiyyet", "dünya", "iqtisadiyyat",
-            "hadisə", "ölkə", "region", "təhsil", "elm",
+            "hadisə", "ölkə", "olke", "region", "təhsil", "elm", "idman",
+            "mədəniyyət", "medeniyyet", "şou", "show", "kriminal",
         ]
 
         for a in soup.find_all("a", href=True):
@@ -796,16 +798,23 @@ def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int
             if any(w in combined for w in title_bad_words):
                 continue
 
-            # Xəbər başlıqları adətən 18+ simvoldur.
-            has_real_title = len(text) >= 18
+            has_real_title = len(text) >= 12
 
-            # URL və mətn siqnalları.
             pattern_signal = looks_like_news_url(href) or is_article_like_url(href)
-            date_signal = bool(re.search(r"/(20[2-9][0-9])([/-]|$)", href_lower))
-            id_slug_signal = bool(re.search(r"/(?:[a-z0-9-]+-){2,}[a-z0-9-]+(?:/|$)", href_lower))
+            date_signal = bool(re.search(r"(20[2-9][0-9])", href_lower))
+            id_signal = bool(re.search(r"/\d{4,}($|[-_/])", href_lower))
+            long_slug_signal = bool(
+                re.search(r"/(?:[a-z0-9əöğüşıç-]+-){2,}[a-z0-9əöğüşıç-]+(?:/|$)", href_lower)
+            )
             word_signal = any(word in combined for word in news_words)
 
-            if has_real_title and (pattern_signal or date_signal or id_slug_signal or word_signal):
+            if has_real_title and (
+                pattern_signal
+                or date_signal
+                or id_signal
+                or long_slug_signal
+                or word_signal
+            ):
                 news_links.add(normalize_url(href))
 
             if any(k in combined for k in KEYWORDS):
@@ -814,7 +823,8 @@ def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int
             if len(news_links) >= 25 and len(edu_links) >= 3:
                 return True, len(news_links), len(edu_links), html_text
 
-        return len(news_links) >= 3, len(news_links), len(edu_links), html_text
+        # Çox vacib: əsas xəbər saytını itirməmək üçün 1 real link belə kifayətdir.
+        return len(news_links) >= 1, len(news_links), len(edu_links), html_text
 
     except Exception as e:
         print(f"page_news_stats xətası: {url} | {e}", flush=True)
@@ -834,47 +844,62 @@ def find_news_sections(session: requests.Session, source_url: str, settings: dic
             return False
         if clean_domain(candidate_url) != clean_domain(root):
             return False
-        ok, _news_count, _edu_count, _html = page_news_stats(session, candidate_url)
-        if ok:
+
+        ok, news_count, _edu_count, _html = page_news_stats(session, candidate_url)
+
+        # Section üçün 1 link də kifayətdir, amma varsa daha çox linkli səhifələr üstündür.
+        if ok or news_count >= 1:
             found.append(candidate_url)
             return True
+
         return False
 
-    # 1) Gələn URL özü xəbər bölməsinə oxşayırsa yoxla.
+    # 1) Əvvəl ana səhifəni də namizəd kimi yoxla.
+    # Ajans, Yenicag, Musavat kimi saytların son xəbərləri ana səhifədən götürülə bilər.
+    add_candidate(root)
+
+    if len(found) >= settings["max_sections_per_source"]:
+        return found
+
+    # 2) Gələn URL özü xəbər bölməsinə oxşayırsa yoxla.
     ok, _news_count, _edu_count, _html = page_news_stats(session, source_url)
     if looks_like_news_url(source_url) and ok:
-        found.append(source_url.rstrip("/"))
+        candidate = source_url.rstrip("/")
+        if candidate not in found:
+            found.append(candidate)
 
-    # 2) Ən çox işlənən xəbər path-ləri yoxla.
+    if len(found) >= settings["max_sections_per_source"]:
+        return found
+
+    # 3) Ən çox işlənən xəbər path-ləri yoxla.
     for path in settings["paths"]:
         candidate = urljoin(root, path).rstrip("/")
         add_candidate(candidate)
         if len(found) >= settings["max_sections_per_source"]:
             return found
 
-    # 3) Ana səhifədən xəbər/media/elan/yenilik linklərini çıxar.
-    home_links = extract_home_news_links(session, root, limit=60)
+    # 4) Ana səhifədən xəbər/media/elan/yenilik linklərini çıxar.
+    home_links = extract_home_news_links(session, root, limit=80)
     for href in home_links:
         add_candidate(href)
         if len(found) >= settings["max_sections_per_source"]:
             return found
 
-    # 4) İkinci səviyyə crawl: ana səhifədə tapılan bölmələrin içindən daha uyğun bölmələr tap.
+    # 5) İkinci səviyyə crawl.
     second_level = crawl_second_level_news_sections(session, home_links, settings)
     for href in second_level:
         add_candidate(href)
         if len(found) >= settings["max_sections_per_source"]:
             return found
 
-    # 5) Sitemap-dan xəbər linklərinə/bölmələrə oxşayan URL-ləri yoxla.
-    sitemap_links = discover_sitemap_urls(session, root, limit=80)
+    # 6) Sitemap-dan xəbər linklərinə/bölmələrə oxşayan URL-ləri yoxla.
+    sitemap_links = discover_sitemap_urls(session, root, limit=100)
     for href in sitemap_links:
         add_candidate(href)
         if len(found) >= settings["max_sections_per_source"]:
             return found
 
     return found
-
 
 def guess_selector_and_xpath(session: requests.Session, url: str) -> tuple[str | None, list[str], int]:
     try:
