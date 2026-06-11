@@ -20,6 +20,7 @@ PATTERNS_FILE = "patterns.json"
 KEYWORDS_FILE = "keywords.json"
 
 REQUEST_TIMEOUT = 12
+DISCOVERY_VERSION = "5.0-final-safe-review"
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
@@ -371,21 +372,49 @@ def save_rejected_source(site: dict):
 
 
 def upsert_source_to_supabase(site: dict):
+    """Sources cədvəlinə təhlükəsiz yazır.
+
+    Köhnə variant on_conflict=base_url istifadə edirdi. Əgər Supabase-də base_url üçün
+    unique constraint yoxdursa, bu xəta verə bilər. Ona görə əvvəl base_url üzrə axtarırıq:
+    varsa PATCH, yoxdursa POST edirik.
+    """
     if not supabase_ready():
         return False
 
     payload = build_source_payload(site)
-    if not payload.get("base_url"):
+    base = payload.get("base_url")
+    if not base:
         return False
 
     try:
-        response = requests.post(
+        lookup = requests.get(
             f"{SUPABASE_URL}/rest/v1/sources",
-            headers=supabase_headers({"Prefer": "resolution=merge-duplicates,return=minimal"}),
-            params={"on_conflict": "base_url"},
-            json=payload,
+            headers=supabase_headers(),
+            params={
+                "select": "id",
+                "base_url": f"eq.{base}",
+                "limit": "1",
+            },
             timeout=REQUEST_TIMEOUT,
         )
+
+        if lookup.status_code == 200 and lookup.json():
+            source_id = lookup.json()[0]["id"]
+
+            response = requests.patch(
+                f"{SUPABASE_URL}/rest/v1/sources",
+                headers=supabase_headers({"Prefer": "return=minimal"}),
+                params={"id": f"eq.{source_id}"},
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+            )
+        else:
+            response = requests.post(
+                f"{SUPABASE_URL}/rest/v1/sources",
+                headers=supabase_headers({"Prefer": "return=minimal"}),
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+            )
 
         if response.status_code in (200, 201, 204):
             print(
@@ -547,7 +576,7 @@ def build_search_queries(mode: str) -> list[str]:
         q = clean_text(q)
         if not q:
             continue
-        if "gov" in q.lower():
+        if "gov" in q.lower() and DISCOVERY_BLOCK_GOV:
             continue
         if q.lower() in seen:
             continue
@@ -562,53 +591,21 @@ def looks_like_news_url(url: str) -> bool:
     if any(bad in u for bad in BAD_URL_WORDS):
         return False
 
-    NEWS_HINTS = [
-        "news",
-        "xeber",
-        "xeberler",
-        "xəbər",
-        "xəbərlər",
-        "latest",
-        "lastnews",
-        "son-xeber",
-        "all-news",
-        "allnews",
-        "press",
-        "media",
-        "announcements",
-        "announcement",
-        "updates",
-        "update",
-        "events",
-        "event",
-        "blog",
-        "posts",
-        "articles",
-        "article",
-        "publications",
-        "publication",
-        "research",
-        "newsroom",
-        "duyurular",
-        "duyuru",
-        "elanlar",
-        "notice",
-        "notices",
-        "yenilikler",
-        "yeniliklər",
-        "gundem",
-        "gündəm",
-        "world",
-        "politics",
-        "economy",
-        "society",
-        "sport",
-        "sports",
-        "football",
-        "basketball",
+    news_hints = [
+        "news", "xeber", "xeberler", "xəbər", "xəbərlər",
+        "latest", "lastnews", "son-xeber", "all-news", "allnews",
+        "press", "media", "announcements", "announcement", "updates", "update",
+        "events", "event", "blog", "posts", "articles", "article",
+        "publications", "publication", "research", "newsroom",
+        "duyurular", "duyuru", "elanlar", "notice", "notices",
+        "yenilikler", "yeniliklər", "gundem", "gündəm",
+        "world", "politics", "economy", "society",
+        "sport", "sports", "football", "basketball",
+        "dunya", "ölke", "olke", "cemiyyet", "siyaset", "iqtisadiyyat",
+        "medeniyyet", "kriminal", "hadise", "region",
     ]
 
-    return any(hint in u for hint in NEWS_HINTS)
+    return any(hint in u for hint in news_hints)
 
 
 def is_article_like_url(url: str) -> bool:
@@ -617,39 +614,28 @@ def is_article_like_url(url: str) -> bool:
     if any(bad in u for bad in BAD_URL_WORDS):
         return False
 
-    # Tarixli URL
+    # Tarixli URL.
     if re.search(r"(20[2-9][0-9])", u):
         return True
 
-    # Uzun slug
+    # ID əsaslı xəbər.
+    if re.search(r"/\d{4,}", u):
+        return True
+
+    # Uzun slug: /bu-bir-xeber-basligidir
     if re.search(
         r"/(?:[a-z0-9əöğüşıç-]+-){2,}[a-z0-9əöğüşıç-]+/?$",
         u,
     ):
         return True
 
-    # ID əsaslı xəbər
-    if re.search(r"/\d{4,}", u):
-        return True
-
-    ARTICLE_HINTS_EXTENDED = [
-        "news",
-        "xeber",
-        "article",
-        "story",
-        "post",
-        "read",
-        "content",
-        "football",
-        "sport",
-        "sports",
-        "world",
-        "economy",
-        "politics",
-        "society",
+    article_hints = [
+        "news", "xeber", "article", "story", "post", "read", "content",
+        "football", "sport", "sports", "world", "economy", "politics",
+        "society", "dunya", "cemiyyet", "siyaset", "hadise",
     ]
 
-    return any(hint in u for hint in ARTICLE_HINTS_EXTENDED)
+    return any(hint in u for hint in article_hints)
 
 
 def discover_rss_links(page_url: str, page_html: str | None = None) -> list[str]:
@@ -1326,6 +1312,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
     settings = get_mode_settings(mode)
 
     print("🔍 Discovery 2.0 başladı", flush=True)
+    print("Versiya:", DISCOVERY_VERSION, flush=True)
     print("Rejim:", mode, flush=True)
     print(f"Açar söz sayı: {len(KEYWORDS)}", flush=True)
 
@@ -1334,7 +1321,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
     queries = build_search_queries(mode)[:settings["max_queries"]]
     print(f"Axtarış sorğusu sayı: {len(queries)}", flush=True)
 
-    # Domain üzrə ən yaxşı section-u saxlayırıq.
+    # Domain üzrə ən yaxşı nəticəni saxlayırıq.
     best_by_domain = {}
     rejected_sites = []
 
@@ -1342,7 +1329,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
     session.headers.update(HEADERS)
 
     for query in queries:
-        if "gov" in query.lower():
+        if "gov" in query.lower() and DISCOVERY_BLOCK_GOV:
             continue
 
         print("Axtarılır:", query, flush=True)
@@ -1381,10 +1368,11 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
 
             sections = find_news_sections(session, source_url, settings)
 
-            # Xəbər bölməsi tapılmasa ana səhifəni yoxla.
+            # Əsas prinsip: Google News domeni mənbə kimi veribsə, onu itirmirik.
+            # Bölmə tapılmasa belə manual review-ə salırıq.
             if not sections:
                 print(
-                    f"⚠️ Xəbər bölməsi tapılmadı, homepage fallback: {source_name or domain}",
+                    f"⚠️ Xəbər bölməsi tapılmadı, Google News manual review: {source_name or domain}",
                     flush=True,
                 )
 
@@ -1396,25 +1384,39 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
 
                 score = int(analyzed.get("score", 0) or 0)
 
-                # Ana səhifədən xəbər linkləri çıxarıla bilirsə reject etmə.
-                if score >= 25:
-                    analyzed["status"] = "review"
+                # Xüsusi təhlükəsiz fallback: əsas xəbər saytları sıfır balla itməsin.
+                analyzed["status"] = "review"
+                analyzed["score"] = max(score, 35)
+                analyzed["reason"] = analyzed.get("reason") or "google_news_source_manual_review"
+                analyzed["source_type"] = analyzed.get("source_type") or "google_news_source"
+                analyzed.setdefault("keywords", KEYWORDS)
+                analyzed.setdefault("limit", 10)
+                analyzed.setdefault("rss_url", None)
+                analyzed.setdefault("selector", None)
+                analyzed.setdefault("xpaths", [])
 
-                    old = best_by_domain.get(domain)
-                    if not old or score > int(old.get("score", 0) or 0):
-                        best_by_domain[domain] = analyzed
+                analysis = analyzed.get("analysis")
+                if not isinstance(analysis, dict):
+                    analysis = {
+                        "rss_count": 0,
+                        "news_link_count": 0,
+                        "education_keyword_count": 0,
+                        "article_block_count": 0,
+                        "reasons": [],
+                    }
+                reasons = analysis.get("reasons") or []
+                reasons.append("google news source manual review")
+                analysis["reasons"] = reasons
+                analyzed["analysis"] = analysis
 
-                    print(
-                        f"🟡 HOMEPAGE FALLBACK {score}: {analyzed.get('name')} | {source_url}",
-                        flush=True,
-                    )
-                else:
-                    rejected_sites.append(analyzed)
+                old = best_by_domain.get(domain)
+                if not old or int(analyzed.get("score", 0) or 0) > int(old.get("score", 0) or 0):
+                    best_by_domain[domain] = analyzed
 
-                    print(
-                        f"🔴 REJECTED {score}: {analyzed.get('name')} | homepage fallback failed",
-                        flush=True,
-                    )
+                print(
+                    f"🟡 GOOGLE NEWS REVIEW {analyzed.get('score')}: {analyzed.get('name')} | {source_url}",
+                    flush=True,
+                )
 
                 time.sleep(settings["sleep"])
                 continue
@@ -1433,6 +1435,14 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
 
                 status = analyzed.get("status")
                 score = int(analyzed.get("score", 0) or 0)
+
+                # Əgər Google News mənbə veribsə və analiz az bal veribsə belə, onu manual review-də saxlayırıq.
+                if status not in ("approved", "review") and source_name and section_domain.endswith(".az"):
+                    analyzed["status"] = "review"
+                    analyzed["score"] = max(score, 35)
+                    analyzed["reason"] = analyzed.get("reason") or "google_news_section_manual_review"
+                    status = "review"
+                    score = int(analyzed.get("score", 0) or 0)
 
                 if status in ("approved", "review"):
                     old = best_by_domain.get(section_domain)
@@ -1462,6 +1472,17 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
         else:
             review_sites.append(site)
 
+    # Əgər sayt review/approved siyahısındadırsa, rejected siyahısında saxlamırıq.
+    accepted_domains = {
+        clean_domain(site.get("url", ""))
+        for site in approved_sites + review_sites
+        if site.get("url")
+    }
+    rejected_sites = [
+        site for site in rejected_sites
+        if clean_domain(site.get("url", "")) not in accepted_domains
+    ]
+
     discovered_added = append_unique(DISCOVERED_FILE, approved_sites + review_sites)
     review_added = append_unique(REVIEW_FILE, review_sites)
     rejected_added = append_unique(REJECTED_FILE, rejected_sites)
@@ -1480,6 +1501,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
     print("================================\n", flush=True)
 
     return approved_sites + review_sites
+
 
 def is_bad_pattern(pattern: str) -> bool:
     return any(bad in pattern.lower() for bad in BAD_PATTERNS)
