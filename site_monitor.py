@@ -558,43 +558,108 @@ def get_existing_monitor_match_id(monitor_id, item_id):
         return None
 
 
-def create_monitor_alert(match_id):
+def get_existing_monitor_alert_id(match_id):
     if not supabase_ready() or not match_id:
-        return False
+        return None
 
     try:
-        response = requests.post(
+        response = requests.get(
             f"{SUPABASE_URL}/rest/v1/monitor_alerts",
-            headers=supabase_headers(
-                {"Prefer": "resolution=ignore-duplicates,return=minimal"}
-            ),
-            json={
-                "match_id": match_id,
-                "channel": "web",
-                "recipient": "admin",
-                "status": "new",
-                "sent_at": datetime.now(BAKU_TZ).isoformat(),
+            headers=supabase_headers(),
+            params={
+                "select": "id",
+                "match_id": f"eq.{match_id}",
+                "limit": "1",
             },
             timeout=REQUEST_TIMEOUT,
         )
 
-        if response.status_code in (200, 201, 204):
-            print(f"🔔 Bildiriş yaradıldı: match={match_id}", flush=True)
-            return True
+        if response.status_code == 200 and response.json():
+            return response.json()[0].get("id")
 
-        if response.status_code == 409:
-            print(f"⛔ Bildiriş duplicate: match={match_id}", flush=True)
-            return False
+        if response.status_code != 200:
+            print(
+                f"Bildiriş mövcudluq yoxlama xətası: {response.status_code} | {response.text[:200]}",
+                flush=True,
+            )
 
-        print(
-            f"Bildiriş yazma xətası: {response.status_code} | {response.text[:200]}",
-            flush=True,
-        )
-        return False
+        return None
 
     except Exception as e:
-        print(f"Bildiriş istisnası: {e}", flush=True)
+        print(f"Bildiriş mövcudluq istisnası: {e}", flush=True)
+        return None
+
+
+def create_monitor_alert(match_id):
+    """
+    monitor_alerts üçün təhlükəsiz insert.
+
+    Əvvəlki versiyada `Prefer: resolution=ignore-duplicates` istifadə olunurdu.
+    Bəzi Supabase cədvəllərində unique constraint uyğun gəlməyəndə bu hissə səssiz və ya 400 xətası verə bilir.
+
+    Yeni məntiq:
+    1. Əvvəl match_id üzrə mövcud alert yoxlanılır.
+    2. Yoxdursa, sadə insert edilir.
+    3. Cədvəldə sent_at sütunu yoxdursa, avtomatik daha sadə payload ilə təkrar cəhd edilir.
+    """
+    if not supabase_ready() or not match_id:
         return False
+
+    existing_alert_id = get_existing_monitor_alert_id(match_id)
+    if existing_alert_id:
+        print(f"⛔ Bildiriş artıq mövcuddur: match={match_id}", flush=True)
+        return False
+
+    payload_variants = [
+        {
+            "match_id": match_id,
+            "channel": "web",
+            "recipient": "admin",
+            "status": "new",
+            "sent_at": datetime.now(BAKU_TZ).isoformat(),
+        },
+        {
+            "match_id": match_id,
+            "channel": "web",
+            "recipient": "admin",
+            "status": "new",
+        },
+        {
+            "match_id": match_id,
+            "status": "new",
+        },
+    ]
+
+    last_error = ""
+
+    for payload in payload_variants:
+        try:
+            response = requests.post(
+                f"{SUPABASE_URL}/rest/v1/monitor_alerts",
+                headers=supabase_headers({"Prefer": "return=representation"}),
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if response.status_code in (200, 201):
+                data = response.json() or []
+                alert_id = data[0].get("id") if data else None
+                print(f"🔔 Bildiriş yaradıldı: match={match_id} | alert={alert_id}", flush=True)
+                return True
+
+            if response.status_code == 409:
+                print(f"⛔ Bildiriş duplicate: match={match_id}", flush=True)
+                return False
+
+            last_error = f"{response.status_code} | {response.text[:300]}"
+            print(f"Bildiriş payload alınmadı, başqa variant sınanır: {last_error}", flush=True)
+
+        except Exception as e:
+            last_error = str(e)
+            print(f"Bildiriş insert istisnası, başqa variant sınanır: {e}", flush=True)
+
+    print(f"Bildiriş yazılmadı: match={match_id} | son xəta: {last_error}", flush=True)
+    return False
 
 def match_user_monitors(item_id, title):
     if not supabase_ready() or not item_id:
@@ -729,64 +794,52 @@ def extract_keywords_from_rules(site):
 
 def load_sites():
     """
-    Yeni model:
-    Monitor bot artıq JSON fayllardan yox, yalnız Supabase `sources` cədvəlindən oxuyur.
-
-    Oxunan mənbələr:
-    - status = active
-
-    URL seçimi:
-    - latest_url varsa, bot həmin səhifəni yoxlayır
-    - latest_url boşdursa, base_url yoxlanılır
-
-    JSON fayllar sistemdə qala bilər, amma monitorinq üçün əsas mənbə artıq Supabase-dir.
+    GitHub Actions / Supabase-first versiya.
+    Artıq courier_config_clean.json və discovered_sites.json oxunmur.
+    Monitor yalnız Supabase sources cədvəlində status=active olan mənbələri oxuyur.
     """
+    if not supabase_ready():
+        print("Supabase bağlantısı yoxdur, sources oxunmadı.", flush=True)
+        return []
+
     all_sites = []
     seen_urls = set()
-
-    if not supabase_ready():
-        print("Supabase hazır deyil. sources cədvəli oxunmadı.", flush=True)
-        return []
 
     try:
         offset = 0
         page_size = 1000
 
         while True:
-            headers = supabase_headers({
-                "Range": f"{offset}-{offset + page_size - 1}",
-            })
-
             response = requests.get(
                 f"{SUPABASE_URL}/rest/v1/sources",
-                headers=headers,
+                headers=supabase_headers(),
                 params={
-                    "select": "id,name,base_url,latest_url,rss_url,status,monitor_method,source_type,trust_level,discovery_status,notes",
+                    "select": "id,name,base_url,latest_url,rss_url,status,source_type,trust_level,monitor_method,notes",
                     "status": "eq.active",
                     "order": "name.asc",
+                    "limit": str(page_size),
+                    "offset": str(offset),
                 },
                 timeout=REQUEST_TIMEOUT,
             )
 
-            if response.status_code not in (200, 206):
+            if response.status_code != 200:
                 print(
-                    f"Supabase sources oxuma xətası: {response.status_code} | {response.text[:500]}",
+                    f"Supabase sources oxuma xətası: {response.status_code} | {response.text[:300]}",
                     flush=True,
                 )
                 return []
 
             rows = response.json() or []
-
             if not rows:
                 break
 
             for row in rows:
-                latest_url = clean_text(row.get("latest_url", ""))
                 base_url = clean_text(row.get("base_url", ""))
+                latest_url = clean_text(row.get("latest_url", ""))
                 rss_url = clean_text(row.get("rss_url", ""))
 
                 url = latest_url or base_url
-
                 if not url:
                     continue
 
@@ -794,17 +847,14 @@ def load_sites():
                     url = "https://" + url.lstrip("/")
 
                 normalized_url = url.rstrip("/").lower()
-
                 if normalized_url in seen_urls:
                     continue
 
                 seen_urls.add(normalized_url)
 
-                name = clean_text(row.get("name", "")) or get_domain(url)
-
                 all_sites.append({
                     "id": row.get("id"),
-                    "name": name,
+                    "name": row.get("name") or get_domain(url),
                     "url": url,
                     "base_url": base_url,
                     "rss_url": rss_url,
@@ -812,11 +862,9 @@ def load_sites():
                     "selector": None,
                     "keywords": [],
                     "limit": MAX_LINKS_PER_SITE,
-                    "monitor_method": row.get("monitor_method"),
                     "source_type": row.get("source_type"),
                     "trust_level": row.get("trust_level"),
-                    "discovery_status": row.get("discovery_status"),
-                    "notes": row.get("notes"),
+                    "monitor_method": row.get("monitor_method"),
                 })
 
             if len(rows) < page_size:
@@ -824,12 +872,12 @@ def load_sites():
 
             offset += page_size
 
+        print(f"Supabase active sources sayı: {len(all_sites)}", flush=True)
+        return all_sites
+
     except Exception as e:
         print(f"Supabase sources istisnası: {e}", flush=True)
         return []
-
-    print(f"Supabase sources-dən yüklənən aktiv sayt sayı: {len(all_sites)}", flush=True)
-    return all_sites
 
 def load_patterns():
     try:
@@ -1703,12 +1751,29 @@ def check_sites():
     print("=" * 60, flush=True)
 
 
-print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
-if supabase_ready():
-    print("✅ Supabase bağlantı məlumatları yükləndi", flush=True)
-send_telegram("✅ Bot işə düşdü və saytları yoxlamağa başladı.")
+def main():
+    print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
 
-while True:
-    print("🔎 Yeni xəbərlər yoxlanılır...", flush=True)
-    check_sites()
-    time.sleep(CHECK_INTERVAL_SECONDS)
+    if supabase_ready():
+        print("✅ Supabase bağlantı məlumatları yükləndi", flush=True)
+
+    run_once = os.getenv("RUN_ONCE", "1").strip().lower() in {"1", "true", "yes"}
+    notify_start = os.getenv("NOTIFY_START", "0").strip().lower() in {"1", "true", "yes"}
+
+    if notify_start:
+        send_telegram("✅ Bot işə düşdü və saytları yoxlamağa başladı.")
+
+    if run_once:
+        print("🔎 GitHub Actions rejimi: bir dəfə yoxlanılır...", flush=True)
+        check_sites()
+        print("✅ GitHub Actions monitor yoxlaması tamamlandı.", flush=True)
+        return
+
+    while True:
+        print("🔎 Yeni xəbərlər yoxlanılır...", flush=True)
+        check_sites()
+        time.sleep(CHECK_INTERVAL_SECONDS)
+
+
+if __name__ == "__main__":
+    main()
