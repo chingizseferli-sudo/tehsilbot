@@ -915,26 +915,146 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
     news_count = 0
     edu_keyword_count = 0
     html_text = ""
+    article_count = 0
+
+    domain = clean_domain(section_url)
 
     if is_bad_url(section_url):
         return {
-            "name": name,
+            "name": name or domain,
             "url": section_url,
             "enabled": True,
             "score": 0,
             "status": "rejected",
             "reason": "bad_url_or_gov_blocked",
+            "source_type": "rejected",
         }
 
-    ok, news_count, edu_keyword_count, html_text = page_news_stats(session, section_url)
+    ok, news_count, edu_keyword_count, html_text = page_news_stats(
+        session,
+        section_url,
+    )
+
+    # Əvvəl RSS yoxla. Çünki bəzi saytların HTML-i çətin oxunur, amma RSS işləyir.
+    try:
+        rss_url, rss_count = find_working_rss(session, section_url, html_text)
+    except Exception as e:
+        print(f"RSS yoxlama xətası: {section_url} | {e}", flush=True)
+        rss_url = None
+        rss_count = 0
+
+    if rss_url:
+        score += 45
+        reasons.append(f"RSS tapıldı ({rss_count})")
+
+    # page_news_stats uğursuzdursa, saytı dərhal reject etmə.
+    # Ana səhifə və müasir xəbər saytları üçün yumşaq fallback.
     if not ok:
+        fallback_score = 0
+        fallback_reasons = []
+
+        try:
+            html_lower = (html_text or "").lower()
+
+            article_signals = [
+                "/news/",
+                "/xeber/",
+                "/xeberler/",
+                "/xəbər/",
+                "/xəbərlər/",
+                "/article/",
+                "/story/",
+                "/post/",
+                "/read/",
+                "/item/",
+                "/son-xeber/",
+                "/latest/",
+                "/2024/",
+                "/2025/",
+                "/2026/",
+                "news/",
+                "xeber/",
+                "article/",
+                "story/",
+            ]
+
+            signal_count = sum(
+                html_lower.count(signal)
+                for signal in article_signals
+            )
+
+            if signal_count >= 10:
+                fallback_score += 45
+                fallback_reasons.append(
+                    f"homepage article signals ({signal_count})"
+                )
+            elif signal_count >= 5:
+                fallback_score += 35
+                fallback_reasons.append(
+                    f"homepage article signals ({signal_count})"
+                )
+            elif signal_count >= 2:
+                fallback_score += 25
+                fallback_reasons.append(
+                    f"some article signals ({signal_count})"
+                )
+
+            news_words = [
+                "son xəbər",
+                "son xəbərlər",
+                "xəbərlər",
+                "xeberler",
+                "gündəm",
+                "gundem",
+                "siyasət",
+                "cəmiyyət",
+                "dünya",
+                "iqtisadiyyat",
+                "hadisə",
+            ]
+
+            word_count = sum(1 for word in news_words if word in html_lower)
+
+            if word_count >= 3:
+                fallback_score += 15
+                fallback_reasons.append(f"news words found ({word_count})")
+            elif word_count >= 1:
+                fallback_score += 7
+                fallback_reasons.append(f"some news words found ({word_count})")
+
+        except Exception as e:
+            print(f"Homepage fallback analiz xətası: {section_url} | {e}", flush=True)
+
+        # RSS varsa, HTML zəif olsa belə review kimi saxla.
+        total_fallback_score = score + fallback_score
+
+        if total_fallback_score >= 40:
+            status = "review"
+        elif total_fallback_score >= 30:
+            status = "review"
+        else:
+            status = "rejected"
+
         return {
-            "name": name or clean_domain(section_url),
-            "url": section_url,
+            "name": name or domain,
+            "url": section_url.rstrip("/"),
             "enabled": True,
-            "score": 0,
-            "status": "rejected",
-            "reason": f"news links insufficient: {news_count}",
+            "rss_url": rss_url,
+            "selector": None,
+            "xpaths": [],
+            "keywords": KEYWORDS,
+            "limit": 10,
+            "score": total_fallback_score,
+            "status": status,
+            "reason": "homepage_fallback" if status != "rejected" else f"news links insufficient: {news_count}",
+            "analysis": {
+                "rss_count": rss_count,
+                "news_link_count": news_count,
+                "education_keyword_count": edu_keyword_count,
+                "article_block_count": 0,
+                "reasons": reasons + fallback_reasons,
+            },
+            "source_type": "homepage_fallback",
         }
 
     # Xəbər saytı olması əsasdır.
@@ -948,12 +1068,17 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         score += 15
         reasons.append(f"minimum xəbər linkləri var ({news_count})")
 
-    rss_url, rss_count = find_working_rss(session, section_url, html_text)
-    if rss_url:
-        score += 45
-        reasons.append(f"RSS tapıldı ({rss_count})")
+    try:
+        selector, xpaths, article_count = guess_selector_and_xpath(
+            session,
+            section_url,
+        )
+    except Exception as e:
+        print(f"Selector analiz xətası: {section_url} | {e}", flush=True)
+        selector = None
+        xpaths = []
+        article_count = 0
 
-    selector, xpaths, article_count = guess_selector_and_xpath(session, section_url)
     if selector:
         score += 15
         reasons.append(f"selector tapıldı: {selector}")
@@ -969,7 +1094,6 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         score += 6
         reasons.append(f"az sayda təhsil açar sözü var ({edu_keyword_count})")
 
-    domain = clean_domain(section_url)
     if domain.endswith(".edu.az"):
         score += 8
         reasons.append("edu.az domeni")
@@ -980,6 +1104,14 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         status = "review"
     else:
         status = "rejected"
+
+    monitor_method = "html"
+    if rss_url:
+        monitor_method = "rss"
+    elif selector:
+        monitor_method = "selector"
+    elif xpaths:
+        monitor_method = "xpath"
 
     return {
         "name": name or domain,
@@ -992,6 +1124,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         "limit": 10,
         "score": score,
         "status": status,
+        "reason": "; ".join(reasons),
         "analysis": {
             "rss_count": rss_count,
             "news_link_count": news_count,
@@ -1000,6 +1133,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "reasons": reasons,
         },
         "source_type": "discovered_news_site_first",
+        "monitor_method": monitor_method,
     }
 
 
