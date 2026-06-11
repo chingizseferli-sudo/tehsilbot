@@ -1066,6 +1066,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
             continue
 
         print("Axtarılır:", query, flush=True)
+
         try:
             feed = feedparser.parse(google_news_rss(query))
         except Exception as e:
@@ -1085,12 +1086,14 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
 
             if not source_url or not str(source_url).startswith("http"):
                 continue
+
             if is_bad_url(source_url):
                 continue
 
             domain = clean_domain(source_url)
             if not domain:
                 continue
+
             if domain in known_domains or domain in processed_domains:
                 continue
 
@@ -1098,49 +1101,56 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
 
             sections = find_news_sections(session, source_url, settings)
 
-# Xəbər bölməsi tapılmasa ana səhifəni yoxla
-if not sections:
-    print(
-        f"⚠️ Xəbər bölməsi tapılmadı, homepage fallback: {source_name or domain}",
-        flush=True,
-    )
+            # Xəbər bölməsi tapılmasa ana səhifəni yoxla.
+            if not sections:
+                print(
+                    f"⚠️ Xəbər bölməsi tapılmadı, homepage fallback: {source_name or domain}",
+                    flush=True,
+                )
 
-    analyzed = analyze_section(
-        session,
-        source_name or domain,
-        source_url,
-    )
+                analyzed = analyze_section(
+                    session,
+                    source_name or domain,
+                    source_url,
+                )
 
-    score = int(analyzed.get("score", 0) or 0)
+                score = int(analyzed.get("score", 0) or 0)
 
-    # Ana səhifədən xəbər linkləri çıxarıla bilirsə reject etmə
-    if score >= 40:
-        analyzed["status"] = "review"
+                # Ana səhifədən xəbər linkləri çıxarıla bilirsə reject etmə.
+                if score >= 40:
+                    analyzed["status"] = "review"
 
-        old = best_by_domain.get(domain)
-        if not old or score > int(old.get("score", 0) or 0):
-            best_by_domain[domain] = analyzed
+                    old = best_by_domain.get(domain)
+                    if not old or score > int(old.get("score", 0) or 0):
+                        best_by_domain[domain] = analyzed
 
-        print(
-            f"🟡 HOMEPAGE FALLBACK {score}: {analyzed['name']} | {source_url}",
-            flush=True,
-        )
-    else:
-        rejected_sites.append(analyzed)
+                    print(
+                        f"🟡 HOMEPAGE FALLBACK {score}: {analyzed.get('name')} | {source_url}",
+                        flush=True,
+                    )
+                else:
+                    rejected_sites.append(analyzed)
 
-        print(
-            f"🔴 REJECTED {score}: {analyzed.get('name')} | homepage fallback failed",
-            flush=True,
-        )
+                    print(
+                        f"🔴 REJECTED {score}: {analyzed.get('name')} | homepage fallback failed",
+                        flush=True,
+                    )
 
-    continue
+                time.sleep(settings["sleep"])
+                continue
 
             for section_url in sections:
                 section_domain = clean_domain(section_url)
+
                 if not section_domain or section_domain in known_domains:
                     continue
 
-                analyzed = analyze_section(session, source_name or section_domain, section_url)
+                analyzed = analyze_section(
+                    session,
+                    source_name or section_domain,
+                    section_url,
+                )
+
                 status = analyzed.get("status")
                 score = int(analyzed.get("score", 0) or 0)
 
@@ -1148,15 +1158,24 @@ if not sections:
                     old = best_by_domain.get(section_domain)
                     if not old or score > int(old.get("score", 0) or 0):
                         best_by_domain[section_domain] = analyzed
-                    print(f"✅ NAMİZƏD {status.upper()} {score}: {analyzed['name']} | {section_url}", flush=True)
+
+                    print(
+                        f"✅ NAMİZƏD {status.upper()} {score}: {analyzed.get('name')} | {section_url}",
+                        flush=True,
+                    )
                 else:
                     rejected_sites.append(analyzed)
-                    print(f"🔴 REJECTED {score}: {analyzed.get('name')} | {section_url}", flush=True)
+
+                    print(
+                        f"🔴 REJECTED {score}: {analyzed.get('name')} | {section_url}",
+                        flush=True,
+                    )
 
             time.sleep(settings["sleep"])
 
     approved_sites = []
     review_sites = []
+
     for site in best_by_domain.values():
         if site.get("status") == "approved":
             approved_sites.append(site)
@@ -1181,7 +1200,6 @@ if not sections:
     print("================================\n", flush=True)
 
     return approved_sites + review_sites
-
 
 def is_bad_pattern(pattern: str) -> bool:
     return any(bad in pattern.lower() for bad in BAD_PATTERNS)
