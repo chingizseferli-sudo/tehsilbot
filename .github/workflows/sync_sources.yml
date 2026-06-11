@@ -1,0 +1,33 @@
+name: Sync Sources to Supabase
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync-sources:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
+    steps:
+      - name: Repo klonla
+        uses: actions/checkout@v4
+
+      - name: Python quraşdır
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Kitabxanaları quraşdır
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install requests
+
+      - name: Mənbələri Supabase-ə köçür
+        run: |
+          python sync_sources_to_supabase.py
