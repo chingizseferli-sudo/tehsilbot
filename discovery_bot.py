@@ -108,9 +108,24 @@ NEWS_SECTION_WORDS = [
 ]
 
 COMMON_NEWS_PATHS_FAST = [
-    "/news", "/xeber", "/xeberler", "/xəbərlər", "/media/news",
-    "/az/news", "/az/xeber", "/az/xeberler", "/az/xəbərlər",
-    "/son-xeberler", "/latest", "/all-news", "/media",
+    "/news",
+    "/xeber",
+    "/xeberler",
+    "/xəbərlər",
+    "/latest",
+    "/latest-news",
+    "/son-xeber",
+    "/son-xeberler",
+    "/category/son-xeber",
+    "/news-of-day",
+    "/az/news",
+    "/az/xeber",
+    "/az/xeberler",
+    "/az/xəbərlər",
+    "/media",
+    "/press",
+    "/gundem",
+    "/category/gundem",
 ]
 
 COMMON_NEWS_PATHS_DEEP = [
@@ -128,6 +143,24 @@ COMMON_NEWS_PATHS_DEEP = [
     "/duyuru", "/notices", "/notice", "/yenilikler", "/yeniliklər",
     "/az/elanlar", "/az/duyurular", "/az/events", "/az/announcements",
     "/az/updates", "/az/blog", "/az/publications", "/az/research",
+    "/news",
+    "/xeber",
+    "/xeberler",
+    "/xəbərlər",
+    "/latest",
+    "/latest-news",
+    "/son-xeber",
+    "/son-xeberler",
+    "/category/son-xeber",
+    "/news-of-day",
+    "/az/news",
+    "/az/xeber",
+    "/az/xeberler",
+    "/az/xəbərlər",
+    "/media",
+    "/press",
+    "/gundem",
+    "/category/gundem",
 ]
 
 RSS_PATHS = [
@@ -1064,9 +1097,43 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
             processed_domains.add(domain)
 
             sections = find_news_sections(session, source_url, settings)
-            if not sections:
-                print("Xəbər bölməsi tapılmadı:", source_name or domain, source_url, flush=True)
-                continue
+
+# Xəbər bölməsi tapılmasa ana səhifəni yoxla
+if not sections:
+    print(
+        f"⚠️ Xəbər bölməsi tapılmadı, homepage fallback: {source_name or domain}",
+        flush=True,
+    )
+
+    analyzed = analyze_section(
+        session,
+        source_name or domain,
+        source_url,
+    )
+
+    score = int(analyzed.get("score", 0) or 0)
+
+    # Ana səhifədən xəbər linkləri çıxarıla bilirsə reject etmə
+    if score >= 40:
+        analyzed["status"] = "review"
+
+        old = best_by_domain.get(domain)
+        if not old or score > int(old.get("score", 0) or 0):
+            best_by_domain[domain] = analyzed
+
+        print(
+            f"🟡 HOMEPAGE FALLBACK {score}: {analyzed['name']} | {source_url}",
+            flush=True,
+        )
+    else:
+        rejected_sites.append(analyzed)
+
+        print(
+            f"🔴 REJECTED {score}: {analyzed.get('name')} | homepage fallback failed",
+            flush=True,
+        )
+
+    continue
 
             for section_url in sections:
                 section_domain = clean_domain(section_url)
