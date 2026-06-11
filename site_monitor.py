@@ -728,22 +728,70 @@ def extract_keywords_from_rules(site):
 
 
 def load_sites():
+    """
+    Yeni model:
+    Monitor bot artıq JSON fayllardan yox, yalnız Supabase `sources` cədvəlindən oxuyur.
+
+    Oxunan mənbələr:
+    - status = active
+
+    URL seçimi:
+    - latest_url varsa, bot həmin səhifəni yoxlayır
+    - latest_url boşdursa, base_url yoxlanılır
+
+    JSON fayllar sistemdə qala bilər, amma monitorinq üçün əsas mənbə artıq Supabase-dir.
+    """
     all_sites = []
     seen_urls = set()
 
-    for config_file in CONFIG_FILES:
-        try:
-            with open(config_file, "r", encoding="utf-8") as f:
-                data = json.load(f)
+    if not supabase_ready():
+        print("Supabase hazır deyil. sources cədvəli oxunmadı.", flush=True)
+        return []
 
-            for site in data.get("sites", []):
-                if not site.get("enabled", True):
-                    continue
+    try:
+        offset = 0
+        page_size = 1000
 
-                url = clean_text(site.get("url", ""))
+        while True:
+            headers = supabase_headers({
+                "Range": f"{offset}-{offset + page_size - 1}",
+            })
+
+            response = requests.get(
+                f"{SUPABASE_URL}/rest/v1/sources",
+                headers=headers,
+                params={
+                    "select": "id,name,base_url,latest_url,rss_url,status,monitor_method,source_type,trust_level,discovery_status,notes",
+                    "status": "eq.active",
+                    "order": "name.asc",
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+
+            if response.status_code not in (200, 206):
+                print(
+                    f"Supabase sources oxuma xətası: {response.status_code} | {response.text[:500]}",
+                    flush=True,
+                )
+                return []
+
+            rows = response.json() or []
+
+            if not rows:
+                break
+
+            for row in rows:
+                latest_url = clean_text(row.get("latest_url", ""))
+                base_url = clean_text(row.get("base_url", ""))
+                rss_url = clean_text(row.get("rss_url", ""))
+
+                url = latest_url or base_url
 
                 if not url:
                     continue
+
+                if not url.startswith("http"):
+                    url = "https://" + url.lstrip("/")
 
                 normalized_url = url.rstrip("/").lower()
 
@@ -752,32 +800,36 @@ def load_sites():
 
                 seen_urls.add(normalized_url)
 
-                xpaths = site.get("xpaths", [])
-
-                if not xpaths and site.get("selectors"):
-                    for s in site.get("selectors", []):
-                        if s.get("type") == "xpath" and s.get("value"):
-                            xpaths.append(s.get("value"))
+                name = clean_text(row.get("name", "")) or get_domain(url)
 
                 all_sites.append({
-                    "name": site.get("name") or get_domain(url),
+                    "id": row.get("id"),
+                    "name": name,
                     "url": url,
-                    "rss_url": clean_text(site.get("rss_url", "")),
-                    "xpaths": xpaths,
-                    "selector": site.get("selector"),
-                    "keywords": extract_keywords_from_rules(site),
-                    "limit": min(int(site.get("limit", MAX_LINKS_PER_SITE)), MAX_LINKS_PER_SITE)
+                    "base_url": base_url,
+                    "rss_url": rss_url,
+                    "xpaths": [],
+                    "selector": None,
+                    "keywords": [],
+                    "limit": MAX_LINKS_PER_SITE,
+                    "monitor_method": row.get("monitor_method"),
+                    "source_type": row.get("source_type"),
+                    "trust_level": row.get("trust_level"),
+                    "discovery_status": row.get("discovery_status"),
+                    "notes": row.get("notes"),
                 })
 
-        except FileNotFoundError:
-            print(f"Fayl tapılmadı: {config_file}", flush=True)
+            if len(rows) < page_size:
+                break
 
-        except Exception as e:
-            print(f"JSON oxunmadı: {config_file} | {e}", flush=True)
+            offset += page_size
 
-    print(f"Toplam sayt sayı: {len(all_sites)}", flush=True)
+    except Exception as e:
+        print(f"Supabase sources istisnası: {e}", flush=True)
+        return []
+
+    print(f"Supabase sources-dən yüklənən aktiv sayt sayı: {len(all_sites)}", flush=True)
     return all_sites
-
 
 def load_patterns():
     try:
