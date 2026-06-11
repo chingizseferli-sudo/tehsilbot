@@ -751,7 +751,12 @@ def crawl_second_level_news_sections(session: requests.Session, first_level_urls
 
 
 def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int, str]:
-    """Return: has_news, news_link_count, edu_keyword_count, html_text"""
+    """Return: has_news, news_link_count, edu_keyword_count, html_text.
+
+    Köhnə versiya yalnız URL-də /news/, /xeber/ kimi pattern axtarırdı.
+    Bir çox Azərbaycan xəbər saytı isə xəbərləri ana səhifədə fərqli slug-larla verir.
+    Ona görə burada həm URL pattern, həm başlıq uzunluğu, həm tarixli slug, həm də ümumi xəbər sözləri nəzərə alınır.
+    """
     try:
         r = session.get(url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
         if r.status_code != 200:
@@ -759,31 +764,60 @@ def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int
 
         html_text = r.text or ""
         soup = BeautifulSoup(html_text, "html.parser")
-        news_count = 0
-        edu_count = 0
+
+        news_links = set()
+        edu_links = set()
+
+        title_bad_words = [
+            "ana səhifə", "haqqımızda", "əlaqə", "reklam", "giriş",
+            "qeydiyyat", "axtarış", "abunə", "facebook", "instagram",
+            "youtube", "telegram", "twitter", "linkedin", "rss", "menu", "menyu",
+        ]
+
+        news_words = [
+            "xəbər", "xeber", "son xəbər", "son xeber", "gündəm", "gundem",
+            "siyasət", "cəmiyyət", "cemiyyet", "dünya", "iqtisadiyyat",
+            "hadisə", "ölkə", "region", "təhsil", "elm",
+        ]
 
         for a in soup.find_all("a", href=True):
             text = clean_text(a.get_text(" ", strip=True))
-            href = urljoin(url, a["href"]).split("#")[0]
+            href = urljoin(url, a["href"]).split("#")[0].rstrip("/")
 
-            if len(text) < 12:
-                continue
-            if clean_domain(href) != clean_domain(url):
+            if not href or clean_domain(href) != clean_domain(url):
                 continue
             if is_bad_url(href):
                 continue
 
-            combined = f"{text.lower()} {href.lower()}"
-            if looks_like_news_url(href) or is_article_like_url(href):
-                news_count += 1
+            text_lower = text.lower()
+            href_lower = href.lower()
+            combined = f"{text_lower} {href_lower}"
+
+            if any(w in combined for w in title_bad_words):
+                continue
+
+            # Xəbər başlıqları adətən 18+ simvoldur.
+            has_real_title = len(text) >= 18
+
+            # URL və mətn siqnalları.
+            pattern_signal = looks_like_news_url(href) or is_article_like_url(href)
+            date_signal = bool(re.search(r"/(20[2-9][0-9])([/-]|$)", href_lower))
+            id_slug_signal = bool(re.search(r"/(?:[a-z0-9-]+-){2,}[a-z0-9-]+(?:/|$)", href_lower))
+            word_signal = any(word in combined for word in news_words)
+
+            if has_real_title and (pattern_signal or date_signal or id_slug_signal or word_signal):
+                news_links.add(normalize_url(href))
+
             if any(k in combined for k in KEYWORDS):
-                edu_count += 1
+                edu_links.add(normalize_url(href))
 
-            if news_count >= 20 and edu_count >= 3:
-                return True, news_count, edu_count, html_text
+            if len(news_links) >= 25 and len(edu_links) >= 3:
+                return True, len(news_links), len(edu_links), html_text
 
-        return news_count >= 3, news_count, edu_count, html_text
-    except Exception:
+        return len(news_links) >= 3, len(news_links), len(edu_links), html_text
+
+    except Exception as e:
+        print(f"page_news_stats xətası: {url} | {e}", flush=True)
         return False, 0, 0, ""
 
 
@@ -1032,6 +1066,12 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             status = "review"
         elif total_fallback_score >= 30:
             status = "review"
+        elif domain.endswith(".az") and name and name != domain:
+            # Google News bu domeni mənbə kimi veribsə, onu tam itirmirik.
+            # Belə saytlar review/manual_needed kimi adminə düşsün, sonra metod seçilər.
+            total_fallback_score = max(total_fallback_score, 35)
+            fallback_reasons.append("google news source fallback")
+            status = "review"
         else:
             status = "rejected"
 
@@ -1139,7 +1179,12 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
 
 def collect_existing_domains() -> set[str]:
     domains = set()
-    for filename in [DISCOVERED_FILE, CONFIG_FILE, REVIEW_FILE, REJECTED_FILE]:
+
+    # VACİB: REJECTED_FILE burada oxunmur.
+    # Əvvəl reject edilən saytlar sonradan düzəlmiş discovery məntiqi ilə yenidən yoxlanmalıdır.
+    # Əks halda Ajans.az, Yenicag.az, Musavat.com kimi əsas saytlar bir dəfə reject edildisə,
+    # həmişəlik atlanır.
+    for filename in [DISCOVERED_FILE, CONFIG_FILE, REVIEW_FILE]:
         data = read_json(filename, {"sites": []})
         if not isinstance(data, dict):
             continue
@@ -1148,6 +1193,7 @@ def collect_existing_domains() -> set[str]:
             domain = clean_domain(url)
             if domain:
                 domains.add(domain)
+
     return domains
 
 
