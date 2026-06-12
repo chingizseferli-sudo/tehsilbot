@@ -938,11 +938,20 @@ def extract_links_by_patterns(page_url, page_html, keywords, patterns):
 def extract_links_fallback(page_url, page_html, keywords):
     soup = BeautifulSoup(page_html, "html.parser")
     results = []
-    for a in soup.find_all("a", href=True):
+
+    links = soup.find_all("a", href=True)
+
+    # Bütün arxivi yoxlamırıq. İlk 150 link kifayətdir.
+    for a in links[:150]:
         title = clean_text(a.get_text(" ", strip=True))
         link = urljoin(page_url, a["href"])
+
         add_item(results, page_url, title, link, keywords)
-    return unique_items(results)[:MAX_LINKS_PER_SITE]
+
+        if len(results) >= MAX_LINKS_PER_SITE:
+            break
+
+    return unique_items(results)
 
 
 def extract_links_from_sitemap(site):
