@@ -29,6 +29,11 @@ BAKU_TZ = ZoneInfo("Asia/Baku")
 # Əvvəlki discovery versiyasında .gov.az bloklanırdı. Vizual.az üçün dövlət/qurum saytlarını da
 # izləmək lazım ola bilər. İstəsən Railway-də DISCOVERY_BLOCK_GOV=true qoyub yenə bloklaya bilərsən.
 DISCOVERY_BLOCK_GOV = os.getenv("DISCOVERY_BLOCK_GOV", "false").lower() == "true"
+DISCOVERY_SUBDOMAIN_ALLOWLIST = {
+    item.strip().lower().lstrip(".")
+    for item in os.getenv("DISCOVERY_SUBDOMAIN_ALLOWLIST", "").split(",")
+    if item.strip()
+}
 
 
 HEADERS = {
@@ -506,7 +511,10 @@ KEYWORDS = load_keywords()
 
 def clean_domain(url: str) -> str:
     try:
-        domain = urlparse(url).netloc.lower().strip()
+        value = clean_text(url).lower()
+        if value and "://" not in value:
+            value = "https://" + value
+        domain = urlparse(value).netloc.lower().strip()
         if domain.startswith("www."):
             domain = domain[4:]
         return domain
@@ -519,6 +527,49 @@ def base_url(url: str) -> str:
     if not parsed.scheme or not parsed.netloc:
         return ""
     return f"{parsed.scheme}://{parsed.netloc}"
+
+
+def is_subdomain_of(domain: str, parent_domain: str) -> bool:
+    domain = clean_domain(domain)
+    parent_domain = clean_domain(parent_domain)
+    return bool(domain and parent_domain and domain != parent_domain and domain.endswith("." + parent_domain))
+
+
+def find_parent_domain(domain: str, existing_domains: set[str]) -> str | None:
+    domain = clean_domain(domain)
+    if not domain or domain in DISCOVERY_SUBDOMAIN_ALLOWLIST:
+        return None
+    for existing in sorted(existing_domains, key=len, reverse=True):
+        if is_subdomain_of(domain, existing):
+            return existing
+    return None
+
+
+def build_rejected_subdomain_site(name: str | None, url: str, parent_domain: str) -> dict:
+    domain = clean_domain(url)
+    reason = f"subdomain_rejected: parent_domain_exists={parent_domain}"
+    return {
+        "name": name or domain,
+        "url": url,
+        "enabled": False,
+        "rss_url": None,
+        "selector": None,
+        "xpaths": [],
+        "keywords": KEYWORDS,
+        "limit": 0,
+        "score": 0,
+        "status": "rejected",
+        "reason": reason,
+        "analysis": {
+            "rss_count": 0,
+            "news_link_count": 0,
+            "education_keyword_count": 0,
+            "article_block_count": 0,
+            "reasons": [reason],
+        },
+        "source_type": "subdomain_rejected",
+        "monitor_method": "none",
+    }
 
 
 def normalize_url(url: str) -> str:
@@ -1280,6 +1331,41 @@ def collect_existing_domains() -> set[str]:
             if domain:
                 domains.add(domain)
 
+    if supabase_ready():
+        try:
+            offset = 0
+            page_size = 1000
+            while True:
+                response = requests.get(
+                    f"{SUPABASE_URL}/rest/v1/sources",
+                    headers=supabase_headers(),
+                    params={
+                        "select": "base_url,latest_url",
+                        "limit": str(page_size),
+                        "offset": str(offset),
+                    },
+                    timeout=REQUEST_TIMEOUT,
+                )
+                if response.status_code != 200:
+                    print(f"Supabase sources domain oxunmadı: {response.status_code} | {response.text[:200]}", flush=True)
+                    break
+
+                rows = response.json() or []
+                if not rows:
+                    break
+
+                for row in rows:
+                    for key in ("base_url", "latest_url"):
+                        domain = clean_domain(row.get(key, ""))
+                        if domain:
+                            domains.add(domain)
+
+                if len(rows) < page_size:
+                    break
+                offset += page_size
+        except Exception as exc:
+            print(f"Supabase sources domain istisnası: {exc}", flush=True)
+
     return domains
 
 
@@ -1364,6 +1450,13 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
             if domain in known_domains or domain in processed_domains:
                 continue
 
+            parent_domain = find_parent_domain(domain, known_domains | set(best_by_domain.keys()))
+            if parent_domain:
+                rejected_sites.append(build_rejected_subdomain_site(source_name, source_url, parent_domain))
+                processed_domains.add(domain)
+                print(f"SUBDOMAIN REJECT: {domain} | parent={parent_domain}", flush=True)
+                continue
+
             processed_domains.add(domain)
 
             sections = find_news_sections(session, source_url, settings)
@@ -1425,6 +1518,13 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
                 section_domain = clean_domain(section_url)
 
                 if not section_domain or section_domain in known_domains:
+                    continue
+
+                parent_domain = find_parent_domain(section_domain, known_domains | set(best_by_domain.keys()))
+                if parent_domain:
+                    rejected_sites.append(build_rejected_subdomain_site(source_name, section_url, parent_domain))
+                    processed_domains.add(section_domain)
+                    print(f"SUBDOMAIN REJECT: {section_domain} | parent={parent_domain}", flush=True)
                     continue
 
                 analyzed = analyze_section(
