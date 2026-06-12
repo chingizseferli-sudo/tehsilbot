@@ -8,6 +8,11 @@ import requests
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
+SYNC_SUBDOMAIN_ALLOWLIST = {
+    item.strip().lower().lstrip(".")
+    for item in os.getenv("SYNC_SUBDOMAIN_ALLOWLIST", "").split(",")
+    if item.strip()
+}
 
 BAKU_TZ = ZoneInfo("Asia/Baku")
 
@@ -18,6 +23,19 @@ FILES = [
 ]
 
 REQUEST_TIMEOUT = 15
+
+PROTECTED_PARENT_DOMAINS = {
+    "az",
+    "com.az",
+    "edu.az",
+    "gov.az",
+    "net.az",
+    "org.az",
+    "info.az",
+    "biz.az",
+    "co.az",
+    "ac.az",
+}
 
 
 def headers(extra=None):
@@ -37,7 +55,10 @@ def clean_text(value):
 
 def clean_domain(url):
     try:
-        domain = urlparse(url).netloc.lower().strip()
+        value = clean_text(url).lower()
+        if value and "://" not in value:
+            value = "https://" + value
+        domain = urlparse(value).netloc.lower().strip()
         if domain.startswith("www."):
             domain = domain[4:]
         return domain
@@ -50,6 +71,62 @@ def base_url(url):
     if not parsed.scheme or not parsed.netloc:
         return ""
     return f"{parsed.scheme}://{parsed.netloc}".rstrip("/")
+
+
+def is_subdomain_of(domain, parent_domain):
+    domain = clean_domain(domain)
+    parent_domain = clean_domain(parent_domain)
+    return bool(domain and parent_domain and domain != parent_domain and domain.endswith("." + parent_domain))
+
+
+def find_parent_domain(domain, domains):
+    domain = clean_domain(domain)
+    if not domain or domain in SYNC_SUBDOMAIN_ALLOWLIST:
+        return None
+    for parent in sorted(domains, key=len, reverse=True):
+        if parent in PROTECTED_PARENT_DOMAINS:
+            continue
+        if is_subdomain_of(domain, parent):
+            return parent
+    return None
+
+
+def fetch_supabase_domains():
+    domains = set()
+    offset = 0
+    page_size = 1000
+
+    while True:
+        response = requests.get(
+            f"{SUPABASE_URL}/rest/v1/sources",
+            headers=headers(),
+            params={
+                "select": "base_url,latest_url",
+                "limit": str(page_size),
+                "offset": str(offset),
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        if response.status_code != 200:
+            print(f"Supabase domain oxunmadı: {response.status_code} | {response.text[:300]}")
+            return domains
+
+        rows = response.json() or []
+        if not rows:
+            break
+
+        for row in rows:
+            for key in ("base_url", "latest_url"):
+                domain = clean_domain(row.get(key, ""))
+                if domain:
+                    domains.add(domain)
+
+        if len(rows) < page_size:
+            break
+        offset += page_size
+
+    return domains
 
 
 def read_sites(filename):
@@ -138,6 +215,8 @@ def main():
 
     all_sites = []
     seen_domains = set()
+    known_domains = fetch_supabase_domains()
+    skipped_subdomains = 0
 
     for filename in FILES:
         sites = read_sites(filename)
@@ -154,10 +233,18 @@ def main():
             if domain in seen_domains:
                 continue
 
+
+            parent_domain = find_parent_domain(domain, known_domains | seen_domains)
+            if parent_domain:
+                skipped_subdomains += 1
+                print(f"Subdomain kecildi: {domain} | parent={parent_domain}")
+                continue
             seen_domains.add(domain)
+            known_domains.add(domain)
             all_sites.append(payload)
 
     print(f"Toplanan unikal mənbə sayı: {len(all_sites)}")
+    print(f"Subdomain kecildi: {skipped_subdomains}")
 
     added = 0
     failed = 0
