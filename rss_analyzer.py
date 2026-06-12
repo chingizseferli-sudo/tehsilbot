@@ -30,6 +30,8 @@ HEADERS = {
     "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8",
 }
 
+LOCAL_ONLY_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0", "::1"}
+
 
 def clean_text(text):
     return " ".join(str(text or "").split()).strip()
@@ -62,7 +64,13 @@ def get_domain(url):
     return d
 
 
+def is_local_only_url(url):
+    return get_domain(url).split(":")[0] in LOCAL_ONLY_DOMAINS
+
+
 def is_valid_feed(rss_url):
+    if is_local_only_url(rss_url):
+        return False, 0
     try:
         r = requests.get(rss_url, headers=HEADERS, timeout=TIMEOUT, allow_redirects=True)
         if r.status_code != 200:
@@ -113,7 +121,7 @@ def candidate_rss_urls(site_url):
         for path in RSS_PATHS:
             candidates.append(urljoin(root, path))
 
-    return list(dict.fromkeys(candidates))
+    return [url for url in dict.fromkeys(candidates) if not is_local_only_url(url)]
 
 
 def find_best_rss(site_url):
