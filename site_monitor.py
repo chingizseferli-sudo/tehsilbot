@@ -721,9 +721,6 @@ def is_recent_news(published_time):
     if not dt:
         return False
     now_baku = datetime.now(BAKU_TZ)
-    if dt.date() != now_baku.date():
-        print(f"Bugünkü xəbər deyil, keçildi: {published_time} | bugün: {now_baku.date()}", flush=True)
-        return False
     diff = now_baku - dt
     if diff.total_seconds() < 0:
         print(f"Gələcək tarix kimi göründü, keçildi: {published_time}", flush=True)
@@ -1541,9 +1538,6 @@ def process_site(index, total, site, patterns_data):
 
         if not published_time:
             result["reason"] = "no_date"
-            continue
-        if not is_today_news(published_time):
-            result["reason"] = "not_today"
             continue
         if not is_recent_news(published_time):
             result["reason"] = "old_news"
