@@ -527,8 +527,16 @@ def safe_datetime(year, month, day, hour=0, minute=0):
 def parse_az_datetime(value):
     original = clean_text(str(value or ""))
 
+    numeric_time_first = re.search(
+        r"(?<!\d)(\d{1,2})\s*[:.]\s*(\d{2})\D{0,20}(\d{1,2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{4})",
+        original,
+    )
+    if numeric_time_first:
+        hour, minute, day, month, year = numeric_time_first.groups()
+        return safe_datetime(year, month, day, hour, minute)
+
     numeric_date = re.search(
-        r"(?<!\d)(\d{1,2})[./-](\d{1,2})[./-](\d{4})(?:\s+(\d{1,2})[:.](\d{2}))?",
+        r"(?<!\d)(\d{1,2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{4})(?:\s+(\d{1,2})\s*[:.]\s*(\d{2}))?",
         original,
     )
     if numeric_date:
