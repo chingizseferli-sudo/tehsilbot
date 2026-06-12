@@ -505,6 +505,30 @@ def parse_az_datetime(value):
     original = clean_text(str(value or ""))
     text = normalize_date_text(original)
 
+        # Mətn içində Azərbaycan tarix+saat formatı:
+    # "Yerləşdirilmə tarixi : 09 İyun 2026 14:20"
+    # "article_tarix: 10 İyun 2026, 12:35 / Konfranslar"
+    pattern = r"(\d{1,2})\s+([a-z]+)\s+(\d{4})\D{0,20}(\d{1,2})[:.](\d{2})"
+    m = re.search(pattern, text, re.IGNORECASE)
+    if m:
+        day, month_name, year, hour, minute = m.groups()
+        month = month_number(month_name)
+
+        if month:
+            return safe_datetime(year, month, day, hour, minute)
+
+    # Mətn içində qısa ay + tarix+saat:
+    # "İyn 08, 2026 | 20:00"
+    # "May 25, 2026 | 12:00"
+    pattern = r"([a-z]+)\s+(\d{1,2})\s*,?\s+(\d{4})\D{0,20}(\d{1,2})[:.](\d{2})"
+    m = re.search(pattern, text, re.IGNORECASE)
+    if m:
+        month_name, day, year, hour, minute = m.groups()
+        month = month_number(month_name)
+
+        if month:
+            return safe_datetime(year, month, day, hour, minute)
+
     if not text:
         return None
 
