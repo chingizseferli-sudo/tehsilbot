@@ -406,79 +406,178 @@ def get_or_create_monitor_source(site_name, source_domain, page_url):
         return None
 
 
-def parse_az_datetime(value):
+AZ_MONTHS = {
+    "yanvar": 1, "yan": 1,
+    "fevral": 2, "fev": 2,
+    "mart": 3, "mar": 3,
+    "aprel": 4, "apr": 4,
+    "may": 5,
+    "iyun": 6, "iyn": 6, "jun": 6, "june": 6,
+    "iyul": 7, "iyl": 7, "jul": 7, "july": 7,
+    "avqust": 8, "avq": 8, "aug": 8, "august": 8,
+    "sentyabr": 9, "sen": 9, "sep": 9, "september": 9,
+    "oktyabr": 10, "okt": 10, "oct": 10, "october": 10,
+    "noyabr": 11, "noy": 11, "nov": 11, "november": 11,
+    "dekabr": 12, "dek": 12, "dec": 12, "december": 12,
+}
+
+
+def normalize_date_text(value):
     text = clean_text(str(value or "")).lower()
+
+    text = text.replace("ı", "i")
+    text = text.replace("İ", "i").replace("i̇", "i")
+    text = text.replace("ə", "e")
+    text = text.replace("ö", "o")
+    text = text.replace("ğ", "g")
+    text = text.replace("ü", "u")
+    text = text.replace("ç", "c")
+    text = text.replace("ş", "s")
+
+    text = text.replace("—", "-").replace("–", "-")
+    text = text.replace("|", " ")
+    text = text.replace("/", " ")
+    text = re.sub(r"\s+", " ", text).strip()
+
+    return text
+
+
+def month_number(month_name):
+    raw = clean_text(month_name).lower()
+
+    variants = {
+        raw,
+        raw.replace("ı", "i").replace("İ", "i").replace("i̇", "i"),
+        raw.replace("ə", "e").replace("ö", "o").replace("ğ", "g").replace("ü", "u").replace("ç", "c").replace("ş", "s").replace("ı", "i"),
+    }
+
+    aliases = {
+        "yanvar": 1, "yan": 1,
+        "fevral": 2, "fev": 2,
+        "mart": 3, "mar": 3,
+        "aprel": 4, "apr": 4,
+        "may": 5,
+        "iyun": 6, "iyn": 6, "jun": 6, "june": 6,
+        "iyul": 7, "iyl": 7, "jul": 7, "july": 7,
+        "avqust": 8, "avq": 8, "aug": 8, "august": 8,
+        "sentyabr": 9, "sen": 9, "sep": 9, "september": 9,
+        "oktyabr": 10, "okt": 10, "oct": 10, "october": 10,
+        "noyabr": 11, "noy": 11, "nov": 11, "november": 11,
+        "dekabr": 12, "dek": 12, "dec": 12, "december": 12,
+
+        "yanvar": 1, "fevral": 2, "aprel": 4,
+        "iyun": 6, "iyul": 7,
+    }
+
+    for item in variants:
+        if item in aliases:
+            return aliases[item]
+
+    return None
+
+
+def safe_datetime(year, month, day, hour=0, minute=0):
+    try:
+        year = int(year)
+        month = int(month)
+        day = int(day)
+        hour = int(hour)
+        minute = int(minute)
+
+        if year < 2020 or year > 2035:
+            return None
+
+        if not (1 <= month <= 12):
+            return None
+
+        if not (1 <= day <= 31):
+            return None
+
+        if not (0 <= hour <= 23 and 0 <= minute <= 59):
+            return None
+
+        return datetime(year, month, day, hour, minute, tzinfo=BAKU_TZ)
+    except Exception:
+        return None
+
+
+def parse_az_datetime(value):
+    original = clean_text(str(value or ""))
+    text = normalize_date_text(original)
+
     if not text:
         return None
-    text = text.replace("—", "-").replace("–", "-")
-    az_months = {
-        "yanvar": 1, "fevral": 2, "mart": 3, "aprel": 4, "may": 5, "iyun": 6,
-        "iyul": 7, "avqust": 8, "sentyabr": 9, "oktyabr": 10, "noyabr": 11, "dekabr": 12,
-        "yan": 1, "fev": 2, "mar": 3, "apr": 4, "iyn": 6, "iyl": 7, "avq": 8,
-        "sen": 9, "okt": 10, "noy": 11, "dek": 12,
-    }
-    patterns = [
-        r"(\d{1,2})\s+([a-zəöğıçşü]+)\s+(\d{4})\s*[,\-]?\s*(\d{1,2})[:.](\d{2})",
-        r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})\s*[,\-]?\s*(\d{1,2})[:.](\d{2})",
-        r"(\d{1,2})[:.](\d{2})\s*[,\-]?\s*(\d{1,2})\s+([a-zəöğıçşü]+)\s*,?\s*(\d{4})",
-        r"(\d{1,2})[:.](\d{2})\s*[,\-]?\s*(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})",
-    ]
-    for idx, pattern in enumerate(patterns):
-        match = re.search(pattern, text, re.IGNORECASE)
-        if not match:
-            continue
-        try:
-            groups = match.groups()
-            if idx == 0:
-                day, month_name, year, hour, minute = groups
-                month = az_months.get(month_name)
-            elif idx == 1:
-                day, month, year, hour, minute = groups
-                month = int(month)
-            elif idx == 2:
-                hour, minute, day, month_name, year = groups
-                month = az_months.get(month_name)
-            else:
-                hour, minute, day, month, year = groups
-                month = int(month)
-            if not month:
-                continue
-            return datetime(int(year), int(month), int(day), int(hour), int(minute), tzinfo=BAKU_TZ)
-        except Exception:
-            continue
 
+    # 1) Azərbaycan formatı:
+    # 12 İyun 2026, 17:41
+    # 12 İyun 2026, Cümə
+    pattern = r"(\d{1,2})\s+([a-z]+)\s+(\d{4})(?:\s*,?\s*(?:[a-z]+)?)?(?:\s+(\d{1,2})[:.](\d{2}))?"
+    m = re.search(pattern, text, re.IGNORECASE)
+    if m:
+        day, month_name, year, hour, minute = m.groups()
+        month = month_number(month_name)
+
+        if month:
+            return safe_datetime(
+                year,
+                month,
+                day,
+                hour or 0,
+                minute or 0,
+            )
+
+    # 2) Qısa ay əvvəl:
+    # İyn 11, 2026 | 04:34
+    # May 26, 2026 | 02:49
+    pattern = r"([a-z]+)\s+(\d{1,2})\s*,?\s+(\d{4})(?:\s+(\d{1,2})[:.](\d{2}))?"
+    m = re.search(pattern, text, re.IGNORECASE)
+    if m:
+        month_name, day, year, hour, minute = m.groups()
+        month = month_number(month_name)
+
+        if month:
+            return safe_datetime(
+                year,
+                month,
+                day,
+                hour or 0,
+                minute or 0,
+            )
+
+    # 3) Rəqəmli tarix + saat:
+    # 12.06.2026 17:41
+    pattern = r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})(?:\s+(\d{1,2})[:.](\d{2}))?"
+    m = re.search(pattern, text)
+    if m:
+        day, month, year, hour, minute = m.groups()
+        return safe_datetime(
+            year,
+            month,
+            day,
+            hour or 0,
+            minute or 0,
+        )
+
+    # 4) Saat əvvəldə:
+    # 17:41 12 İyun 2026
+    pattern = r"(\d{1,2})[:.](\d{2})\s+(\d{1,2})\s+([a-z]+)\s+(\d{4})"
+    m = re.search(pattern, text, re.IGNORECASE)
+    if m:
+        hour, minute, day, month_name, year = m.groups()
+        month = month_number(month_name)
+
+        if month:
+            return safe_datetime(year, month, day, hour, minute)
+
+    # 5) Başlıq əvvəlində yalnız saat:
+    # 09:41 Müəllimlərin...
     time_only = re.search(r"^\s*(\d{1,2})[:.](\d{2})(?:\s|$)", text)
     if time_only:
-        try:
-            hour = int(time_only.group(1))
-            minute = int(time_only.group(2))
-            if 0 <= hour <= 23 and 0 <= minute <= 59:
-                today = datetime.now(BAKU_TZ).date()
-                return datetime(today.year, today.month, today.day, hour, minute, tzinfo=BAKU_TZ)
-        except Exception:
-            pass
+        hour = int(time_only.group(1))
+        minute = int(time_only.group(2))
+        today = datetime.now(BAKU_TZ).date()
+        return safe_datetime(today.year, today.month, today.day, hour, minute)
 
-    date_only_patterns = [
-        r"(\d{1,2})\s+([a-zəöğıçşü]+)\s+(\d{4})",
-        r"(\d{1,2})[.\-/](\d{1,2})[.\-/](\d{4})",
-    ]
-    for idx, pattern in enumerate(date_only_patterns):
-        match = re.search(pattern, text, re.IGNORECASE)
-        if not match:
-            continue
-        try:
-            groups = match.groups()
-            if idx == 0:
-                day, month_name, year = groups
-                month = az_months.get(month_name)
-            else:
-                day, month, year = groups
-                month = int(month)
-            if not month:
-                continue
-            return datetime(int(year), int(month), int(day), 0, 0, tzinfo=BAKU_TZ)
-        except Exception:
-            continue
     return None
 
 
