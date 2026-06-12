@@ -56,6 +56,8 @@ COMMON_RSS_PATHS = [
     "/xeberler/rss", "/news/rss",
 ]
 
+LOCAL_ONLY_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0", "::1"}
+
 ARTICLE_URL_PATTERNS = [
     "/news/", "/xeber/", "/xeberler/", "/xəbərlər/", "/az/news/",
     "/az/xeber/", "/az/xeberler/", "/az/xəbərlər/", "/post/",
@@ -98,6 +100,11 @@ def normalize_text(text):
 
 def get_domain(url):
     return urlparse(url or "").netloc.replace("www.", "").lower()
+
+
+def is_local_only_url(url):
+    domain = get_domain(url).split(":")[0]
+    return domain in LOCAL_ONLY_DOMAINS
 
 
 def get_base_url(url):
@@ -902,7 +909,10 @@ def discover_rss_links(page_url, page_html):
             rss_links.append(urljoin(root, path))
     except Exception as exc:
         print(f"RSS link axtarışı xətası: {page_url} | {exc}", flush=True)
-    return list(dict.fromkeys([item for item in rss_links if item and item.startswith("http")]))[:8]
+    return list(dict.fromkeys([
+        item for item in rss_links
+        if item and item.startswith("http") and not is_local_only_url(item)
+    ]))[:8]
 
 
 def extract_links_from_rss(site, rss_urls):
@@ -911,6 +921,9 @@ def extract_links_from_rss(site, rss_urls):
     page_url = site.get("url") or site.get("base_url") or ""
     for rss_url in rss_urls:
         if not rss_url:
+            continue
+        if is_local_only_url(rss_url):
+            print(f"RSS local URL keçildi: {rss_url}", flush=True)
             continue
         try:
             response = requests.get(
