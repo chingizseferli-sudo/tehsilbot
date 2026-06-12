@@ -33,7 +33,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178707,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:00:12"
     },
     {
       "name": "XƏBƏRLƏR - ADU",
@@ -57,7 +58,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837923,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:00:13"
     },
     {
       "name": "Xəbərlər | Azərbaycan Respublikasının Təhsil İnstitutu",
@@ -92,7 +94,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837926,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://arti.edu.az/rss",
+      "rss_count": 16,
+      "rss_checked_at": "2026-06-12 10:00:19"
     },
     {
       "name": "Editor.az - Azərbaycanın Onlayn Xəbər Portalı",
@@ -127,7 +132,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770121071,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://editor.az/rss",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:00:25"
     },
     {
       "name": "XƏBƏRLƏR",
@@ -151,7 +159,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778838059,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:02:17"
     },
     {
       "name": "Əlyazmalar İnstitutu",
@@ -175,7 +184,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778838065,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:02:32"
     },
     {
       "name": "Millətin səsi",
@@ -205,7 +215,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178776,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://milletinsesi.az/feed/",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:02:34"
     },
     {
       "name": "Sözcü - Ən son xəbərlər, operativ xəbər saytı, xəbərlər.",
@@ -235,7 +248,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178847,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:25"
     },
     {
       "name": "7Times.Az - Son Xəbərlər, Dünya Xəbərləri və Multimedia",
@@ -270,7 +284,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120707,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://7times.az/rss",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:04:27"
     },
     {
       "name": "7news.az Azərbaycanda özəl xəbərlər, araşdırmalar, təhlillər və müsahibələrin tək ünvanı",
@@ -305,7 +322,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120703,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:39"
     },
     {
       "name": "Publika.az - Fasiləsiz xəbər",
@@ -340,7 +358,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178854,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://publika.az/rss/",
+      "rss_count": 25,
+      "rss_checked_at": "2026-06-12 10:04:41"
     },
     {
       "name": "Missiya.az",
@@ -375,7 +396,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779179094,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:42"
     },
     {
       "name": "STIMULXEBER",
@@ -405,7 +427,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120715,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:43"
     },
     {
       "name": "Ucnoqta.az",
@@ -440,7 +463,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120701,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:48"
     },
     {
       "name": "Paralel.az",
@@ -475,7 +499,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779179101,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:49"
     },
     {
       "name": "Baku.TV",
@@ -510,7 +535,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178841,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:51"
     },
     {
       "name": "Ayna.az - Ayna.az",
@@ -545,7 +571,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120700,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:52"
     },
     {
       "name": "Milliyol.az",
@@ -580,7 +607,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120691,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:54"
     },
     {
       "name": "Xəbər lenti - Milli.Az",
@@ -615,7 +643,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778838078,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:04:59"
     },
     {
       "name": "AZƏRBAYCAN24 - AZƏRBAYCAN24 | İnformasiya Xidməti",
@@ -645,7 +674,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770116223,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:05:16"
     },
     {
       "name": "Sitat.info",
@@ -680,7 +710,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778838006,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:05:21"
     },
     {
       "name": "Xeber7.az",
@@ -710,7 +741,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837887,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://xeber7.az/feed",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:05:26"
     },
     {
       "name": "NUH informasiya agentliyi",
@@ -745,7 +779,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779179034,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:07:17"
     },
     {
       "name": "Ulusal.Az - Dünya və ölkə xəbərləri",
@@ -780,7 +815,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779179022,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://ulusal.az/rss",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:07:19"
     },
     {
       "name": "XalqXeber.Az | Son xeberler Azerbaycan xeberleri",
@@ -815,7 +853,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120609,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:07:21"
     },
     {
       "name": "Yenixeber.org - Oxu, xəbərin olsun",
@@ -850,7 +889,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120580,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:07:27"
     },
     {
       "name": "Sözçü qəzeti",
@@ -880,7 +920,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837818,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:07:36"
     },
     {
       "name": "Dialoq.az",
@@ -915,7 +956,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120570,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:07:48"
     },
     {
       "name": "Busaat.az - Günün əsas və bu saata olan xəbərləri",
@@ -950,7 +992,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837812,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://busaat.az/rss",
+      "rss_count": 20,
+      "rss_checked_at": "2026-06-12 10:07:52"
     },
     {
       "name": "Hit.az",
@@ -985,7 +1030,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837804,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://hit.az/feed",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:08:04"
     },
     {
       "name": "Pressxeber.info",
@@ -1020,7 +1068,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178945,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://pressxeber.info/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:08:05"
     },
     {
       "name": "AzadMedia.az",
@@ -1055,7 +1106,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837796,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://azadmedia.az/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:08:07"
     },
     {
       "name": "AzFakt",
@@ -1085,7 +1139,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770116083,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:08:16"
     },
     {
       "name": "Aqreqator.az xəbərlər portalı",
@@ -1120,7 +1175,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837797,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:08:17"
     },
     {
       "name": "Axar.Az - Operativ xəbər portalı, son xəbərlər, yeni xəbərlər, ən son xəbərlər, xeber, xeberler, son",
@@ -1155,7 +1211,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837789,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:08:23"
     },
     {
       "name": "Teleqraf.com - Xəbərlər, son xəbərlər, ən son xəbərlər",
@@ -1190,7 +1247,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178925,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:08:33"
     },
     {
       "name": "Xalq Cəbhəsi Qəzeti | Bütöv Azərbaycanın qəzeti",
@@ -1225,7 +1283,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178931,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:08:41"
     },
     {
       "name": "MIA.AZ",
@@ -1260,7 +1319,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770116072,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:08:58"
     },
     {
       "name": "Faktor.az",
@@ -1295,7 +1355,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770116048,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:08:59"
     },
     {
       "name": "ENA.az (Economic News Agency) - İqtisadiyyat Xəbərləri Agentliyi | ENA.az",
@@ -1330,7 +1391,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837790,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:09:10"
     },
     {
       "name": "CİA.AZ - Ana Səhifə",
@@ -1365,7 +1427,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178768,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:09:14"
     },
     {
       "name": "Pravda.az",
@@ -1405,7 +1468,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120392,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:09:30"
     },
     {
       "name": "Son Xəbərlər » XalqXeber.Az | Son xeberler Azerbaycan xeberleri",
@@ -1445,7 +1509,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770116025,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:09:31"
     },
     {
       "name": "Bay Media",
@@ -1480,7 +1545,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178713,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:09:37"
     },
     {
       "name": "Yeni Sabah",
@@ -1515,7 +1581,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178692,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:09:39"
     },
     {
       "name": "Arqument.az",
@@ -1545,7 +1612,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120933,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:09:47"
     },
     {
       "name": "Qlobal.Az",
@@ -1580,7 +1648,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120260,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:10:01"
     },
     {
       "name": "Naxçıvan Dövlət Universiteti",
@@ -1604,7 +1673,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837657,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:10:14"
     },
     {
       "name": "\"Nuhçıxan\" İnformasiya Agentliyi - Xəbərlər",
@@ -1639,7 +1709,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770181648,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:10:21"
     },
     {
       "name": "AZMIU",
@@ -1663,7 +1734,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837616,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:10:22"
     },
     {
       "name": "Xəbərlər – Azərbaycan Dövlət Mədəniyyət və İncəsənət Universiteti",
@@ -1687,7 +1759,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770114812,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://admiu.edu.az/feed/",
+      "rss_count": 12,
+      "rss_checked_at": "2026-06-12 10:10:28"
     },
     {
       "name": "Manset.az",
@@ -1722,7 +1797,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837606,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:10:44"
     },
     {
       "name": "Reportyor.az",
@@ -1757,7 +1833,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837613,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://reportyor.az/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:10:48"
     },
     {
       "name": "Versus.az",
@@ -1787,7 +1866,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837593,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:10:50"
     },
     {
       "name": "Sabahinfo.az",
@@ -1822,7 +1902,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837581,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://sabahinfo.az/feed",
+      "rss_count": 115,
+      "rss_checked_at": "2026-06-12 10:10:55"
     },
     {
       "name": "E-huquq.az",
@@ -1867,7 +1950,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837573,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:11:03"
     },
     {
       "name": "Banker.az | Banker.az",
@@ -1902,7 +1986,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178546,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://banker.az/feed/",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:11:04"
     },
     {
       "name": "Arantv.az -",
@@ -1937,7 +2024,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837575,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:11:12"
     },
     {
       "name": "Xəbər lenti",
@@ -1961,7 +2049,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837573,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:11:24"
     },
     {
       "name": "adalet.az",
@@ -1996,7 +2085,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778739671,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://adalet.az/az/feed",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:11:29"
     },
     {
       "name": "Xəbərlər | tvreal.az",
@@ -2031,7 +2123,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837503,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:11:31"
     },
     {
       "name": "Xeberle.com",
@@ -2066,7 +2159,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120713,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "http://xeberle.com/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:11:33"
     },
     {
       "name": "No Comment",
@@ -2106,7 +2202,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770109813,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:11:34"
     },
     {
       "name": "Xəbər lenti - Olaylar.az",
@@ -2141,7 +2238,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178852,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:11:39"
     },
     {
       "name": "Cəbhə.info",
@@ -2171,7 +2269,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837693,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:11:40"
     },
     {
       "name": "Son Xəbərlər, Siyasi xəbərlər, Azərbaycan xəbərləri | AzPolitika — onlayn siyasi-ictimai qəzet",
@@ -2206,7 +2305,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770181613,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://azpolitika.info/rss",
+      "rss_count": 100,
+      "rss_checked_at": "2026-06-12 10:11:42"
     },
     {
       "name": "Azxeber.com Azərbaycanda özəl xəbərlər, araşdırmalar, təhlillər və müsahibələrin tək ünvanı",
@@ -2241,7 +2343,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837871,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://azxeber.com/rss",
+      "rss_count": 25,
+      "rss_checked_at": "2026-06-12 10:11:45"
     },
     {
       "name": "Olke.az",
@@ -2276,7 +2381,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779179013,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://olke.az/rss",
+      "rss_count": 30,
+      "rss_checked_at": "2026-06-12 10:11:46"
     },
     {
       "name": "AMEA Dilçilik İnstitutu",
@@ -2300,7 +2408,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837606,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:11:56"
     },
     {
       "name": "Qafqazinfo.az",
@@ -2335,7 +2444,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837867,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:12:02"
     },
     {
       "name": "Xəbərlər / Xəbərlər / Azərbaycan İlahiyyat İnstitutu",
@@ -2359,7 +2469,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770120760,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:12:03"
     },
     {
       "name": "AFN.az - Xəbər Portalı » AFN.az - Xəbər Portalı",
@@ -2394,7 +2505,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837605,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://afn.az/rss.xml",
+      "rss_count": 15,
+      "rss_checked_at": "2026-06-12 10:12:16"
     },
     {
       "name": "Xəbər lenti - Aznews.az",
@@ -2424,7 +2538,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178943,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:12:24"
     },
     {
       "name": "Unikal.az",
@@ -2459,7 +2574,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837799,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:12:26"
     },
     {
       "name": "AzEdu.az AZERBAYCAN EĞİTİM PORTALI",
@@ -2494,7 +2610,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837800,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://azedu.az/rss",
+      "rss_count": 30,
+      "rss_checked_at": "2026-06-12 10:12:28"
     },
     {
       "name": "poliqon.info",
@@ -2524,7 +2643,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837787,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:12:34"
     },
     {
       "name": "NEFT KİMYA PROSESLƏRİ İNSTİTUTU",
@@ -2548,7 +2668,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770109104,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:12:50"
     },
     {
       "name": "ASOIU | allNews",
@@ -2572,7 +2693,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770120717,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:13:02"
     },
     {
       "name": "\"ELÇİ\" – \"ELÇİ\"",
@@ -2607,7 +2729,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837320,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://elchi.az/feed/",
+      "rss_count": 17,
+      "rss_checked_at": "2026-06-12 10:13:04"
     },
     {
       "name": "102xeber.info",
@@ -2647,7 +2772,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120802,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:13:06"
     },
     {
       "name": "Faktinfo.az",
@@ -2677,7 +2803,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120783,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:13:07"
     },
     {
       "name": "Reportyor.İnfo – Günün aktual xəbərləri…",
@@ -2712,7 +2839,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120781,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:13:38"
     },
     {
       "name": "ABC.AZ",
@@ -2742,7 +2870,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770120790,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:13:45"
     },
     {
       "name": "525-ci qəzet",
@@ -2777,7 +2906,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837818,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:13:50"
     },
     {
       "name": "Marja.az",
@@ -2812,7 +2942,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178963,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:13:59"
     },
     {
       "name": "Xəbərlər – Gəncə Dövlət Universiteti",
@@ -2841,7 +2972,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837609,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://gdu.edu.az/feed/",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:14:05"
     },
     {
       "name": "AzTimes",
@@ -2871,7 +3005,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178719,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:14:07"
     },
     {
       "name": "sfera.az",
@@ -2901,7 +3036,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770107894,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:14:16"
     },
     {
       "name": "Azərbaycan Tibb Universiteti | Xəbərlər",
@@ -2925,7 +3061,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778838064,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:14:25"
     },
     {
       "name": "AŞQARLAR KİMYASI İNSTİTUTU | ica.az",
@@ -2949,7 +3086,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770106647,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://ica.az/feed/",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:14:27"
     },
     {
       "name": "Bakı Dövlət Universiteti",
@@ -2973,7 +3113,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778838057,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "http://bsu.edu.az/az/rss",
+      "rss_count": 14,
+      "rss_checked_at": "2026-06-12 10:14:29"
     },
     {
       "name": "www.Bia.Az",
@@ -3003,7 +3146,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770106094,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:14:31"
     },
     {
       "name": "TEHSIL-PRESS Agentliyi",
@@ -3038,7 +3182,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837808,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:14:32"
     },
     {
       "name": "XƏBƏRLƏR-AMEA Folklor İnstitutu",
@@ -3062,7 +3207,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837883,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:14:43"
     },
     {
       "name": "Kəpəz TV",
@@ -3097,7 +3243,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779622928,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "http://www.kepeztv.az/rss",
+      "rss_count": 23,
+      "rss_checked_at": "2026-06-12 10:14:55"
     },
     {
       "name": "XƏBƏRLƏR-NƏSİRƏDDİN TUSİ adına ŞAMAXI ASTROFİZİKA RƏSƏDXANASI",
@@ -3121,7 +3270,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837612,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:15:05"
     },
     {
       "name": "TED.AZ - Texnologiya, Elm, Dünya",
@@ -3156,7 +3306,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778838067,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:15:21"
     },
     {
       "name": "Mediatv.az informasiya portalı",
@@ -3191,7 +3342,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770121088,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:15:33"
     },
     {
       "name": "ARETN Mikrobiologiya İnstitutu - Ana Səhifə",
@@ -3215,7 +3367,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837648,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:15:51"
     },
     {
       "name": "Xəbərlər – Naxçıvan Müəllimlər İnstitutu",
@@ -3239,7 +3392,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837588,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:15:59"
     },
     {
       "name": "APA.AZ- Azərbaycan və dünyadan ən son xəbərlər",
@@ -3274,7 +3428,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770100737,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://apa.az/rss",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:16:00"
     },
     {
       "name": "REZONANS İNFORMASİYA PORTALI",
@@ -3304,7 +3461,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770097233,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://rezonans.az/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:16:02"
     },
     {
       "name": "Anews.az",
@@ -3339,7 +3499,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178970,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://anews.az/rss",
+      "rss_count": 30,
+      "rss_checked_at": "2026-06-12 10:16:03"
     },
     {
       "name": "ADPU - Xəbərlər",
@@ -3363,7 +3526,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837682,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:16:05"
     },
     {
       "name": "Xəbərlər",
@@ -3387,7 +3551,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837679,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://mdu.edu.az/feed/",
+      "rss_count": 12,
+      "rss_checked_at": "2026-06-12 10:16:10"
     },
     {
       "name": "UNEC NEWS - UNEC-in Rəsmi Xəbər Portalı",
@@ -3411,7 +3578,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837700,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:16:11"
     },
     {
       "name": "Xəbərlər — BXA",
@@ -3435,7 +3603,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837717,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://bxa.edu.az/feed/",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:16:13"
     },
     {
       "name": "Universitet üzrə",
@@ -3459,7 +3630,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837672,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:16:44"
     },
     {
       "name": "AzTU - Azərbaycan Texniki Universiteti (Beta)",
@@ -3483,7 +3655,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1779178651,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://www.aztu.edu.az/feed.xml",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:16:47"
     },
     {
       "name": "ATU-Azərbaycan Texnologiya Universiteti",
@@ -3507,7 +3682,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1770095915,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:16:58"
     },
     {
       "name": "Xəbərlər - IMBB",
@@ -3531,7 +3707,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837579,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:17:09"
     },
     {
       "name": "Azia.az",
@@ -3566,7 +3743,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779178798,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://azia.az/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:17:11"
     },
     {
       "name": "Azərbaycan Universiteti",
@@ -3590,7 +3770,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837690,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:17:20"
     },
     {
       "name": "BDU-Qazax",
@@ -3614,7 +3795,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837661,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:17:32"
     },
     {
       "name": "FED.az",
@@ -3649,7 +3831,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779179028,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:17:49"
     },
     {
       "name": "XƏBƏRLƏR-AMEA GƏNCƏ BÖLMƏSİ",
@@ -3673,7 +3856,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837526,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:18:00"
     },
     {
       "name": "Xəbərlər | SDU - Sumqayıt Dövlət Universitetinin rəsmi portalı",
@@ -3697,7 +3881,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837583,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:18:22"
     },
     {
       "name": "KONKRET.Az",
@@ -3732,7 +3917,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770014831,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://konkret.az/rss",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:18:24"
     },
     {
       "name": "Den.az",
@@ -3772,7 +3960,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1770014326,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://den.az/rss.xml",
+      "rss_count": 30,
+      "rss_checked_at": "2026-06-12 10:18:25"
     },
     {
       "name": "Əsas xəbərlər - Azərbaycan Milli Konservatoriyası",
@@ -3796,7 +3987,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837608,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://conservatory.edu.az/feed/",
+      "rss_count": 5,
+      "rss_checked_at": "2026-06-12 10:18:28"
     },
     {
       "name": "Showmedia.az",
@@ -3831,7 +4025,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1769752342,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:18:45"
     },
     {
       "name": "BANM",
@@ -3855,7 +4050,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837921,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:18:56"
     },
     {
       "name": "AGRİ - Item Category",
@@ -3879,7 +4075,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837581,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:19:16"
     },
     {
       "name": "Oxu.az - Azərbaycan və dünya xəbərləri",
@@ -3914,7 +4111,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1769407750,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://oxu.az/feed",
+      "rss_count": 30,
+      "rss_checked_at": "2026-06-12 10:19:17"
     },
     {
       "name": "XƏBƏRLƏR-Fiziologiya İnstitutu",
@@ -3938,7 +4138,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837701,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:19:24"
     },
     {
       "name": "Xəbərlər - UFAZ Website",
@@ -3962,7 +4163,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1779622841,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:19:50"
     },
     {
       "name": "XƏBƏRLƏR - AZƏRBAYCAN DÖVLƏT AQRAR UNİVERSİTETİ",
@@ -3986,7 +4188,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837613,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:20:02"
     },
     {
       "name": "Xural | Xural qəzeti",
@@ -4026,7 +4229,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837588,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:20:08"
     },
     {
       "name": "AİA",
@@ -4061,7 +4265,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1768998392,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://aia.az/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:20:11"
     },
     {
       "name": "Tehsil.biz",
@@ -4096,7 +4303,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837890,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:20:16"
     },
     {
       "name": "TNS İnformasiya Agentliyi",
@@ -4131,7 +4339,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1768806242,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:20:28"
     },
     {
       "name": "Bakı Musiqi Akademiyası - Xəbərlər",
@@ -4155,7 +4364,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778837704,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://musicacademy.edu.az/az/kheberler.feed?type=rss",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:20:31"
     },
     {
       "name": "Hurriyyet Qəzeti",
@@ -4190,7 +4402,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1766667446,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:20:43"
     },
     {
       "name": "Təhsildə Keyfiyyət Təminatı Agentliyi - TKTA | TKTA",
@@ -4225,7 +4438,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1766644134,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:10"
     },
     {
       "name": "Xəbərlər – Dia.edu.az",
@@ -4249,7 +4463,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1766487688,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:20"
     },
     {
       "name": "Yeni Söz",
@@ -4279,7 +4494,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1766137961,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:21"
     },
     {
       "name": "Sia.az",
@@ -4314,7 +4530,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1778837051,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:31"
     },
     {
       "name": "Azerforum.com",
@@ -4349,7 +4566,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1765888365,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:33"
     },
     {
       "name": "Milletinsesi.info",
@@ -4379,7 +4597,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1765802168,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:34"
     },
     {
       "name": "Kanal 8 – Xəbərlər",
@@ -4409,7 +4628,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1765182696,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:35"
     },
     {
       "name": "İqtisadiyyat.az",
@@ -4439,7 +4659,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1764835427,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:37"
     },
     {
       "name": "Gundem.az",
@@ -4474,7 +4695,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1764330888,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:38"
     },
     {
       "name": "Bakı Mühəndislik Universiteti",
@@ -4498,7 +4720,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1764328547,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:50"
     },
     {
       "name": "AMEA Nizami Gəncəvi adına Ədəbiyyat İnstitutu",
@@ -4522,7 +4745,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1761568836,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:21:59"
     },
     {
       "name": "Bütün xəbərlər | Azərbaycan müəllimi",
@@ -4552,7 +4776,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1761228509,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:22:15"
     },
     {
       "name": "Teref.az",
@@ -4587,7 +4812,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1759758087,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:22:16"
     },
     {
       "name": "GundemXeber",
@@ -4622,7 +4848,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1759754578,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:22:17"
     },
     {
       "name": "7GUN.org",
@@ -4657,7 +4884,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1759472373,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:24:09"
     },
     {
       "name": "Dogruxeber.az",
@@ -4692,7 +4920,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1757943398,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:24:10"
     },
     {
       "name": "Xəbərlər - ADBTİA",
@@ -4716,7 +4945,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1778739629,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:24:19"
     },
     {
       "name": "News24",
@@ -4756,7 +4986,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1757513343,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://news24.az/feed",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:24:22"
     },
     {
       "name": "Naxçıvan Xəbərləri",
@@ -4796,7 +5029,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1757492269,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:24:37"
     },
     {
       "name": "Bakupost.az",
@@ -4831,7 +5065,10 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://www.bakupost.az/rss",
+      "rss_count": 300,
+      "rss_checked_at": "2026-06-12 10:24:40"
     },
     {
       "name": "Bizim Yol",
@@ -4866,7 +5103,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:24:50"
     },
     {
       "name": "SeherXeber.org",
@@ -4896,7 +5134,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:24:54"
     },
     {
       "name": "AZƏRBAYCAN XƏBƏRLƏRİ - günün əsas xəbərləri və mövzu ilə bağlı əsas hadisələr - Sputnik Azərbaycan",
@@ -4926,7 +5165,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:24:56"
     },
     {
       "name": "Yeni Gündəm",
@@ -4961,7 +5201,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:24:57"
     },
     {
       "name": "Turan.az xəbər agentliyi",
@@ -4996,7 +5237,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1779622807,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:16"
     },
     {
       "name": "Xəbərlər",
@@ -5020,7 +5262,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:21"
     },
     {
       "name": "ANN.az Azərbaycanda özəl xəbərlər, araşdırmalar, təhlillər və müsahibələrin tək ünvanı",
@@ -5050,7 +5293,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:26"
     },
     {
       "name": "Valyuta.az",
@@ -5085,7 +5329,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:33"
     },
     {
       "name": "Qaynarinfo.az",
@@ -5120,7 +5365,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:34"
     },
     {
       "name": "AzToday – Azərbaycan xəbərləri",
@@ -5155,7 +5401,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:36"
     },
     {
       "name": "\"ARAZ\" Media Qrupu",
@@ -5185,7 +5432,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:37"
     },
     {
       "name": "DemokratikMusavat.com",
@@ -5215,7 +5463,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:42"
     },
     {
       "name": "AZƏRBAYCAN RƏSSAMLIQ AKADEMİYASI — ADRA",
@@ -5239,7 +5488,8 @@
       "no_duplicate": false,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:43"
     },
     {
       "name": "Siam.az",
@@ -5274,7 +5524,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:45"
     },
     {
       "name": "Report.az",
@@ -5309,7 +5560,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:46"
     },
     {
       "name": "Millitv.az",
@@ -5339,7 +5591,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:47"
     },
     {
       "name": "Təhsil 365 - Təhsildə baş verənlərin hamısı burada",
@@ -5374,7 +5627,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:56"
     },
     {
       "name": "Azərbaycan Reallığı",
@@ -5409,7 +5663,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:25:58"
     },
     {
       "name": "BAKU.NEWS",
@@ -5444,7 +5699,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://baku.news/feed",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:26:05"
     },
     {
       "name": "Kanal24.az",
@@ -5484,7 +5742,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:26:07"
     },
     {
       "name": "www. TELEQRAF.az",
@@ -5519,7 +5778,8 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_checked_at": "2026-06-12 10:26:12"
     },
     {
       "name": "Moderator.az xəbər portalı",
@@ -5554,7 +5814,10 @@
       "no_duplicate": true,
       "last_crc": null,
       "last_changed": 1756980069,
-      "limit": 5
+      "limit": 5,
+      "rss_url": "https://moderator.az/rss",
+      "rss_count": 30,
+      "rss_checked_at": "2026-06-12 10:26:13"
     },
     {
       "name": "Azərbaycan Respublikası Müdafiə Nazirliyi",
@@ -5640,7 +5903,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:26:26"
     },
     {
       "name": "Ministerstvo zahraničních věcí",
@@ -5726,7 +5990,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:26:42"
     },
     {
       "name": "Tezadlar.az",
@@ -5812,7 +6077,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://tezadlar.az/feed/",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:26:44"
     },
     {
       "name": "Redaktor.az",
@@ -5898,7 +6166,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://cmn.redaktor.az/rss",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:26:45"
     },
     {
       "name": "Oxu24.com",
@@ -5984,7 +6255,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://oxu24.com/feed",
+      "rss_count": 638,
+      "rss_checked_at": "2026-06-12 10:26:49"
     },
     {
       "name": "Bakunews.az",
@@ -6070,7 +6344,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://bakunews.az/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:26:51"
     },
     {
       "name": "Operativ Məlumat Mərkəzi",
@@ -6156,7 +6433,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://operativmm.az/rss.xml",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:26:53"
     },
     {
       "name": "BiG.Az",
@@ -6242,7 +6522,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:27:02"
     },
     {
       "name": "Российский совет по международным делам",
@@ -6328,7 +6609,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:27:17"
     },
     {
       "name": "İdman.Biz",
@@ -6414,7 +6696,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:27:23"
     },
     {
       "name": "UKR.NET",
@@ -6500,7 +6783,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:27:30"
     },
     {
       "name": "Футбол 24",
@@ -6586,7 +6870,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:27:38"
     },
     {
       "name": "cbctv.az",
@@ -6672,7 +6957,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:27:52"
     },
     {
       "name": "Культура.РФ",
@@ -6758,7 +7044,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:28:31"
     },
     {
       "name": "Arzuw news",
@@ -6844,7 +7131,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://arzuw.news/feed",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:28:33"
     },
     {
       "name": "Meydan TV",
@@ -6930,7 +7220,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://www.meydan.tv/az/feed/",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:28:36"
     },
     {
       "name": "AbzasMedia",
@@ -7016,7 +7309,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://abzas.org/rss.xml",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:28:39"
     },
     {
       "name": "Azattyq Ruhy",
@@ -7102,7 +7398,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://rus.azattyq-ruhy.kz/news.rss",
+      "rss_count": 100,
+      "rss_checked_at": "2026-06-12 10:28:41"
     },
     {
       "name": "VesselFinder",
@@ -7188,7 +7487,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:28:49"
     },
     {
       "name": "Banco.az",
@@ -7274,7 +7574,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://banco.az/rss.xml",
+      "rss_count": 20,
+      "rss_checked_at": "2026-06-12 10:28:55"
     },
     {
       "name": "Gov.pl",
@@ -7360,7 +7663,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:29:05"
     },
     {
       "name": "peşə təmayüllü siniflər",
@@ -7446,7 +7750,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:29:14"
     },
     {
       "name": "Hədəf Kursları",
@@ -7532,7 +7837,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:29:17"
     },
     {
       "name": "Kaspi Liseyi",
@@ -7618,7 +7924,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:29:23"
     },
     {
       "name": "Qəbələ Rayon İcra Hakimiyyəti",
@@ -7704,7 +8011,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:29:35"
     },
     {
       "name": "Səhiyyə Nazirliyi",
@@ -7790,7 +8098,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:29:48"
     },
     {
       "name": "Daxili İşlər Nazirliyi",
@@ -7876,7 +8185,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:29:59"
     },
     {
       "name": "veteran.gov.az",
@@ -7962,7 +8272,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:30:11"
     },
     {
       "name": "Orientalstudies.az",
@@ -8048,7 +8359,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:30:16"
     },
     {
       "name": "BakuInform",
@@ -8134,7 +8446,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:30:24"
     },
     {
       "name": "Ekologiya və Su təsərrüfatı jurnalı",
@@ -8220,7 +8533,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:30:33"
     },
     {
       "name": "Xarici İşlər Nazirliyi",
@@ -8306,7 +8620,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:30:41"
     },
     {
       "name": "Sesqazeti.az",
@@ -8392,7 +8707,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:30:49"
     },
     {
       "name": "Olympteka.ru",
@@ -8478,7 +8794,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://olympteka.ru/rss.xml",
+      "rss_count": 30,
+      "rss_checked_at": "2026-06-12 10:30:52"
     },
     {
       "name": "azerbaijan-news.az",
@@ -8564,7 +8883,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://www.azerbaijan-news.az/az/feed",
+      "rss_count": 50,
+      "rss_checked_at": "2026-06-12 10:30:57"
     },
     {
       "name": "Samux Rayon İcra Hakimiyyəti",
@@ -8650,7 +8972,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:31:06"
     },
     {
       "name": "TodayPress.tv",
@@ -8735,7 +9058,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:31:19"
     },
     {
       "name": "Newscenter.az",
@@ -8820,7 +9144,8 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_checked_at": "2026-06-12 10:31:27"
     },
     {
       "name": "moika78.ru",
@@ -8905,7 +9230,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://moika78.ru/feed/gn",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:31:31"
     },
     {
       "name": "Haber Aero",
@@ -8990,7 +9318,10 @@
         "təhsil müəssisəsi"
       ],
       "limit": 1,
-      "source_type": "discovered_deep_news_section"
+      "source_type": "discovered_deep_news_section",
+      "rss_url": "https://haber.aero/feed/",
+      "rss_count": 10,
+      "rss_checked_at": "2026-06-12 10:31:34"
     },
     {
       "name": "Media.az",
