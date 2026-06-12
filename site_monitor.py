@@ -583,23 +583,39 @@ def parse_az_datetime(value):
 
 def parse_datetime_to_baku(published_time):
     text = clean_text(str(published_time or ""))
+
     if not text or "tarix tapılmadı" in text.lower():
         return None
+
+    try:
+        dt = parsedate_to_datetime(text)
+
+        if dt:
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=BAKU_TZ)
+            else:
+                dt = dt.astimezone(BAKU_TZ)
+
+            return dt
+    except Exception:
+        pass
+
     az_dt = parse_az_datetime(text)
     if az_dt:
         return az_dt
+
     try:
-        try:
-            dt = parsedate_to_datetime(text)
-        except Exception:
-            dt = parser.parse(text, fuzzy=True, dayfirst=True)
+        dt = parser.parse(text, fuzzy=True, dayfirst=True)
+
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=BAKU_TZ)
         else:
             dt = dt.astimezone(BAKU_TZ)
+
         return dt
-    except Exception as exc:
-        print(f"Tarix parse xətası: {published_time} | {exc}", flush=True)
+
+    except Exception as e:
+        print(f"Tarix parse xətası: {published_time} | {e}", flush=True)
         return None
 
 
