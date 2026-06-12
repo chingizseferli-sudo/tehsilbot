@@ -1,5 +1,0 @@
-{
-  "deploy": {
-    "startCommand": "python -u site_monitor.py"
-  }
-}
