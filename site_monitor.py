@@ -1067,9 +1067,11 @@ def fetch_site(site, patterns_data):
     base_url = clean_text(site.get("base_url", "")) or page_url
     rss_url = clean_text(site.get("rss_url", ""))
     selector = site.get("selector")
-    xpaths = site.get("xpaths", [])
+    xpaths = site.get("xpaths", []) or parse_article_patterns(site.get("article_pattern"))
     keywords = site.get("keywords", [])
     monitor_method = clean_text(site.get("monitor_method", "")).lower()
+    if monitor_method == "xpath":
+        monitor_method = "xpath_pattern"
 
     headers = {
         "User-Agent": "Mozilla/5.0",
@@ -1424,6 +1426,15 @@ def extract_keywords_from_rules(site):
     return list(keywords)
 
 
+def parse_article_patterns(value):
+    if isinstance(value, list):
+        return [clean_text(item) for item in value if clean_text(item)]
+    text = clean_text(value)
+    if not text:
+        return []
+    return [clean_text(item) for item in text.split(",") if clean_text(item)]
+
+
 def load_sites():
     if not supabase_ready():
         print("Supabase bağlantısı yoxdur, sources oxunmadı.", flush=True)
@@ -1458,6 +1469,10 @@ def load_sites():
                 latest_url = clean_text(row.get("latest_url", ""))
                 rss_url = clean_text(row.get("rss_url", ""))
                 method = clean_text(row.get("monitor_method", "")).lower()
+                article_pattern = row.get("article_pattern") or ""
+                xpaths = parse_article_patterns(article_pattern)
+                if method == "xpath":
+                    method = "xpath_pattern"
 
                 # failed/dead mənbələri əsas monitorinqdə keçirik. blocked üçün Google News fallback varsa oxunacaq.
                 if method in {"failed", "dead"}:
@@ -1480,8 +1495,8 @@ def load_sites():
                     "latest_url": latest_url,
                     "rss_url": rss_url,
                     "selector": row.get("selector") or "",
-                    "article_pattern": row.get("article_pattern") or "",
-                    "xpaths": [],
+                    "article_pattern": article_pattern,
+                    "xpaths": xpaths,
                     "keywords": [],
                     "limit": MAX_LINKS_PER_SITE,
                     "source_type": row.get("source_type"),
