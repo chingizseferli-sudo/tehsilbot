@@ -861,25 +861,37 @@ def extract_links_from_rss(site, rss_urls):
 
 
 def extract_links_by_selector(page_url, page_html, selector, keywords):
+    soup = BeautifulSoup(page_html, "html.parser")
     results = []
-    if not selector:
-        return []
+
     try:
-        soup = BeautifulSoup(page_html, "html.parser")
         blocks = soup.select(selector)
-        print(f"Selector blok sayı: {len(blocks)} | {selector}", flush=True)
-    except Exception as exc:
-        print("Selector xətası:", exc, flush=True)
+    except Exception as e:
+        print("Selector xətası:", e, flush=True)
         return []
+
+    print(f"Selector blok sayı: {len(blocks)} | {selector}", flush=True)
+
+    # Çox böyük selector nəticələrində yalnız ilk blokları yoxlayırıq.
+    # Məqsəd köhnə arxivlərə ilişib botun donmasının qarşısını almaqdır.
+    blocks = blocks[:MAX_LINKS_PER_SITE * 3]
+
     for block in blocks:
         links = block.find_all("a", href=True)
+
         if getattr(block, "name", None) == "a" and block.get("href"):
             links.append(block)
+
         for a in links:
             title = clean_text(a.get_text(" ", strip=True))
-            link = urljoin(page_url, a.get("href", ""))
+            link = urljoin(page_url, a["href"])
+
             add_item(results, page_url, title, link, keywords)
-    return unique_items(results)[:MAX_LINKS_PER_SITE]
+
+            if len(results) >= MAX_LINKS_PER_SITE:
+                return unique_items(results)
+
+    return unique_items(results)
 
 
 def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
