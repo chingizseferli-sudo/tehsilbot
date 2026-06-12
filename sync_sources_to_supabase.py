@@ -37,6 +37,8 @@ PROTECTED_PARENT_DOMAINS = {
     "ac.az",
 }
 
+LOCAL_ONLY_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0", "::1"}
+
 
 def headers(extra=None):
     h = {
@@ -64,6 +66,11 @@ def clean_domain(url):
         return domain
     except Exception:
         return ""
+
+
+def is_local_only_url(url):
+    domain = clean_domain(url).split(":")[0]
+    return domain in LOCAL_ONLY_DOMAINS
 
 
 def base_url(url):
@@ -172,16 +179,28 @@ def build_payload(site, source_file):
         return None
 
     score = int(site.get("score") or site.get("discovery_score") or 50)
+    rss_url = clean_text(site.get("rss_url")) or None
+    if rss_url and is_local_only_url(rss_url):
+        rss_url = None
+
+    if rss_url:
+        monitor_method = "rss"
+    elif site.get("selector"):
+        monitor_method = "selector"
+    elif site.get("xpaths"):
+        monitor_method = "xpath"
+    else:
+        monitor_method = site.get("monitor_method") or "html"
 
     return {
         "name": clean_text(site.get("name")) or clean_domain(url),
         "base_url": root,
         "latest_url": clean_text(site.get("latest_url")) or url,
-        "rss_url": clean_text(site.get("rss_url")) or None,
+        "rss_url": rss_url,
         "source_type": site.get("source_type") or "news_site",
         "status": site.get("status") if site.get("status") in ["active", "inactive"] else "active",
         "trust_level": site.get("trust_level") or ("high" if score >= 80 else "medium"),
-        "monitor_method": detect_monitor_method(site),
+        "monitor_method": monitor_method,
         "selector": site.get("selector"),
         "article_pattern": ",".join(site.get("xpaths", [])[:3]) if site.get("xpaths") else site.get("article_pattern"),
         "discovery_status": site.get("discovery_status") or "accepted",
