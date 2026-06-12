@@ -503,6 +503,15 @@ def safe_datetime(year, month, day, hour=0, minute=0):
 
 def parse_az_datetime(value):
     original = clean_text(str(value or ""))
+
+    numeric_date = re.search(
+        r"(?<!\d)(\d{1,2})[./-](\d{1,2})[./-](\d{4})(?:\s+(\d{1,2})[:.](\d{2}))?",
+        original,
+    )
+    if numeric_date:
+        day, month, year, hour, minute = numeric_date.groups()
+        return safe_datetime(year, month, day, hour or 0, minute or 0)
+
     text = normalize_date_text(original)
 
         # Mətn içində Azərbaycan tarix+saat formatı:
@@ -605,6 +614,22 @@ def parse_az_datetime(value):
     return None
 
 
+def has_strong_date_signal(text):
+    value = clean_text(text)
+    normalized = normalize_date_text(value)
+    if re.search(r"\d{4}-\d{2}-\d{2}", value):
+        return True
+    if re.search(r"(?<!\d)\d{1,2}[./-]\d{1,2}[./-]\d{4}", value):
+        return True
+    if re.search(r"\d{1,2}\s+[a-z]+\s+\d{4}", normalized, re.IGNORECASE):
+        return True
+    if re.search(r"[a-z]+\s+\d{1,2}\s*,?\s+\d{4}", normalized, re.IGNORECASE):
+        return True
+    if re.search(r"\b(mon|tue|wed|thu|fri|sat|sun),?\s+\d{1,2}\s+\w+\s+\d{4}", value, re.IGNORECASE):
+        return True
+    return False
+
+
 def parse_datetime_to_baku(published_time):
     text = clean_text(str(published_time or ""))
 
@@ -662,6 +687,9 @@ def parse_datetime_to_baku(published_time):
 
     # 4) Sonda ümumi parser.
     # Burada dayfirst=True saxlayırıq, amma ISO artıq yuxarıda tutulduğu üçün qarışmayacaq.
+    if not has_strong_date_signal(text):
+        return None
+
     try:
         dt = parser.parse(text, fuzzy=True, dayfirst=True)
 
@@ -710,10 +738,10 @@ def is_recent_news(published_time):
 def choose_publish_time(title, article_time):
     title_dt = parse_datetime_to_baku(title)
     article_dt = parse_datetime_to_baku(article_time)
-    if title_dt:
-        return title_dt.strftime("%d.%m.%Y %H:%M")
     if article_dt:
         return article_dt.strftime("%d.%m.%Y %H:%M")
+    if title_dt:
+        return title_dt.strftime("%d.%m.%Y %H:%M")
     return None
 
 
