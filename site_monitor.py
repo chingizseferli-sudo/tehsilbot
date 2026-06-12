@@ -987,6 +987,7 @@ def fetch_site(site, patterns_data):
             google_rss_urls.append(rss_url)
         else:
             domain = get_domain(base_url or page_url)
+
             if domain:
                 google_rss_urls.append(
                     f"https://news.google.com/rss/search?q=site%3A{domain}%20when%3A7d&hl=az&gl=AZ&ceid=AZ:az"
@@ -1002,7 +1003,13 @@ def fetch_site(site, patterns_data):
 
         return []
 
-    # 2) RSS metodları:
+    # 2) Blocked/dead/failed:
+    # Bu metodlarda əsas sayta girmirik ki, 403/404 spam və vaxt itkisi olmasın.
+    if monitor_method in {"blocked", "dead", "failed"}:
+        print(f"Metod {monitor_method}: əsas sayt əlavə gəzilmir.", flush=True)
+        return []
+
+    # 3) RSS metodları:
     # RSS varsa əvvəl RSS oxunur. Uyğun nəticə çıxsa, sayt əlavə gəzilmir.
     if monitor_method in {"rss", "rss_discovered"}:
         rss_candidates = []
@@ -1025,20 +1032,19 @@ def fetch_site(site, patterns_data):
         if items:
             return unique_items(items)
 
-        # RSS boşdursa yalnız o zaman fallback-ə keçirik.
         print("RSS nəticə vermədi, HTML fallback yoxlanacaq.", flush=True)
 
-    # 3) Sitemap:
-    # Sitemap URL-dən link çıxarılır. Əsas saytı əlavə gəzməyə ehtiyac yoxdur.
+    # 4) Sitemap:
+    # Səndə olan extract_links_from_sitemap(site) funksiyasından istifadə edir.
     if monitor_method == "sitemap":
-        items = extract_links_from_sitemap(site, page_url, keywords)
+        items = extract_links_from_sitemap(site)
 
         if items:
             return unique_items(items)
 
-        print("Sitemap nəticə vermədi, fallback yoxlanacaq.", flush=True)
+        print("Sitemap nəticə vermədi, HTML fallback yoxlanacaq.", flush=True)
 
-    # 4) HTML əsaslı metodlar
+    # 5) HTML əsaslı metodlar
     try:
         print(f"Sayt açılır: {page_url}", flush=True)
 
@@ -1048,6 +1054,7 @@ def fetch_site(site, patterns_data):
             timeout=REQUEST_TIMEOUT,
             allow_redirects=True,
         )
+
         print(f"Status: {r.status_code}", flush=True)
 
         if r.status_code != 200:
@@ -1063,7 +1070,7 @@ def fetch_site(site, patterns_data):
     domain = get_domain(page_url)
     site_patterns = patterns_data.get(domain, [])
 
-    # 5) Selector metodu
+    # 6) Selector metodu
     if monitor_method == "selector" and selector:
         items = extract_links_by_selector(page_url, page_html, selector, keywords)
 
@@ -1072,7 +1079,7 @@ def fetch_site(site, patterns_data):
 
         print("Selector nəticə vermədi, fallback yoxlanacaq.", flush=True)
 
-    # 6) XPath metodu
+    # 7) XPath metodu
     if monitor_method == "xpath_pattern" and xpaths:
         items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
 
@@ -1081,8 +1088,17 @@ def fetch_site(site, patterns_data):
 
         print("XPath nəticə vermədi, fallback yoxlanacaq.", flush=True)
 
-    # 7) Latest/Homepage/Recoverable metodları
-    if monitor_method in {"latest_page", "homepage", "recoverable", "selector", "xpath_pattern", "rss", "rss_discovered", ""}:
+    # 8) Latest/Homepage/Recoverable/Auto metodları
+    if monitor_method in {
+        "latest_page",
+        "homepage",
+        "recoverable",
+        "selector",
+        "xpath_pattern",
+        "rss",
+        "rss_discovered",
+        "",
+    }:
         if not rss_url and monitor_method not in {"rss", "rss_discovered"}:
             discovered_rss = discover_rss_links(page_url, page_html)
 
@@ -1102,19 +1118,18 @@ def fetch_site(site, patterns_data):
 
         if not items and site_patterns:
             print(f"Pattern fallback işləyir: {domain}", flush=True)
-            items = extract_links_by_patterns(page_url, page_html, keywords, site_patterns)
+            items = extract_links_by_patterns(
+                page_url,
+                page_html,
+                keywords,
+                site_patterns,
+            )
 
         if not items:
             print("HTML fallback işləyir...", flush=True)
             items = extract_links_fallback(page_url, page_html, keywords)
 
         return unique_items(items)
-
-    # 8) Blocked/dead/failed: hələlik əsas sayta zorla girmirik.
-    # Gələcəkdə bunları Playwright və ya Google News ilə ayrıca işləyəcəyik.
-    if monitor_method in {"blocked", "dead", "failed"}:
-        print(f"Metod {monitor_method}: əsas sayt əlavə gəzilmir.", flush=True)
-        return []
 
     return []
 
