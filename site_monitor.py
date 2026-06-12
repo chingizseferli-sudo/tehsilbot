@@ -611,6 +611,36 @@ def parse_datetime_to_baku(published_time):
     if not text or "tarix tapılmadı" in text.lower():
         return None
 
+    # 1) ISO formatı birinci oxuyuruq:
+    # 2026-06-11T15:50:00+04:00
+    # 2026-06-11 15:50:00
+    iso_match = re.search(
+        r"\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}(?::\d{2})?(?:[+-]\d{2}:?\d{2}|Z)?",
+        text,
+    )
+
+    if iso_match:
+        iso_text = iso_match.group(0)
+
+        try:
+            if iso_text.endswith("Z"):
+                iso_text = iso_text.replace("Z", "+00:00")
+
+            dt = datetime.fromisoformat(iso_text)
+
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=BAKU_TZ)
+            else:
+                dt = dt.astimezone(BAKU_TZ)
+
+            return dt
+
+        except Exception:
+            pass
+
+    # 2) RFC/RSS formatı:
+    # Tue, 09 Jun 2026 08:42:36 +0000
+    # Sun, 11 Aug 2024 20:00:00 GMT
     try:
         dt = parsedate_to_datetime(text)
 
@@ -624,10 +654,14 @@ def parse_datetime_to_baku(published_time):
     except Exception:
         pass
 
+    # 3) Azərbaycan formatları:
     az_dt = parse_az_datetime(text)
+
     if az_dt:
         return az_dt
 
+    # 4) Sonda ümumi parser.
+    # Burada dayfirst=True saxlayırıq, amma ISO artıq yuxarıda tutulduğu üçün qarışmayacaq.
     try:
         dt = parser.parse(text, fuzzy=True, dayfirst=True)
 
