@@ -202,6 +202,7 @@ BAD_URL_WORDS = [
     "search", "contact", "about", "elaqe", "haqqimizda", "reklam",
     "tag", "author", "wp-content", "uploads", "cdn-cgi", "pdf", "docx",
     "privacy", "terms", "sitemap", "javascript:", "mailto:",
+    "localhost", "127.0.0.1", "0.0.0.0",
 ]
 
 ARTICLE_HINTS = [
