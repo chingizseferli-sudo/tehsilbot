@@ -18,8 +18,11 @@ MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
 LIMIT_SOURCES = int(os.getenv("LIMIT_SOURCES", "0"))
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; VisualMonitorBot/2.0)",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/rss+xml;q=0.8,application/atom+xml;q=0.8,*/*;q=0.7",
     "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
 }
 
 COMMON_PATHS = [
@@ -428,6 +431,7 @@ def test_latest_page(url):
 
 def test_common_paths(base_url):
     best = None
+    blocked_result = None
 
     for path in COMMON_PATHS:
         url = urljoin(base_url.rstrip("/") + "/", path.lstrip("/"))
@@ -437,7 +441,8 @@ def test_common_paths(base_url):
             continue
 
         if result["method"] == "blocked":
-            return result
+            blocked_result = blocked_result or result
+            continue
 
         if not best or result["score"] > best["score"]:
             best = result
@@ -448,7 +453,7 @@ def test_common_paths(base_url):
         if result["method"] == "latest_page" and result["score"] >= 5:
             return result
 
-    return best
+    return best or blocked_result
 
 
 def test_sitemap(base_url):
