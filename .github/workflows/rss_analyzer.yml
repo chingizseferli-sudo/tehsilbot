@@ -1,0 +1,42 @@
+name: RSS Analyzer
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 2 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  rss-analyzer:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repo klonla
+        uses: actions/checkout@v4
+
+      - name: Python quraşdır
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Kitabxanaları quraşdır
+        run: |
+          pip install requests beautifulsoup4 feedparser
+
+      - name: RSS-ləri avtomatik tap
+        run: |
+          python rss_analyzer.py
+
+      - name: Dəyişiklikləri commit et
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git add courier_config_clean.json discovered_sites.json rss_analyzer.py
+
+          git diff --staged --quiet || git commit -m "Auto update RSS URLs"
+
+          git pull --rebase origin main
+          git push origin main
