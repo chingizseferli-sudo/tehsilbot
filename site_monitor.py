@@ -903,6 +903,7 @@ def extract_links_from_rss(site, rss_urls):
             feed = feedparser.parse(response.text)
             if not feed.entries:
                 continue
+            site["_rss_feed_had_entries"] = True
             print(f"RSS tapıldı: {rss_url} | xəbər sayı: {len(feed.entries)}", flush=True)
             before_count = len(results)
             for entry in feed.entries[:MAX_LINKS_PER_SITE * 4]:
@@ -1136,8 +1137,13 @@ def fetch_site(site, patterns_data):
 
         items = extract_links_from_rss(site, rss_candidates)
 
+
         if items:
             return unique_items(items)
+
+        if site.pop("_rss_feed_had_entries", False):
+            print("RSS feed oxundu, amma keyword uygun namized tapilmadi. HTML fallback edilmir.", flush=True)
+            return []
 
         print("RSS nəticə vermədi, HTML fallback yoxlanacaq.", flush=True)
 
