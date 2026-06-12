@@ -1121,7 +1121,7 @@ def fetch_site(site, patterns_data):
         if items:
             return unique_items(items)
 
-        print("Sitemap nəticə vermədi, HTML fallback yoxlanacaq.", flush=True)
+        return []
 
     # 5) HTML əsaslı metodlar
     try:
