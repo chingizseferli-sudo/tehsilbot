@@ -58,6 +58,15 @@ COMMON_RSS_PATHS = [
 
 LOCAL_ONLY_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0", "::1"}
 
+REQUEST_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/rss+xml;q=0.8,application/atom+xml;q=0.8,*/*;q=0.7",
+    "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8",
+    "Cache-Control": "no-cache",
+    "Pragma": "no-cache",
+    "Referer": "https://www.google.com/",
+}
+
 ARTICLE_URL_PATTERNS = [
     "/news/", "/xeber/", "/xeberler/", "/xəbərlər/", "/az/news/",
     "/az/xeber/", "/az/xeberler/", "/az/xəbərlər/", "/post/",
@@ -774,7 +783,7 @@ def choose_publish_time(title, article_time):
 
 
 def extract_publish_time_from_article(article_url):
-    headers = {"User-Agent": "Mozilla/5.0", "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8"}
+    headers = REQUEST_HEADERS
     try:
         response = requests.get(article_url, headers=headers, timeout=REQUEST_TIMEOUT)
         response.encoding = response.apparent_encoding
@@ -936,7 +945,7 @@ def extract_links_from_rss(site, rss_urls):
         try:
             response = requests.get(
                 rss_url,
-                headers={"User-Agent": "Mozilla/5.0", "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8", "Referer": "https://www.google.com/"},
+                headers=REQUEST_HEADERS,
                 timeout=REQUEST_TIMEOUT,
                 allow_redirects=True,
             )
@@ -1070,7 +1079,7 @@ def extract_links_from_sitemap(site):
     keywords = site.get("keywords", [])
     results = []
     try:
-        response = requests.get(sitemap_url, headers={"User-Agent": "Mozilla/5.0"}, timeout=REQUEST_TIMEOUT)
+        response = requests.get(sitemap_url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT)
         if response.status_code != 200:
             return []
         urls = re.findall(r"<loc>(.*?)</loc>", response.text, flags=re.IGNORECASE)
@@ -1079,7 +1088,7 @@ def extract_links_from_sitemap(site):
                 continue
             # Sitemap-də başlıq yoxdur; məqaləni açıb title/meta alırıq.
             try:
-                article = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=REQUEST_TIMEOUT)
+                article = requests.get(url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT)
                 if article.status_code != 200:
                     continue
                 soup = BeautifulSoup(article.text, "html.parser")
@@ -1099,7 +1108,7 @@ def extract_links_from_sitemap(site):
 
 
 def fetch_page(url):
-    headers = {"User-Agent": "Mozilla/5.0", "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8", "Referer": "https://www.google.com/"}
+    headers = REQUEST_HEADERS
     try:
         print(f"Sayt açılır: {url}", flush=True)
         response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT, allow_redirects=True)
@@ -1124,11 +1133,7 @@ def fetch_site(site, patterns_data):
     if monitor_method == "xpath":
         monitor_method = "xpath_pattern"
 
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-        "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8",
-        "Referer": "https://www.google.com/",
-    }
+    headers = REQUEST_HEADERS
 
     print(
         f"Metod: {monitor_method or 'auto'} | {site.get('name')} | {page_url}",
