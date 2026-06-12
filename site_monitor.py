@@ -958,84 +958,165 @@ def fetch_page(url):
 
 
 def fetch_site(site, patterns_data):
-    page_url = site.get("url") or site.get("latest_url") or site.get("base_url")
-    base_url = site.get("base_url") or get_base_url(page_url)
+    page_url = site["url"]
+    base_url = clean_text(site.get("base_url", "")) or page_url
     rss_url = clean_text(site.get("rss_url", ""))
-    selector = clean_text(site.get("selector", ""))
-    article_pattern = clean_text(site.get("article_pattern", ""))
-    method = clean_text(site.get("monitor_method", "")).lower()
+    selector = site.get("selector")
+    xpaths = site.get("xpaths", [])
     keywords = site.get("keywords", [])
+    monitor_method = clean_text(site.get("monitor_method", "")).lower()
 
-    print(f"Metod: {method or 'auto'} | {site.get('name')} | {page_url}", flush=True)
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept-Language": "az-AZ,az;q=0.9,en-US;q=0.8",
+        "Referer": "https://www.google.com/",
+    }
 
-    # 1. Method-based oxuma
-    if method in {"rss", "rss_discovered", "google_news", "google_news_fallback"}:
-        items = extract_links_from_rss(site, [rss_url or page_url])
+    print(
+        f"Metod: {monitor_method or 'auto'} | {site.get('name')} | {page_url}",
+        flush=True,
+    )
+
+    # 1) Google News fallback:
+    # Bu metodda əsas sayt açılmır. Yalnız Google News RSS oxunur.
+    # Report.az kimi 403 verən saytlar üçün əsas məqsəd də budur.
+    if monitor_method == "google_news_fallback":
+        google_rss_urls = []
+
+        if rss_url and "news.google.com/rss" in rss_url:
+            google_rss_urls.append(rss_url)
+        else:
+            domain = get_domain(base_url or page_url)
+            if domain:
+                google_rss_urls.append(
+                    f"https://news.google.com/rss/search?q=site%3A{domain}%20when%3A7d&hl=az&gl=AZ&ceid=AZ:az"
+                )
+
+        print(
+            f"Google News fallback yalnız RSS oxuyur: {google_rss_urls[0] if google_rss_urls else 'RSS yoxdur'}",
+            flush=True,
+        )
+
+        if google_rss_urls:
+            return extract_links_from_rss(site, google_rss_urls)
+
+        return []
+
+    # 2) RSS metodları:
+    # RSS varsa əvvəl RSS oxunur. Uyğun nəticə çıxsa, sayt əlavə gəzilmir.
+    if monitor_method in {"rss", "rss_discovered"}:
+        rss_candidates = []
+
+        if rss_url:
+            rss_candidates.append(rss_url)
+
+        if not rss_candidates:
+            rss_candidates.extend([
+                urljoin(base_url.rstrip("/") + "/", "rss"),
+                urljoin(base_url.rstrip("/") + "/", "rss.xml"),
+                urljoin(base_url.rstrip("/") + "/", "feed"),
+                urljoin(base_url.rstrip("/") + "/", "feed.xml"),
+            ])
+
+        print(f"RSS-only yoxlanır: {rss_candidates[:3]}", flush=True)
+
+        items = extract_links_from_rss(site, rss_candidates)
+
         if items:
-            return items
+            return unique_items(items)
 
-    if method == "sitemap":
-        items = extract_links_from_sitemap(site)
+        # RSS boşdursa yalnız o zaman fallback-ə keçirik.
+        print("RSS nəticə vermədi, HTML fallback yoxlanacaq.", flush=True)
+
+    # 3) Sitemap:
+    # Sitemap URL-dən link çıxarılır. Əsas saytı əlavə gəzməyə ehtiyac yoxdur.
+    if monitor_method == "sitemap":
+        items = extract_links_from_sitemap(site, page_url, keywords)
+
         if items:
-            return items
+            return unique_items(items)
 
-    page_html = None
-    if page_url:
-        page_html = fetch_page(page_url)
+        print("Sitemap nəticə vermədi, fallback yoxlanacaq.", flush=True)
 
-    if page_html:
-        if method == "selector" and selector:
+    # 4) HTML əsaslı metodlar
+    try:
+        print(f"Sayt açılır: {page_url}", flush=True)
+
+        r = requests.get(
+            page_url,
+            headers=headers,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
+        )
+        print(f"Status: {r.status_code}", flush=True)
+
+        if r.status_code != 200:
+            return []
+
+        r.encoding = r.apparent_encoding
+
+    except Exception as e:
+        print(f"Sayt xətası: {page_url} | {e}", flush=True)
+        return []
+
+    page_html = r.text
+    domain = get_domain(page_url)
+    site_patterns = patterns_data.get(domain, [])
+
+    # 5) Selector metodu
+    if monitor_method == "selector" and selector:
+        items = extract_links_by_selector(page_url, page_html, selector, keywords)
+
+        if items:
+            return unique_items(items)
+
+        print("Selector nəticə vermədi, fallback yoxlanacaq.", flush=True)
+
+    # 6) XPath metodu
+    if monitor_method == "xpath_pattern" and xpaths:
+        items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
+
+        if items:
+            return unique_items(items)
+
+        print("XPath nəticə vermədi, fallback yoxlanacaq.", flush=True)
+
+    # 7) Latest/Homepage/Recoverable metodları
+    if monitor_method in {"latest_page", "homepage", "recoverable", "selector", "xpath_pattern", "rss", "rss_discovered", ""}:
+        if not rss_url and monitor_method not in {"rss", "rss_discovered"}:
+            discovered_rss = discover_rss_links(page_url, page_html)
+
+            if discovered_rss:
+                items = extract_links_from_rss(site, discovered_rss)
+
+                if items:
+                    return unique_items(items)
+
+        items = []
+
+        if selector:
             items = extract_links_by_selector(page_url, page_html, selector, keywords)
-            if items:
-                return items
 
-        if method == "xpath_pattern" and article_pattern:
-            xpaths = [clean_text(x) for x in re.split(r"[,\n\r]+", article_pattern) if clean_text(x)]
+        if not items and xpaths:
             items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
-            if items:
-                return items
 
-        if method in {"latest_page", "homepage", "recoverable", "auto", ""}:
-            items = extract_links_fallback(page_url, page_html, keywords)
-            if items:
-                return items
-
-    # 2. Fallback RSS discovery
-    if page_html and not rss_url:
-        discovered_rss = discover_rss_links(page_url, page_html)
-        if discovered_rss:
-            items = extract_links_from_rss(site, discovered_rss)
-            if items:
-                return items
-
-    # 3. Common latest paths
-    if base_url:
-        for path in COMMON_LATEST_PATHS:
-            candidate_url = urljoin(base_url.rstrip("/") + "/", path.lstrip("/"))
-            html_text = fetch_page(candidate_url)
-            if not html_text:
-                continue
-            items = extract_links_fallback(candidate_url, html_text, keywords)
-            if items:
-                return items
-
-    # 4. Pattern fallback
-    if page_html:
-        domain = get_domain(page_url)
-        site_patterns = patterns_data.get(domain, [])
-        if site_patterns:
+        if not items and site_patterns:
             print(f"Pattern fallback işləyir: {domain}", flush=True)
             items = extract_links_by_patterns(page_url, page_html, keywords, site_patterns)
-            if items:
-                return items
 
-    # 5. Last HTML fallback
-    if page_html:
-        print("HTML fallback işləyir...", flush=True)
-        return extract_links_fallback(page_url, page_html, keywords)
+        if not items:
+            print("HTML fallback işləyir...", flush=True)
+            items = extract_links_fallback(page_url, page_html, keywords)
+
+        return unique_items(items)
+
+    # 8) Blocked/dead/failed: hələlik əsas sayta zorla girmirik.
+    # Gələcəkdə bunları Playwright və ya Google News ilə ayrıca işləyəcəyik.
+    if monitor_method in {"blocked", "dead", "failed"}:
+        print(f"Metod {monitor_method}: əsas sayt əlavə gəzilmir.", flush=True)
+        return []
 
     return []
-
 
 def get_existing_monitor_match_id(monitor_id, item_id):
     if not supabase_ready() or not monitor_id or not item_id:
