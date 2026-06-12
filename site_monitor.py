@@ -987,11 +987,15 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
     except Exception as exc:
         print("HTML parse xətası:", exc, flush=True)
         return []
+    invalid_count = 0
     for xpath in xpaths:
+        xpath = clean_text(xpath)
+        if not xpath:
+            continue
         try:
             blocks = tree.xpath(xpath)
-        except Exception as exc:
-            print("XPath xətası:", exc, flush=True)
+        except Exception:
+            invalid_count += 1
             continue
         print(f"XPath üzrə blok sayı: {len(blocks)} | {xpath[:80]}", flush=True)
         for block in blocks:
@@ -1004,6 +1008,8 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
                 title = clean_text(a.text_content())
                 link = urljoin(page_url, href)
                 add_item(results, page_url, title, link, keywords)
+    if invalid_count:
+        print(f"XPath invalid ifade kecildi: {invalid_count}", flush=True)
     return unique_items(results)[:MAX_LINKS_PER_SITE]
 
 
@@ -1246,10 +1252,10 @@ def fetch_site(site, patterns_data):
 
         items = []
 
-        if selector:
+        if selector and monitor_method != "selector":
             items = extract_links_by_selector(page_url, page_html, selector, keywords)
 
-        if not items and xpaths:
+        if not items and xpaths and monitor_method != "xpath_pattern":
             items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
 
         if not items and site_patterns:
