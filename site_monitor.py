@@ -8,7 +8,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
-from urllib.parse import urljoin, urlparse
+from urllib.parse import parse_qsl, urlencode, urljoin, urlparse, urlunparse
 from zoneinfo import ZoneInfo
 
 import feedparser
@@ -113,10 +113,28 @@ def normalize_link(link):
     link = clean_text(link)
     if not link:
         return ""
-    link = link.split("?")[0].split("#")[0]
-    link = link.replace("://www.", "://")
-    link = link.rstrip("/")
-    return link.lower()
+    parsed = urlparse(link)
+    if not parsed.scheme or not parsed.netloc:
+        return link.split("#")[0].rstrip("/").lower()
+
+    tracking_prefixes = ("utm_",)
+    tracking_params = {
+        "fbclid", "gclid", "dclid", "yclid", "mc_cid", "mc_eid",
+        "igshid", "ref", "ref_src", "spm", "ved", "usg",
+    }
+    kept_query = []
+    for key, value in parse_qsl(parsed.query, keep_blank_values=True):
+        lower_key = key.lower()
+        if lower_key in tracking_params or lower_key.startswith(tracking_prefixes):
+            continue
+        kept_query.append((key, value))
+
+    netloc = parsed.netloc.lower()
+    if netloc.startswith("www."):
+        netloc = netloc[4:]
+    path = parsed.path.rstrip("/")
+    query = urlencode(kept_query, doseq=True)
+    return urlunparse((parsed.scheme.lower(), netloc, path, "", query, "")).lower()
 
 
 def normalize_title_key(title):
