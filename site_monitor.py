@@ -750,6 +750,17 @@ def has_strong_date_signal(text):
     return False
 
 
+def is_realistic_publish_datetime(dt):
+    if not dt:
+        return False
+    now_baku = datetime.now(BAKU_TZ)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=BAKU_TZ)
+    else:
+        dt = dt.astimezone(BAKU_TZ)
+    return 2020 <= dt.year <= now_baku.year + 1
+
+
 def parse_datetime_to_baku(published_time):
     text = clean_text(str(published_time or ""))
 
@@ -778,7 +789,7 @@ def parse_datetime_to_baku(published_time):
             else:
                 dt = dt.astimezone(BAKU_TZ)
 
-            return dt
+            return dt if is_realistic_publish_datetime(dt) else None
 
         except Exception:
             pass
@@ -795,7 +806,7 @@ def parse_datetime_to_baku(published_time):
             else:
                 dt = dt.astimezone(BAKU_TZ)
 
-            return dt
+            return dt if is_realistic_publish_datetime(dt) else None
     except Exception:
         pass
 
@@ -803,7 +814,7 @@ def parse_datetime_to_baku(published_time):
     az_dt = parse_az_datetime(text)
 
     if az_dt:
-        return az_dt
+        return az_dt if is_realistic_publish_datetime(az_dt) else None
 
     # 4) Sonda ümumi parser.
     # Burada dayfirst=True saxlayırıq, amma ISO artıq yuxarıda tutulduğu üçün qarışmayacaq.
@@ -818,7 +829,7 @@ def parse_datetime_to_baku(published_time):
         else:
             dt = dt.astimezone(BAKU_TZ)
 
-        return dt
+        return dt if is_realistic_publish_datetime(dt) else None
 
     except Exception as e:
         print(f"Tarix parse xətası: {published_time} | {e}", flush=True)
