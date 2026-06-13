@@ -98,7 +98,61 @@ def supabase_ready():
 
 
 def clean_text(text):
-    return re.sub(r"\s+", " ", str(text or "")).strip()
+    return re.sub(r"\s+", " ", repair_mojibake(str(text or ""))).strip()
+
+
+MOJIBAKE_MARKERS = ("\u00c3", "\u00c2", "\u00e2", "\u00ce", "\ufffd")
+
+
+def mojibake_score(text):
+    value = str(text or "")
+    score = value.count("\ufffd") * 8
+    for marker in MOJIBAKE_MARKERS:
+        score += value.count(marker) * 3
+    score += len(re.findall(r"[\u00c0-\u00ff]{2,}", value))
+    return score
+
+
+def repair_mojibake(text):
+    value = str(text or "")
+    if not value or not any(marker in value for marker in MOJIBAKE_MARKERS):
+        return value
+
+    candidates = [value]
+    for encoding in ("latin1", "cp1252"):
+        try:
+            candidates.append(value.encode(encoding, errors="ignore").decode("utf-8", errors="ignore"))
+        except Exception:
+            pass
+
+    return min(candidates, key=mojibake_score)
+
+
+def decode_response_text(response):
+    raw = response.content or b""
+    candidates = []
+
+    for encoding in (
+        response.encoding,
+        response.apparent_encoding,
+        "utf-8",
+        "windows-1254",
+        "cp1254",
+        "iso-8859-9",
+        "windows-1251",
+    ):
+        if not encoding:
+            continue
+        try:
+            decoded = raw.decode(encoding, errors="replace")
+            candidates.append(repair_mojibake(decoded))
+        except Exception:
+            continue
+
+    if not candidates:
+        return repair_mojibake(response.text)
+
+    return min(candidates, key=mojibake_score)
 
 
 def normalize_text(text):
@@ -782,20 +836,93 @@ def choose_publish_time(title, article_time):
     return None
 
 
+def extract_publish_time_from_html(page_html):
+    soup = BeautifulSoup(page_html, "html.parser")
+
+    meta_selectors = [
+        ("meta", {"property": "article:published_time"}),
+        ("meta", {"property": "article:modified_time"}),
+        ("meta", {"property": "og:updated_time"}),
+        ("meta", {"name": "article:published_time"}),
+        ("meta", {"name": "pubdate"}),
+        ("meta", {"name": "publishdate"}),
+        ("meta", {"name": "publish_date"}),
+        ("meta", {"name": "date"}),
+        ("meta", {"name": "DC.date.issued"}),
+        ("meta", {"itemprop": "datePublished"}),
+        ("meta", {"itemprop": "dateModified"}),
+    ]
+    for tag_name, attrs in meta_selectors:
+        tag = soup.find(tag_name, attrs=attrs)
+        value = clean_text(tag.get("content", "")) if tag else ""
+        if value and parse_datetime_to_baku(value):
+            return value
+
+    for script in soup.find_all("script", type=lambda value: value and "ld+json" in value.lower()):
+        try:
+            data = json.loads(script.string or script.get_text(" ", strip=True) or "{}")
+        except Exception:
+            continue
+
+        stack = data if isinstance(data, list) else [data]
+        while stack:
+            item = stack.pop()
+            if isinstance(item, list):
+                stack.extend(item)
+                continue
+            if not isinstance(item, dict):
+                continue
+
+            for key in ("datePublished", "dateModified", "dateCreated", "uploadDate"):
+                value = clean_text(item.get(key))
+                if value and parse_datetime_to_baku(value):
+                    return value
+
+            graph = item.get("@graph")
+            if isinstance(graph, list):
+                stack.extend(graph)
+
+    regex_patterns = [
+        r'"(?:datePublished|dateModified|dateCreated|published_at|created_at|updated_at)"\s*:\s*"([^"]+)"',
+        r"'(?:datePublished|dateModified|dateCreated|published_at|created_at|updated_at)'\s*:\s*'([^']+)'",
+        r"(\d{4}-\d{2}-\d{2}[T\s]\d{2}:\d{2}(?::\d{2})?(?:[+-]\d{2}:?\d{2}|Z)?)",
+        r"(\d{1,2}\s+[A-Za-zƏəÖöĞğÜüÇçŞşİı]+\s+\d{4}\D{0,20}\d{1,2}[:.]\d{2})",
+        r"(\d{1,2}[./-]\d{1,2}[./-]\d{4}\D{0,20}\d{1,2}[:.]\d{2})",
+        r"(\d{1,2}\s+[A-Za-zƏəÖöĞğÜüÇçŞşİı]+\s+\d{4})",
+    ]
+    for pattern in regex_patterns:
+        for match in re.finditer(pattern, page_html, flags=re.IGNORECASE):
+            value = clean_text(match.group(1))
+            if value and parse_datetime_to_baku(value):
+                return value
+
+    return None
+
+
 def extract_publish_time_from_article(article_url):
     headers = REQUEST_HEADERS
     try:
         response = requests.get(article_url, headers=headers, timeout=REQUEST_TIMEOUT)
-        response.encoding = response.apparent_encoding
-        tree = html.fromstring(response.text)
+        if response.status_code != 200:
+            return None
+        page_html = decode_response_text(response)
+        metadata_time = extract_publish_time_from_html(page_html)
+        if metadata_time:
+            return metadata_time
+        tree = html.fromstring(page_html)
         possible_xpaths = [
             "//time/@datetime", "//time/text()",
             "//meta[@property='article:published_time']/@content",
+            "//meta[@property='article:modified_time']/@content",
+            "//meta[@property='og:updated_time']/@content",
             "//meta[@name='article:published_time']/@content",
             "//meta[@itemprop='datePublished']/@content",
+            "//meta[@itemprop='dateModified']/@content",
             "//meta[@name='pubdate']/@content", "//meta[@name='date']/@content",
             "//meta[@name='DC.date.issued']/@content", "//meta[@name='publishdate']/@content",
             "//meta[@name='publish_date']/@content",
+            "//*[@datetime]/@datetime",
+            "//*[contains(translate(@class,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz'),'publish')]/text()",
             "//span[contains(@class,'date')]/text()", "//div[contains(@class,'date')]/text()",
             "//span[contains(@class,'time')]/text()", "//div[contains(@class,'time')]/text()",
             "//*[contains(@class,'date')]/text()", "//*[contains(@class,'time')]/text()",
@@ -804,7 +931,7 @@ def extract_publish_time_from_article(article_url):
             result = tree.xpath(xpath)
             if result:
                 value = clean_text(str(result[0]))
-                if len(value) > 5:
+                if len(value) > 5 and parse_datetime_to_baku(value):
                     return value
     except Exception as exc:
         print("Tarix çıxarma xətası:", exc, flush=True)
@@ -951,7 +1078,7 @@ def extract_links_from_rss(site, rss_urls):
             )
             if response.status_code != 200:
                 continue
-            feed = feedparser.parse(response.text)
+            feed = feedparser.parse(response.content)
             if not feed.entries:
                 continue
             site["_rss_feed_had_entries"] = True
@@ -1091,7 +1218,7 @@ def extract_links_from_sitemap(site):
                 article = requests.get(url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT)
                 if article.status_code != 200:
                     continue
-                soup = BeautifulSoup(article.text, "html.parser")
+                soup = BeautifulSoup(decode_response_text(article), "html.parser")
                 title = ""
                 if soup.find("meta", property="og:title"):
                     title = soup.find("meta", property="og:title").get("content", "")
@@ -1115,8 +1242,7 @@ def fetch_page(url):
         print(f"Status: {response.status_code}", flush=True)
         if response.status_code != 200:
             return None
-        response.encoding = response.apparent_encoding
-        return response.text
+        return decode_response_text(response)
     except Exception as exc:
         print(f"Sayt xətası: {url} | {exc}", flush=True)
         return None
@@ -1228,13 +1354,12 @@ def fetch_site(site, patterns_data):
         if r.status_code != 200:
             return []
 
-        r.encoding = r.apparent_encoding
+        page_html = decode_response_text(r)
 
     except Exception as e:
         print(f"Sayt xətası: {page_url} | {e}", flush=True)
         return []
 
-    page_html = r.text
     domain = get_domain(page_url)
     site_patterns = patterns_data.get(domain, [])
 
