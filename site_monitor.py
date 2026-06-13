@@ -101,15 +101,17 @@ def clean_text(text):
     return re.sub(r"\s+", " ", repair_mojibake(str(text or ""))).strip()
 
 
-MOJIBAKE_MARKERS = ("\u00c3", "\u00c2", "\u00e2", "\u00ce", "\ufffd")
+MOJIBAKE_MARKERS = ("\u00c3", "\u00c2", "\u00e2", "\u00ce", "\u0413", "\u0414", "\u0415", "\u0419", "\ufffd")
 
 
-def mojibake_score(text):
+def mojibake_score(text, original_length=None):
     value = str(text or "")
     score = value.count("\ufffd") * 8
     for marker in MOJIBAKE_MARKERS:
         score += value.count(marker) * 3
     score += len(re.findall(r"[\u00c0-\u00ff]{2,}", value))
+    if original_length is not None:
+        score += abs(len(value) - original_length) * 2
     return score
 
 
@@ -119,13 +121,14 @@ def repair_mojibake(text):
         return value
 
     candidates = [value]
-    for encoding in ("latin1", "cp1252"):
+    for encoding in ("latin1", "cp1252", "cp1251"):
         try:
-            candidates.append(value.encode(encoding, errors="ignore").decode("utf-8", errors="ignore"))
+            candidates.append(value.encode(encoding).decode("utf-8"))
         except Exception:
             pass
 
-    return min(candidates, key=mojibake_score)
+    original_length = len(value)
+    return min(candidates, key=lambda item: mojibake_score(item, original_length))
 
 
 def decode_response_text(response):
@@ -140,6 +143,7 @@ def decode_response_text(response):
         "cp1254",
         "iso-8859-9",
         "windows-1251",
+        "cp1251",
     ):
         if not encoding:
             continue
@@ -303,6 +307,8 @@ def clean_title_for_message(title):
     title = clean_text(title)
     category_pattern = r"^(" + "|".join(re.escape(c) for c in NEWS_CATEGORIES) + r")\s+"
     title = re.sub(category_pattern, "", title, flags=re.IGNORECASE)
+    category_prefix = r"^(" + "|".join(re.escape(c) for c in NEWS_CATEGORIES) + r")\s*[:|\-–—]\s*"
+    title = re.sub(category_prefix, "", title, flags=re.IGNORECASE)
     title = re.sub(r"^\d{1,2}[:.]\d{2}\s+", "", title)
     title = re.sub(r"^[-–—|]+\s*", "", title)
     title = re.sub(r"^\d{1,2}[:.]\d{2}\s*[-–—|]?\s*", "", title)
@@ -313,8 +319,28 @@ def clean_title_for_message(title):
         flags=re.IGNORECASE,
     )
     title = re.sub(r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{4}\s+\d{1,2}[:.]\d{2}$", "", title)
-    title = re.sub(r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{4}$", "", title)
+    title = re.sub(r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$", "", title)
+    title = re.sub(r"^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\s*[-–—|:]?\s*", "", title)
+    title = re.sub(r"^[./-]\d{2,4}\s*[-–—|:]?\s*", "", title)
+    title = re.sub(r"^\d{4}-\d{2}-\d{2}(?:[T\s]\d{2}:\d{2}(?::\d{2})?)?\s*[-–—|:]?\s*", "", title)
+    title = re.sub(r"\s+\d{4}-\d{2}-\d{2}(?:[T\s]\d{2}:\d{2}(?::\d{2})?)?$", "", title)
+    title = re.sub(r"\s*[-–—|:]\s*$", "", title)
     return clean_text(title)
+
+
+def is_non_news_title(title):
+    cleaned = clean_title_for_message(title)
+    normalized = normalize_text(cleaned)
+    category_values = {normalize_text(item) for item in NEWS_CATEGORIES}
+    if not cleaned or normalized in category_values:
+        return True
+    if len(cleaned) < 12:
+        return True
+    if parse_datetime_to_baku(cleaned) and len(cleaned.split()) <= 4:
+        return True
+    if re.fullmatch(r"[\d\s:./,\-|–—]+", cleaned):
+        return True
+    return False
 
 
 def clean_matched_keywords(keywords):
@@ -1002,6 +1028,10 @@ def add_item(results, page_url, title, link, keywords, extra=None):
     link = urljoin(page_url, clean_text(link)).split("#")[0]
     if not title or not link.startswith("http"):
         return
+    raw_title = title
+    title_for_keyword = clean_title_for_message(title)
+    if is_non_news_title(title_for_keyword):
+        return
     page_domain = get_domain(page_url)
     link_domain = get_domain(link)
     is_google_news_link = "news.google.com" in {page_domain, link_domain}
@@ -1013,13 +1043,13 @@ def add_item(results, page_url, title, link, keywords, extra=None):
         return
     if not is_article_like_link(link):
         return
-    title_for_keyword = clean_title_for_message(title)
     matched, matched_keywords = keyword_match(title_for_keyword, keywords)
     matched_keywords = clean_matched_keywords(matched_keywords)
     if not matched_keywords:
         return
     item = {
-        "title": title,
+        "title": title_for_keyword,
+        "raw_title": raw_title,
         "clean_title": title_for_keyword,
         "link": link,
         "source": link_domain or page_domain,
@@ -1725,7 +1755,8 @@ def process_site(index, total, site, patterns_data):
             result["reason"] = "duplicate"
             continue
 
-        title_time = parse_datetime_to_baku(title)
+        raw_title = item.get("raw_title") or title
+        title_time = parse_datetime_to_baku(raw_title)
         rss_time = item.get("rss_published")
         article_time = rss_time or extract_publish_time_from_article(link)
         published_time = choose_publish_time(title, article_time)
