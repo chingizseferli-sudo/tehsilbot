@@ -588,6 +588,14 @@ def month_number(month_name):
     return None
 
 
+def contains_known_az_month(value):
+    text = normalize_date_text(clean_text(value)).lower()
+    for token in re.findall(r"[a-z]+", text):
+        if month_number(token):
+            return True
+    return False
+
+
 def safe_datetime(year, month, day, hour=0, minute=0):
     try:
         year = int(year)
@@ -815,6 +823,8 @@ def parse_datetime_to_baku(published_time):
 
     if az_dt:
         return az_dt if is_realistic_publish_datetime(az_dt) else None
+    if contains_known_az_month(text):
+        return None
 
     # 4) Sonda ümumi parser.
     # Burada dayfirst=True saxlayırıq, amma ISO artıq yuxarıda tutulduğu üçün qarışmayacaq.
