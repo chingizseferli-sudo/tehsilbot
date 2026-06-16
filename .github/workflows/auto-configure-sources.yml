@@ -1,0 +1,65 @@
+name: Auto Configure Sources
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: "Nələri yoxlasın?"
+        required: true
+        default: "problems"
+        type: choice
+        options:
+          - problems
+          - all
+      limit:
+        description: "Limit. 0 = hamısı"
+        required: true
+        default: "0"
+      methods:
+        description: "Yalnız bu metodlar. Boş saxla = hamısı. Məs: blocked,failed,dead"
+        required: false
+        default: ""
+      workers:
+        description: "Paralel worker sayı"
+        required: true
+        default: "8"
+
+permissions:
+  contents: read
+
+jobs:
+  auto-configure:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      AUTO_CONFIG_SCOPE: ${{ inputs.scope }}
+      AUTO_CONFIG_LIMIT: ${{ inputs.limit }}
+      AUTO_CONFIG_METHODS: ${{ inputs.methods }}
+      AUTO_CONFIG_WORKERS: ${{ inputs.workers }}
+      REQUEST_TIMEOUT: "12"
+
+    steps:
+      - name: Repo klonla
+        uses: actions/checkout@v4
+
+      - name: Python qur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Paketləri qur
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Problemli mənbələri avtomatik konfiqurasiya et
+        run: |
+          python -u auto_configure_sources.py
+
+      - name: Hesabatı artifact kimi saxla
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-configure-sources-report
+          path: auto_configure_sources_report.json
