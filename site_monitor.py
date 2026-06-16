@@ -28,10 +28,13 @@ MAX_LINKS_PER_SITE = int(os.getenv("MAX_LINKS_PER_SITE", "10"))
 NEWS_TIME_LIMIT_HOURS = int(os.getenv("NEWS_TIME_LIMIT_HOURS", "1"))
 MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
 REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "10"))
+MONITOR_DATA_RETENTION_DAYS = int(os.getenv("MONITOR_DATA_RETENTION_DAYS", "7"))
 
 PATTERNS_FILE = "patterns.json"
 KEYWORDS_FILE = "keywords.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
+USER_TELEGRAM_CACHE = {}
+LAST_MONITOR_CLEANUP = None
 
 STRICT_WORDS = {
     "dim", "tkta", "arti", "pisa", "timss", "pirls", "bağça", "magistr",
@@ -1544,6 +1547,53 @@ def create_monitor_alert(match_id):
     return False
 
 
+def get_user_telegram_chat_id(user_id):
+    if not supabase_ready() or not user_id:
+        return ""
+    if user_id in USER_TELEGRAM_CACHE:
+        return USER_TELEGRAM_CACHE[user_id]
+    try:
+        response = requests.get(
+            f"{SUPABASE_URL}/rest/v1/user_profiles",
+            headers=supabase_headers(),
+            params={"select": "telegram_chat_id", "user_id": f"eq.{user_id}", "limit": "1"},
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code == 200 and response.json():
+            telegram_chat_id = clean_text(response.json()[0].get("telegram_chat_id"))
+        else:
+            telegram_chat_id = ""
+        USER_TELEGRAM_CACHE[user_id] = telegram_chat_id
+        return telegram_chat_id
+    except Exception as exc:
+        print(f"User profile Telegram oxuma istisnasi: {exc}", flush=True)
+        USER_TELEGRAM_CACHE[user_id] = ""
+        return ""
+
+
+def cleanup_old_monitor_data_if_needed():
+    global LAST_MONITOR_CLEANUP
+    if not supabase_ready():
+        return
+    now = datetime.now(BAKU_TZ)
+    if LAST_MONITOR_CLEANUP and now - LAST_MONITOR_CLEANUP < timedelta(hours=24):
+        return
+    try:
+        response = requests.post(
+            f"{SUPABASE_URL}/rest/v1/rpc/cleanup_old_monitor_data",
+            headers=supabase_headers(),
+            json={"days_to_keep": MONITOR_DATA_RETENTION_DAYS},
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code in (200, 204):
+            LAST_MONITOR_CLEANUP = now
+            print(f"Monitor cleanup tamamlandi: {MONITOR_DATA_RETENTION_DAYS} gun saxlanildi", flush=True)
+        else:
+            print(f"Monitor cleanup xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+    except Exception as exc:
+        print(f"Monitor cleanup istisnasi: {exc}", flush=True)
+
+
 def save_to_vizual_monitor(site, item, clean_title, published_time):
     if not supabase_ready():
         return None
@@ -1591,6 +1641,52 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
         return None
 
 
+def find_matching_user_monitors(title):
+    if not supabase_ready():
+        return []
+    title_text = normalize_text(title)
+    try:
+        response = requests.get(
+            f"{SUPABASE_URL}/rest/v1/monitor_keywords",
+            headers=supabase_headers(),
+            params={
+                "select": "id,keyword,match_type,monitor_id,user_monitors(id,name,user_id,status,notify_telegram,telegram_chat_id)"
+            },
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code != 200:
+            print(f"Monitor keyword oxuma xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+            return []
+        keywords = response.json() or []
+        matched_monitors = []
+        seen_matches = set()
+        for row in keywords:
+            monitor = row.get("user_monitors") or {}
+            if monitor.get("status") != "active":
+                continue
+            keyword_original = row.get("keyword", "")
+            keyword = normalize_text(keyword_original)
+            if not keyword or keyword not in title_text:
+                continue
+            match_key = (row.get("monitor_id"), keyword)
+            if match_key in seen_matches:
+                continue
+            seen_matches.add(match_key)
+            matched_monitors.append(
+                {
+                    "monitor_id": row.get("monitor_id"),
+                    "monitor_name": monitor.get("name") or "Monitor",
+                    "keyword": keyword_original,
+                    "telegram_chat_id": monitor.get("telegram_chat_id") or get_user_telegram_chat_id(monitor.get("user_id")),
+                    "notify_telegram": monitor.get("notify_telegram") is not False,
+                }
+            )
+        return matched_monitors
+    except Exception as exc:
+        print(f"Monitor keyword yoxlama istisnasi: {exc}", flush=True)
+        return []
+
+
 def match_user_monitors(item_id, title):
     if not supabase_ready() or not item_id:
         return []
@@ -1600,7 +1696,7 @@ def match_user_monitors(item_id, title):
             f"{SUPABASE_URL}/rest/v1/monitor_keywords",
             headers=supabase_headers(),
             params={
-                "select": "id,keyword,match_type,monitor_id,user_monitors(id,name,status,notify_telegram,telegram_chat_id)"
+                "select": "id,keyword,match_type,monitor_id,user_monitors(id,name,user_id,status,notify_telegram,telegram_chat_id)"
             },
             timeout=REQUEST_TIMEOUT,
         )
@@ -1627,7 +1723,7 @@ def match_user_monitors(item_id, title):
                         "monitor_id": row.get("monitor_id"),
                         "monitor_name": monitor.get("name") or "Monitor",
                         "keyword": keyword_original,
-                        "telegram_chat_id": monitor.get("telegram_chat_id"),
+                        "telegram_chat_id": monitor.get("telegram_chat_id") or get_user_telegram_chat_id(monitor.get("user_id")),
                         "notify_telegram": monitor.get("notify_telegram") is not False,
                     }
                 )
@@ -1804,6 +1900,11 @@ def process_site(index, total, site, patterns_data):
             continue
 
         clean_title = item.get("clean_title") or clean_title_for_message(title)
+        pre_matches = find_matching_user_monitors(clean_title)
+        if not pre_matches:
+            result["reason"] = "no_monitor_match"
+            continue
+
         monitor_item_id = save_to_vizual_monitor(site, item, clean_title, published_time)
         monitor_matches = match_user_monitors(monitor_item_id, clean_title) if monitor_item_id else []
         matched_keywords = clean_matched_keywords([match.get("keyword") for match in monitor_matches])
@@ -1892,6 +1993,7 @@ Link:
 
 def check_sites():
     started = time.time()
+    cleanup_old_monitor_data_if_needed()
     sites = load_sites()
     patterns_data = load_patterns()
     total = len(sites)
