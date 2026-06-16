@@ -270,8 +270,9 @@ def update_site_health(domain, status):
     save_health(health)
 
 
-def send_telegram(message):
-    if not BOT_TOKEN or not CHAT_ID:
+def send_telegram(message, chat_id=None):
+    target_chat_id = clean_text(chat_id or CHAT_ID)
+    if not BOT_TOKEN or not target_chat_id:
         print("BOT_TOKEN və ya CHAT_ID yoxdur.", flush=True)
         return False
 
@@ -281,7 +282,7 @@ def send_telegram(message):
             response = requests.post(
                 url,
                 data={
-                    "chat_id": CHAT_ID,
+                    "chat_id": target_chat_id,
                     "text": message,
                     "disable_web_page_preview": False,
                 },
@@ -1064,17 +1065,13 @@ def add_item(results, page_url, title, link, keywords, extra=None):
         return
     if not is_article_like_link(link):
         return
-    matched, matched_keywords = keyword_match(title_for_keyword, keywords)
-    matched_keywords = clean_matched_keywords(matched_keywords)
-    if not matched_keywords:
-        return
     item = {
         "title": title_for_keyword,
         "raw_title": raw_title,
         "clean_title": title_for_keyword,
         "link": link,
         "source": link_domain or page_domain,
-        "matched_keywords": matched_keywords,
+        "matched_keywords": [],
     }
     if extra:
         item.update(extra)
@@ -1596,28 +1593,44 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
 
 def match_user_monitors(item_id, title):
     if not supabase_ready() or not item_id:
-        return 0
+        return []
     title_text = normalize_text(title)
     try:
         response = requests.get(
             f"{SUPABASE_URL}/rest/v1/monitor_keywords",
             headers=supabase_headers(),
-            params={"select": "id,keyword,match_type,monitor_id,user_monitors(status)"},
+            params={
+                "select": "id,keyword,match_type,monitor_id,user_monitors(id,name,status,notify_telegram,telegram_chat_id)"
+            },
             timeout=REQUEST_TIMEOUT,
         )
         if response.status_code != 200:
             print(f"Monitor keyword oxuma xətası: {response.status_code} | {response.text[:200]}", flush=True)
-            return 0
+            return []
         keywords = response.json() or []
-        matched_count = 0
+        matched_monitors = []
+        seen_matches = set()
         for row in keywords:
-            monitor_status = (row.get("user_monitors") or {}).get("status")
+            monitor = row.get("user_monitors") or {}
+            monitor_status = monitor.get("status")
             if monitor_status != "active":
                 continue
             keyword_original = row.get("keyword", "")
             keyword = normalize_text(keyword_original)
             if not keyword or keyword not in title_text:
                 continue
+            match_key = (row.get("monitor_id"), keyword)
+            if match_key not in seen_matches:
+                seen_matches.add(match_key)
+                matched_monitors.append(
+                    {
+                        "monitor_id": row.get("monitor_id"),
+                        "monitor_name": monitor.get("name") or "Monitor",
+                        "keyword": keyword_original,
+                        "telegram_chat_id": monitor.get("telegram_chat_id"),
+                        "notify_telegram": monitor.get("notify_telegram") is not False,
+                    }
+                )
             payload = {"monitor_id": row.get("monitor_id"), "item_id": item_id, "matched_keyword": keyword_original}
             match_response = requests.post(
                 f"{SUPABASE_URL}/rest/v1/monitor_matches",
@@ -1626,7 +1639,6 @@ def match_user_monitors(item_id, title):
                 timeout=REQUEST_TIMEOUT,
             )
             if match_response.status_code in (200, 201):
-                matched_count += 1
                 match_data = match_response.json() or []
                 match_id = match_data[0].get("id") if match_data else None
                 print(f"✅ Monitor uyğunluğu yazıldı: {keyword_original} | item={item_id}", flush=True)
@@ -1638,10 +1650,10 @@ def match_user_monitors(item_id, title):
                     create_monitor_alert(match_id)
             else:
                 print(f"Monitor match yazma xətası: {match_response.status_code} | {match_response.text[:200]}", flush=True)
-        return matched_count
+        return matched_monitors
     except Exception as exc:
         print(f"Monitor match istisnası: {exc}", flush=True)
-        return 0
+        return []
 
 
 def extract_keywords_from_rules(site):
@@ -1792,8 +1804,15 @@ def process_site(index, total, site, patterns_data):
             continue
 
         clean_title = item.get("clean_title") or clean_title_for_message(title)
-        matched_keywords = clean_matched_keywords(matched_keywords)
-        matched_keywords_text = ", ".join(matched_keywords) if matched_keywords else "Açar söz tapılmadı"
+        monitor_item_id = save_to_vizual_monitor(site, item, clean_title, published_time)
+        monitor_matches = match_user_monitors(monitor_item_id, clean_title) if monitor_item_id else []
+        matched_keywords = clean_matched_keywords([match.get("keyword") for match in monitor_matches])
+
+        if not monitor_matches or not matched_keywords:
+            result["reason"] = "no_monitor_match"
+            continue
+
+        matched_keywords_text = ", ".join(matched_keywords)
 
         message = f"""
 🆕 Yeni uyğun xəbər
@@ -1817,11 +1836,47 @@ def process_site(index, total, site, patterns_data):
             result["reason"] = "duplicate"
             continue
 
-        monitor_item_id = save_to_vizual_monitor(site, item, clean_title, published_time)
-        if monitor_item_id:
-            match_user_monitors(monitor_item_id, clean_title)
+        sent_chats = set()
+        sent_any = False
+        for monitor_match in monitor_matches:
+            if not monitor_match.get("notify_telegram", True):
+                continue
+            chat_id = clean_text(monitor_match.get("telegram_chat_id"))
+            if not chat_id:
+                continue
+            if chat_id in sent_chats:
+                continue
+            chat_matches = [match for match in monitor_matches if clean_text(match.get("telegram_chat_id")) == chat_id]
+            chat_keywords = clean_matched_keywords([match.get("keyword") for match in chat_matches])
+            chat_monitors = clean_matched_keywords([match.get("monitor_name") for match in chat_matches])
+            chat_keywords_text = ", ".join(chat_keywords) or matched_keywords_text
+            chat_monitors_text = ", ".join(chat_monitors) or "Monitor"
+            chat_message = f"""
+Yeni uygun xeber
 
-        if send_telegram(message):
+Basliq:
+{clean_title}
+
+Menbe:
+{source}
+
+Monitor:
+{chat_monitors_text}
+
+Acar sozler:
+{chat_keywords_text}
+
+Tarix ve saat:
+{published_time}
+
+Link:
+{link}
+"""
+            if send_telegram(chat_message, chat_id=chat_id):
+                sent_chats.add(chat_id)
+                sent_any = True
+
+        if sent_any:
             print(f"✅ [{index}/{total}] Göndərildi: {source} | {clean_title[:70]} | Açar sözlər: {matched_keywords_text}", flush=True)
             result["sent"] = 1
             result["reason"] = "sent"
@@ -1844,7 +1899,7 @@ def check_sites():
     print(f"Monitorinq başladı | worker={MAX_WORKERS} | son {NEWS_TIME_LIMIT_HOURS} saat | {datetime.now(BAKU_TZ).strftime('%d.%m.%Y %H:%M:%S')} AZT", flush=True)
 
     sent_count = 0
-    stats = {"sent": 0, "no_candidate": 0, "duplicate": 0, "no_date": 0, "old_news": 0, "site_error": 0, "telegram_error": 0, "unknown": 0}
+    stats = {"sent": 0, "no_candidate": 0, "duplicate": 0, "no_date": 0, "old_news": 0, "no_monitor_match": 0, "site_error": 0, "telegram_error": 0, "unknown": 0}
     max_workers = max(1, min(MAX_WORKERS, total or 1))
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -1876,6 +1931,7 @@ def check_sites():
     print(f"🔁 Təkrar keçilən: {stats.get('duplicate', 0)}", flush=True)
     print(f"🕒 Tarix tapılmayan: {stats.get('no_date', 0)}", flush=True)
     print(f"⏩ Köhnə xəbər: {stats.get('old_news', 0)}", flush=True)
+    print(f"🔎 Monitor açar sözünə uyğun olmayan: {stats.get('no_monitor_match', 0)}", flush=True)
     print(f"❌ Sayt/worker xətası: {stats.get('site_error', 0)}", flush=True)
     print(f"📨 Telegram xətası: {stats.get('telegram_error', 0)}", flush=True)
     print(f"⏱️ Ümumi vaxt: {elapsed:.1f} saniyə", flush=True)
