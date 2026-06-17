@@ -3,6 +3,7 @@ import os
 import re
 import time
 import threading
+from html import unescape
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from email.utils import parsedate_to_datetime
@@ -102,7 +103,8 @@ def supabase_ready():
 
 
 def clean_text(text):
-    return re.sub(r"\s+", " ", repair_mojibake(str(text or ""))).strip()
+    text = unescape(str(text or ""))
+    return re.sub(r"\s+", " ", repair_mojibake(text)).strip()
 
 
 MOJIBAKE_MARKERS = ("\u00c3", "\u00c2", "\u00e2", "\u00ce", "\u0413", "\u0414", "\u0415", "\u0419", "\ufffd")
