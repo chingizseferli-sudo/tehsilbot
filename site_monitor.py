@@ -16,6 +16,7 @@ from dateutil import parser
 from lxml import html
 
 HEALTH_FILE = "site_health.json"
+TELEGRAM_OFFSET_FILE = "telegram_offset.json"
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "").strip()
 CHAT_ID = os.getenv("CHAT_ID", "").strip()
@@ -292,6 +293,8 @@ def send_telegram(message, chat_id=None):
                 timeout=15,
             )
         print("Telegram:", response.status_code, flush=True)
+        if response.status_code != 200:
+            print(f"Telegram cavabi: {response.text[:500]}", flush=True)
 
         if response.status_code == 429:
             retry_after = response.json().get("parameters", {}).get("retry_after", 30)
@@ -305,6 +308,79 @@ def send_telegram(message, chat_id=None):
     except Exception as exc:
         print("Telegram xətası:", exc, flush=True)
         return False
+
+
+def load_telegram_offset():
+    try:
+        if not os.path.exists(TELEGRAM_OFFSET_FILE):
+            return 0
+        with open(TELEGRAM_OFFSET_FILE, "r", encoding="utf-8") as fh:
+            return int((json.load(fh) or {}).get("offset", 0))
+    except Exception:
+        return 0
+
+
+def save_telegram_offset(offset):
+    try:
+        with open(TELEGRAM_OFFSET_FILE, "w", encoding="utf-8") as fh:
+            json.dump({"offset": offset}, fh)
+    except Exception as exc:
+        print(f"Telegram offset yazilmadi: {exc}", flush=True)
+
+
+def connect_telegram_users_from_updates():
+    if not BOT_TOKEN or not supabase_ready():
+        return
+    try:
+        response = requests.get(
+            f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates",
+            params={"offset": load_telegram_offset(), "timeout": 0, "allowed_updates": json.dumps(["message"])},
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code != 200:
+            print(f"Telegram getUpdates xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+            return
+        updates = response.json().get("result", []) or []
+        next_offset = None
+        for update in updates:
+            update_id = update.get("update_id")
+            if update_id is not None:
+                next_offset = max(next_offset or 0, update_id + 1)
+            message = update.get("message") or {}
+            text = clean_text(message.get("text"))
+            if not text.startswith("/start"):
+                continue
+            parts = text.split(maxsplit=1)
+            if len(parts) < 2:
+                continue
+            user_id = parts[1].strip()
+            if not re.fullmatch(r"[0-9a-fA-F-]{36}", user_id):
+                continue
+            chat = message.get("chat") or {}
+            chat_id = clean_text(chat.get("id"))
+            if not chat_id:
+                continue
+            payload = {
+                "user_id": user_id,
+                "telegram_chat_id": chat_id,
+                "updated_at": datetime.now(BAKU_TZ).isoformat(),
+            }
+            upsert = requests.post(
+                f"{SUPABASE_URL}/rest/v1/user_profiles",
+                headers=supabase_headers({"Prefer": "resolution=merge-duplicates"}),
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+            )
+            if upsert.status_code in (200, 201, 204):
+                USER_TELEGRAM_CACHE[user_id] = chat_id
+                print(f"Telegram profil baglandi: user={user_id} | chat={chat_id}", flush=True)
+                send_telegram("Telegram bildirisleri aktiv edildi.", chat_id=chat_id)
+            else:
+                print(f"Telegram profil yazma xetasi: {upsert.status_code} | {upsert.text[:200]}", flush=True)
+        if next_offset is not None:
+            save_telegram_offset(next_offset)
+    except Exception as exc:
+        print(f"Telegram connect istisnasi: {exc}", flush=True)
 
 
 def clean_title_for_message(title):
@@ -1993,6 +2069,7 @@ Link:
 
 def check_sites():
     started = time.time()
+    connect_telegram_users_from_updates()
     cleanup_old_monitor_data_if_needed()
     sites = load_sites()
     patterns_data = load_patterns()
