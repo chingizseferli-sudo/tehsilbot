@@ -435,6 +435,22 @@ def clean_matched_keywords(keywords):
     return cleaned
 
 
+def keyword_matches_title(keyword, title_text):
+    keyword = normalize_text(keyword).strip()
+    title_text = normalize_text(title_text)
+    if not keyword:
+        return False
+
+    word_chars = r"a-zA-Z0-9É™Ã¶ÄŸÃ¼Ã§Ä±ÆÃ–ÄžÃœÃ‡ÅžÅŸÄ°Ä±"
+    strict_match = keyword in STRICT_WORDS or len(keyword) <= 4
+
+    if strict_match or " " in keyword:
+        pattern = rf"(?<![{word_chars}])" + re.escape(keyword) + rf"(?![{word_chars}])"
+        return bool(re.search(pattern, title_text, flags=re.IGNORECASE))
+
+    return keyword in title_text
+
+
 def keyword_match(title, keywords):
     title_lower = normalize_text(title)
     all_keywords = set()
@@ -1742,7 +1758,7 @@ def find_matching_user_monitors(title):
                 continue
             keyword_original = row.get("keyword", "")
             keyword = normalize_text(keyword_original)
-            if not keyword or keyword not in title_text:
+            if not keyword_matches_title(keyword, title_text):
                 continue
             match_key = (row.get("monitor_id"), keyword)
             if match_key in seen_matches:
@@ -1789,7 +1805,7 @@ def match_user_monitors(item_id, title):
                 continue
             keyword_original = row.get("keyword", "")
             keyword = normalize_text(keyword_original)
-            if not keyword or keyword not in title_text:
+            if not keyword_matches_title(keyword, title_text):
                 continue
             match_key = (row.get("monitor_id"), keyword)
             if match_key not in seen_matches:
