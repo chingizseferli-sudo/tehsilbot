@@ -62,6 +62,11 @@ COMMON_RSS_PATHS = [
 ]
 
 LOCAL_ONLY_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0", "::1"}
+EXCLUDED_DOMAIN_SUFFIXES = {
+    item.strip().lower().lstrip(".")
+    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
+    if item.strip()
+}
 
 REQUEST_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
@@ -178,6 +183,11 @@ def get_domain(url):
 def is_local_only_url(url):
     domain = get_domain(url).split(":")[0]
     return domain in LOCAL_ONLY_DOMAINS
+
+
+def is_excluded_domain(url):
+    domain = get_domain(url).split(":")[0]
+    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
 
 
 def get_base_url(url):
@@ -1917,6 +1927,9 @@ def load_sites():
                     continue
                 if not url.startswith("http"):
                     url = "https://" + url.lstrip("/")
+                if is_excluded_domain(url) or is_excluded_domain(base_url) or is_excluded_domain(rss_url):
+                    print(f"Excluded domain skipped: {row.get('name') or url} | {url}", flush=True)
+                    continue
                 normalized_url = normalize_link(url)
                 if normalized_url in seen_urls:
                     continue

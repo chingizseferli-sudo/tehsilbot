@@ -13,6 +13,7 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      EXCLUDED_DOMAIN_SUFFIXES: gov.az
 
     steps:
       - name: Repo klonla

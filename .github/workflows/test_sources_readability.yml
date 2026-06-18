@@ -28,6 +28,7 @@ jobs:
           MAX_WORKERS: "10"
           REQUEST_TIMEOUT: "12"
           LIMIT_SOURCES: "0"
+          EXCLUDED_DOMAIN_SUFFIXES: gov.az
         run: python test_sources_readability.py
 
       - name: Hesabatı artifact kimi saxla

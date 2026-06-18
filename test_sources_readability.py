@@ -16,6 +16,11 @@ SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
 REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "12"))
 MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
 LIMIT_SOURCES = int(os.getenv("LIMIT_SOURCES", "0"))
+EXCLUDED_DOMAIN_SUFFIXES = {
+    item.strip().lower().lstrip(".")
+    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
+    if item.strip()
+}
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
@@ -80,7 +85,12 @@ def clean_text(value):
 
 
 def get_domain(url):
-    return urlparse(url).netloc.replace("www.", "").lower()
+    return urlparse(str(url or "")).netloc.replace("www.", "").lower()
+
+
+def is_excluded_domain(url):
+    domain = get_domain(url).split(":")[0]
+    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
 
 
 def fetch_sources():
@@ -105,7 +115,19 @@ def fetch_sources():
             f"Sources oxunmadı: {response.status_code} | {response.text[:300]}"
         )
 
-    return response.json() or []
+    rows = response.json() or []
+    filtered = [
+        source for source in rows
+        if not (
+            is_excluded_domain(source.get("base_url"))
+            or is_excluded_domain(source.get("latest_url"))
+            or is_excluded_domain(source.get("rss_url"))
+        )
+    ]
+    skipped = len(rows) - len(filtered)
+    if skipped:
+        print(f"Excluded domain skipped in readability: {skipped}", flush=True)
+    return filtered
 
 
 def update_source(source_id, payload):

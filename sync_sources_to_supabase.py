@@ -38,6 +38,11 @@ PROTECTED_PARENT_DOMAINS = {
 }
 
 LOCAL_ONLY_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0", "::1"}
+EXCLUDED_DOMAIN_SUFFIXES = {
+    item.strip().lower().lstrip(".")
+    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
+    if item.strip()
+}
 
 
 def headers(extra=None):
@@ -71,6 +76,11 @@ def clean_domain(url):
 def is_local_only_url(url):
     domain = clean_domain(url).split(":")[0]
     return domain in LOCAL_ONLY_DOMAINS
+
+
+def is_excluded_domain(url):
+    domain = clean_domain(url).split(":")[0]
+    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
 
 
 def base_url(url):
@@ -177,10 +187,12 @@ def build_payload(site, source_file):
     root = base_url(url)
     if not root:
         return None
+    if is_excluded_domain(root):
+        return None
 
     score = int(site.get("score") or site.get("discovery_score") or 50)
     rss_url = clean_text(site.get("rss_url")) or None
-    if rss_url and is_local_only_url(rss_url):
+    if rss_url and (is_local_only_url(rss_url) or is_excluded_domain(rss_url)):
         rss_url = None
 
     if rss_url:

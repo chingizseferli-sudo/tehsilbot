@@ -28,7 +28,12 @@ BAKU_TZ = ZoneInfo("Asia/Baku")
 
 # Əvvəlki discovery versiyasında .gov.az bloklanırdı. Vizual.az üçün dövlət/qurum saytlarını da
 # izləmək lazım ola bilər. İstəsən Railway-də DISCOVERY_BLOCK_GOV=true qoyub yenə bloklaya bilərsən.
-DISCOVERY_BLOCK_GOV = os.getenv("DISCOVERY_BLOCK_GOV", "false").lower() == "true"
+DISCOVERY_BLOCK_GOV = os.getenv("DISCOVERY_BLOCK_GOV", "true").lower() != "false"
+EXCLUDED_DOMAIN_SUFFIXES = {
+    item.strip().lower().lstrip(".")
+    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
+    if item.strip()
+}
 DISCOVERY_SUBDOMAIN_ALLOWLIST = {
     item.strip().lower().lstrip(".")
     for item in os.getenv("DISCOVERY_SUBDOMAIN_ALLOWLIST", "").split(",")
@@ -523,6 +528,13 @@ def clean_domain(url: str) -> str:
         return ""
 
 
+def is_excluded_domain(url: str) -> bool:
+    domain = clean_domain(url)
+    if DISCOVERY_BLOCK_GOV and (domain == "gov.az" or domain.endswith(".gov.az")):
+        return True
+    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
+
+
 def base_url(url: str) -> str:
     parsed = urlparse(url)
     if not parsed.scheme or not parsed.netloc:
@@ -580,6 +592,8 @@ def normalize_url(url: str) -> str:
 def is_bad_domain(url: str) -> bool:
     domain = clean_domain(url)
     if not domain:
+        return True
+    if is_excluded_domain(domain):
         return True
     if any(bad in domain for bad in BAD_DOMAINS):
         return True

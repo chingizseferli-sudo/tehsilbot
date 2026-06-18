@@ -39,6 +39,7 @@ jobs:
       AUTO_CONFIG_METHODS: ${{ inputs.methods }}
       AUTO_CONFIG_WORKERS: ${{ inputs.workers }}
       REQUEST_TIMEOUT: "12"
+      EXCLUDED_DOMAIN_SUFFIXES: gov.az
 
     steps:
       - name: Repo klonla

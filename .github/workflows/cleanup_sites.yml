@@ -9,6 +9,8 @@ permissions:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    env:
+      EXCLUDED_DOMAIN_SUFFIXES: gov.az
 
     steps:
       - name: Repo klonla

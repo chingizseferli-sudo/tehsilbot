@@ -18,6 +18,11 @@ SUBDOMAIN_ALLOWLIST = {
     for item in os.getenv("CLEANUP_SUBDOMAIN_ALLOWLIST", "").split(",")
     if item.strip()
 }
+EXCLUDED_DOMAIN_SUFFIXES = {
+    item.strip().lower().lstrip(".")
+    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
+    if item.strip()
+}
 
 PROTECTED_PARENT_DOMAINS = {
     "az",
@@ -74,6 +79,11 @@ def site_domain(site):
     return clean_domain(site_url(site))
 
 
+def is_excluded_domain(domain):
+    domain = clean_domain(domain)
+    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
+
+
 def is_subdomain_of(domain, parent_domain):
     domain = clean_domain(domain)
     parent_domain = clean_domain(parent_domain)
@@ -116,7 +126,10 @@ def collect_domains():
 
 def rejected_record(site, parent_domain, source_file):
     domain = site_domain(site)
-    reason = f"subdomain_cleanup: parent_domain_exists={parent_domain}; source_file={source_file}"
+    if parent_domain == "excluded_domain":
+        reason = f"excluded_domain_cleanup: domain={domain}; source_file={source_file}"
+    else:
+        reason = f"subdomain_cleanup: parent_domain_exists={parent_domain}; source_file={source_file}"
     record = dict(site)
     record.update(
         {
@@ -179,6 +192,9 @@ def cleanup_file(filename, all_domains):
 
     for site in data["sites"]:
         domain = site_domain(site)
+        if is_excluded_domain(domain):
+            rejected.append(rejected_record(site, "excluded_domain", filename))
+            continue
         parent = find_parent_domain(domain, all_domains)
         if parent:
             rejected.append(rejected_record(site, parent, filename))
