@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+.env
+.env.*
+!.env.example
+
+site_health.json
+telegram_offset.json
+*.backup
+auto_configure_sources_report.json
+source_readability_report.json

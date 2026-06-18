@@ -33,7 +33,6 @@ REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "10"))
 MONITOR_DATA_RETENTION_DAYS = int(os.getenv("MONITOR_DATA_RETENTION_DAYS", "7"))
 
 PATTERNS_FILE = "patterns.json"
-KEYWORDS_FILE = "keywords.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
 USER_TELEGRAM_CACHE = {}
 LAST_MONITOR_CLEANUP = None
@@ -241,20 +240,8 @@ def load_json_file(path, default):
         return default
 
 
-def load_keywords():
-    data = load_json_file(KEYWORDS_FILE, {})
-    if isinstance(data, dict):
-        return data.get("keywords", []) or []
-    if isinstance(data, list):
-        return data
-    return []
-
-
 def load_patterns():
     return load_json_file(PATTERNS_FILE, {})
-
-
-GLOBAL_KEYWORDS = load_keywords()
 
 
 def load_health():
@@ -466,11 +453,6 @@ def keyword_matches_title(keyword, title_text):
 def keyword_match(title, keywords):
     title_lower = normalize_text(title)
     all_keywords = set()
-
-    for keyword in GLOBAL_KEYWORDS:
-        keyword = str(keyword).strip().lower()
-        if keyword:
-            all_keywords.add(keyword)
 
     for keyword in keywords or []:
         keyword = str(keyword).strip().lower()
@@ -984,6 +966,13 @@ def is_recent_news(published_time):
 def choose_publish_time(title, article_time):
     title_dt = parse_datetime_to_baku(title)
     article_dt = parse_datetime_to_baku(article_time)
+
+    if title_dt and article_dt and has_strong_date_signal(title):
+        title_baku = title_dt.astimezone(BAKU_TZ) if title_dt.tzinfo else title_dt.replace(tzinfo=BAKU_TZ)
+        article_baku = article_dt.astimezone(BAKU_TZ) if article_dt.tzinfo else article_dt.replace(tzinfo=BAKU_TZ)
+        if abs(article_baku - title_baku) > timedelta(hours=NEWS_TIME_LIMIT_HOURS):
+            return title_baku.strftime("%d.%m.%Y %H:%M")
+
     if article_dt:
         return article_dt.strftime("%d.%m.%Y %H:%M")
     if title_dt:
@@ -1994,7 +1983,7 @@ def process_site(index, total, site, patterns_data):
         raw_title = item.get("raw_title") or title
         title_time = parse_datetime_to_baku(raw_title)
         rss_time = item.get("rss_published")
-        article_time = rss_time or extract_publish_time_from_article(link)
+        article_time = extract_publish_time_from_article(link) or rss_time
         published_time = choose_publish_time(title, article_time)
 
         print(f"[{index}/{total}] Xəbər: {title[:80]} | title_tarix: {title_time} | rss_tarix: {rss_time} | article_tarix: {article_time} | seçilən tarix: {published_time} | Link: {link}", flush=True)
