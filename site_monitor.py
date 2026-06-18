@@ -16,6 +16,8 @@ from bs4 import BeautifulSoup
 from dateutil import parser
 from lxml import html
 
+from domain_policy import is_excluded_domain
+
 HEALTH_FILE = "site_health.json"
 TELEGRAM_OFFSET_FILE = "telegram_offset.json"
 
@@ -31,6 +33,7 @@ NEWS_TIME_LIMIT_HOURS = int(os.getenv("NEWS_TIME_LIMIT_HOURS", "1"))
 MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
 REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "10"))
 MONITOR_DATA_RETENTION_DAYS = int(os.getenv("MONITOR_DATA_RETENTION_DAYS", "7"))
+SOURCE_HEALTH_ENABLED = os.getenv("SOURCE_HEALTH_ENABLED", "false").strip().lower() in {"1", "true", "yes"}
 
 PATTERNS_FILE = "patterns.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
@@ -61,12 +64,6 @@ COMMON_RSS_PATHS = [
 ]
 
 LOCAL_ONLY_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0", "::1"}
-EXCLUDED_DOMAIN_SUFFIXES = {
-    item.strip().lower().lstrip(".")
-    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
-    if item.strip()
-}
-
 REQUEST_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/rss+xml;q=0.8,application/atom+xml;q=0.8,*/*;q=0.7",
@@ -184,11 +181,6 @@ def is_local_only_url(url):
     return domain in LOCAL_ONLY_DOMAINS
 
 
-def is_excluded_domain(url):
-    domain = get_domain(url).split(":")[0]
-    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
-
-
 def get_base_url(url):
     parsed = urlparse(url or "")
     if not parsed.scheme or not parsed.netloc:
@@ -271,6 +263,46 @@ def update_site_health(domain, status):
     if status in health[domain]:
         health[domain][status] += 1
     save_health(health)
+
+
+def update_source_health(site, result):
+    if not SOURCE_HEALTH_ENABLED or not supabase_ready():
+        return
+
+    source_id = site.get("id")
+    if not source_id:
+        return
+
+    reason = clean_text(result.get("reason") or "unknown")
+    candidates = int(result.get("candidates", 0) or 0)
+    now = datetime.now(BAKU_TZ).isoformat()
+    payload = {
+        "last_checked_at": now,
+        "last_result": reason,
+    }
+
+    if reason == "site_error":
+        payload["last_error"] = reason
+    else:
+        payload["last_success_at"] = now
+        payload["last_error"] = None
+        payload["consecutive_fail_count"] = 0
+
+    if reason == "sent" or candidates > 0:
+        payload["last_article_found_at"] = now
+
+    try:
+        response = requests.patch(
+            f"{SUPABASE_URL}/rest/v1/sources",
+            headers=supabase_headers({"Prefer": "return=minimal"}),
+            params={"id": f"eq.{source_id}"},
+            json=payload,
+            timeout=REQUEST_TIMEOUT,
+        )
+        if response.status_code not in {200, 204}:
+            print(f"Source health yazma xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+    except Exception as exc:
+        print(f"Source health istisnasi: {exc}", flush=True)
 
 
 def send_telegram(message, chat_id=None):
@@ -1960,6 +1992,7 @@ def process_site(index, total, site, patterns_data):
     except Exception as exc:
         print(f"❌ [{index}/{total}] {site['name']} | sayt emalı xətası: {exc}", flush=True)
         result["reason"] = "site_error"
+        update_source_health(site, result)
         return result
 
     result["candidates"] = len(items)
@@ -1968,6 +2001,7 @@ def process_site(index, total, site, patterns_data):
     if not items:
         result["reason"] = "no_candidate"
         print(f"📊 [{index}/{total}] {site['name']} | namizəd=0 | göndərildi=0 | nəticə=uyğun xəbər yoxdur | vaxt={time.time() - started:.1f}s", flush=True)
+        update_source_health(site, result)
         return result
 
     for item in items[:site.get("limit", MAX_LINKS_PER_SITE)]:
@@ -2078,12 +2112,14 @@ Link:
             result["sent"] = 1
             result["reason"] = "sent"
             time.sleep(1)
+            update_source_health(site, result)
             return result
 
         release_reserved_news(link)
         result["reason"] = "telegram_error"
 
     print(f"📊 [{index}/{total}] {site['name']} | namizəd={len(items)} | göndərildi=0 | nəticə={result['reason']} | vaxt={time.time() - started:.1f}s", flush=True)
+    update_source_health(site, result)
     return result
 
 

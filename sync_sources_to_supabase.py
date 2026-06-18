@@ -6,6 +6,8 @@ from urllib.parse import urlparse
 
 import requests
 
+from domain_policy import is_excluded_domain
+
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
 SYNC_SUBDOMAIN_ALLOWLIST = {
@@ -38,12 +40,6 @@ PROTECTED_PARENT_DOMAINS = {
 }
 
 LOCAL_ONLY_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0", "::1"}
-EXCLUDED_DOMAIN_SUFFIXES = {
-    item.strip().lower().lstrip(".")
-    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
-    if item.strip()
-}
-
 
 def headers(extra=None):
     h = {
@@ -76,11 +72,6 @@ def clean_domain(url):
 def is_local_only_url(url):
     domain = clean_domain(url).split(":")[0]
     return domain in LOCAL_ONLY_DOMAINS
-
-
-def is_excluded_domain(url):
-    domain = clean_domain(url).split(":")[0]
-    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
 
 
 def base_url(url):

@@ -10,18 +10,14 @@ import feedparser
 from bs4 import BeautifulSoup
 from lxml import html as lxml_html
 
+from domain_policy import is_excluded_domain
+
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
 
 REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "12"))
 MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
 LIMIT_SOURCES = int(os.getenv("LIMIT_SOURCES", "0"))
-EXCLUDED_DOMAIN_SUFFIXES = {
-    item.strip().lower().lstrip(".")
-    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
-    if item.strip()
-}
-
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,application/rss+xml;q=0.8,application/atom+xml;q=0.8,*/*;q=0.7",
@@ -86,11 +82,6 @@ def clean_text(value):
 
 def get_domain(url):
     return urlparse(str(url or "")).netloc.replace("www.", "").lower()
-
-
-def is_excluded_domain(url):
-    domain = get_domain(url).split(":")[0]
-    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
 
 
 def fetch_sources():

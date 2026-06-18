@@ -12,6 +12,8 @@ import feedparser
 import requests
 from bs4 import BeautifulSoup
 
+from domain_policy import is_excluded_domain as policy_is_excluded_domain
+
 DISCOVERED_FILE = "discovered_sites.json"
 CONFIG_FILE = "courier_config_clean.json"
 REVIEW_FILE = "review_sites.json"
@@ -29,11 +31,7 @@ BAKU_TZ = ZoneInfo("Asia/Baku")
 # Əvvəlki discovery versiyasında .gov.az bloklanırdı. Vizual.az üçün dövlət/qurum saytlarını da
 # izləmək lazım ola bilər. İstəsən Railway-də DISCOVERY_BLOCK_GOV=true qoyub yenə bloklaya bilərsən.
 DISCOVERY_BLOCK_GOV = os.getenv("DISCOVERY_BLOCK_GOV", "true").lower() != "false"
-EXCLUDED_DOMAIN_SUFFIXES = {
-    item.strip().lower().lstrip(".")
-    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
-    if item.strip()
-}
+DISCOVERY_WRITE_JSON = os.getenv("DISCOVERY_WRITE_JSON", "false").lower() == "true"
 DISCOVERY_SUBDOMAIN_ALLOWLIST = {
     item.strip().lower().lstrip(".")
     for item in os.getenv("DISCOVERY_SUBDOMAIN_ALLOWLIST", "").split(",")
@@ -532,7 +530,7 @@ def is_excluded_domain(url: str) -> bool:
     domain = clean_domain(url)
     if DISCOVERY_BLOCK_GOV and (domain == "gov.az" or domain.endswith(".gov.az")):
         return True
-    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
+    return policy_is_excluded_domain(domain)
 
 
 def base_url(url: str) -> str:
@@ -1598,13 +1596,20 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
         if clean_domain(site.get("url", "")) not in accepted_domains
     ]
 
-    discovered_added = append_unique(DISCOVERED_FILE, approved_sites + review_sites)
-    review_added = append_unique(REVIEW_FILE, review_sites)
-    rejected_added = append_unique(REJECTED_FILE, rejected_sites)
-
+    discovered_added = 0
+    review_added = 0
+    rejected_added = 0
     config_added = 0
-    if add_to_config:
-        config_added = append_unique(CONFIG_FILE, approved_sites)
+
+    if DISCOVERY_WRITE_JSON:
+        discovered_added = append_unique(DISCOVERED_FILE, approved_sites + review_sites)
+        review_added = append_unique(REVIEW_FILE, review_sites)
+        rejected_added = append_unique(REJECTED_FILE, rejected_sites)
+
+        if add_to_config:
+            config_added = append_unique(CONFIG_FILE, approved_sites)
+    else:
+        print("JSON cache yazilmir: DISCOVERY_WRITE_JSON=false", flush=True)
 
     sync_discovery_results_to_supabase(approved_sites, review_sites, rejected_sites)
 

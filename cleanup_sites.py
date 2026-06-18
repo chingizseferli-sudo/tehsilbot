@@ -5,6 +5,8 @@ from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
+from domain_policy import is_excluded_domain
+
 
 SOURCE_FILES = [
     "courier_config_clean.json",
@@ -18,12 +20,6 @@ SUBDOMAIN_ALLOWLIST = {
     for item in os.getenv("CLEANUP_SUBDOMAIN_ALLOWLIST", "").split(",")
     if item.strip()
 }
-EXCLUDED_DOMAIN_SUFFIXES = {
-    item.strip().lower().lstrip(".")
-    for item in os.getenv("EXCLUDED_DOMAIN_SUFFIXES", "gov.az").split(",")
-    if item.strip()
-}
-
 PROTECTED_PARENT_DOMAINS = {
     "az",
     "com.az",
@@ -77,11 +73,6 @@ def site_url(site):
 
 def site_domain(site):
     return clean_domain(site_url(site))
-
-
-def is_excluded_domain(domain):
-    domain = clean_domain(domain)
-    return any(domain == suffix or domain.endswith("." + suffix) for suffix in EXCLUDED_DOMAIN_SUFFIXES)
 
 
 def is_subdomain_of(domain, parent_domain):
