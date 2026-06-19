@@ -282,6 +282,18 @@ def update_source_health(site, result):
     }
 
     if reason == "site_error":
+        try:
+            response = requests.post(
+                f"{SUPABASE_URL}/rest/v1/rpc/increment_source_fail",
+                headers=supabase_headers(),
+                json={"p_source_id": source_id, "p_reason": reason},
+                timeout=REQUEST_TIMEOUT,
+            )
+            if response.status_code in {200, 204}:
+                return
+            print(f"Source fail saygac xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+        except Exception as exc:
+            print(f"Source fail saygac istisnasi: {exc}", flush=True)
         payload["last_error"] = reason
     else:
         payload["last_success_at"] = now
