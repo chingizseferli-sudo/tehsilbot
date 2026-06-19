@@ -17,6 +17,9 @@ jobs:
       EXCLUDED_DOMAIN_SUFFIXES: gov.az
       DISCOVERY_BLOCK_GOV: "true"
       DISCOVERY_WRITE_JSON: "false"
+      DISCOVERY_REQUIRE_ACTIVITY: "true"
+      DISCOVERY_MIN_NEWS_PER_HOUR: "2"
+      DISCOVERY_ACTIVITY_LOOKBACK_HOURS: "1"
 
     steps:
       - name: Repo klonla

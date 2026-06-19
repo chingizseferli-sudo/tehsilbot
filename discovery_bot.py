@@ -4,7 +4,7 @@ import os
 import re
 import time
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from urllib.parse import quote_plus, urljoin, urlparse
 
@@ -23,6 +23,9 @@ KEYWORDS_FILE = "keywords.json"
 
 REQUEST_TIMEOUT = 12
 DISCOVERY_VERSION = "5.0-final-safe-review"
+DISCOVERY_MIN_NEWS_PER_HOUR = int(os.getenv("DISCOVERY_MIN_NEWS_PER_HOUR", "2"))
+DISCOVERY_ACTIVITY_LOOKBACK_HOURS = int(os.getenv("DISCOVERY_ACTIVITY_LOOKBACK_HOURS", "1"))
+DISCOVERY_REQUIRE_ACTIVITY = os.getenv("DISCOVERY_REQUIRE_ACTIVITY", "true").lower() != "false"
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "").strip()
@@ -208,6 +211,14 @@ BAD_URL_WORDS = [
     "localhost", "127.0.0.1", "0.0.0.0",
 ]
 
+COMMERCIAL_SITE_WORDS = [
+    "market", "shop", "store", "shopping", "mall", "satis", "satış", "almaq",
+    "qiymet", "qiymət", "discount", "endirim", "kampaniya", "kataloq",
+    "catalog", "product", "products", "mehsul", "məhsul", "xidmet", "xidmət",
+    "service", "services", "company", "şirkət", "sirket", "agency", "agentlik",
+    "restaurant", "hotel", "booking", "estate", "avto", "auto", "cars",
+]
+
 ARTICLE_HINTS = [
     "/news/", "/xeber/", "/xeberler/", "/xəbərlər/", "/post/", "/article/",
     "/read/", "/item/", "/son-xeber/", "/sosial/", "/cemiyyet/", "/cəmiyyət/",
@@ -291,6 +302,20 @@ def discovery_status_for_site(site: dict) -> str:
     if status == "review":
         return "manual_needed"
     return "rejected"
+
+
+def is_hard_rejected(site: dict) -> bool:
+    reason = str(site.get("reason") or "").lower()
+    source_type = str(site.get("source_type") or "").lower()
+    hard_markers = (
+        "commercial_site_not_news",
+        "insufficient_news_activity",
+        "subdomain_rejected",
+        "bad_url_or_gov_blocked",
+        "rejected_commercial",
+        "rejected_inactive_news",
+    )
+    return any(marker in reason or marker in source_type for marker in hard_markers)
 
 
 def build_source_payload(site: dict) -> dict:
@@ -615,6 +640,61 @@ def google_news_rss(query: str) -> str:
         f"q={quote_plus(query)}"
         "&hl=az&gl=AZ&ceid=AZ:az"
     )
+
+
+def looks_like_commercial_site(name: str | None, url: str, html_text: str = "") -> bool:
+    domain = clean_domain(url)
+    value = f"{name or ''} {domain} {url} {html_text[:3000]}".lower()
+    commercial_hits = sum(1 for word in COMMERCIAL_SITE_WORDS if word in value)
+    news_hits = sum(1 for word in NEWS_SECTION_WORDS if word in value)
+    if commercial_hits >= 3 and news_hits < 3:
+        return True
+    if commercial_hits >= 2 and not any(hint in domain for hint in ("news", "xeber", "media", "press")):
+        return True
+    return False
+
+
+def entry_datetime(entry) -> datetime | None:
+    parsed = entry.get("published_parsed") or entry.get("updated_parsed")
+    if parsed:
+        try:
+            return datetime(*parsed[:6], tzinfo=timezone.utc).astimezone(BAKU_TZ)
+        except Exception:
+            return None
+    return None
+
+
+def count_recent_feed_entries(feed, lookback_hours: int) -> int:
+    now = datetime.now(BAKU_TZ)
+    cutoff = now - timedelta(hours=max(1, lookback_hours))
+    count = 0
+    for entry in feed.entries or []:
+        dt = entry_datetime(entry)
+        if dt and cutoff <= dt <= now + timedelta(minutes=5):
+            count += 1
+    return count
+
+
+def count_recent_rss_entries(session: requests.Session, rss_url: str, lookback_hours: int) -> int:
+    if not rss_url:
+        return 0
+    try:
+        r = session.get(rss_url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+        if r.status_code != 200:
+            return 0
+        return count_recent_feed_entries(feedparser.parse(r.text), lookback_hours)
+    except Exception:
+        return 0
+
+
+def google_news_activity_count(session: requests.Session, domain: str, lookback_hours: int) -> int:
+    if not domain:
+        return 0
+    try:
+        feed = feedparser.parse(google_news_rss(f"site:{domain} when:{max(1, lookback_hours)}h"))
+        return count_recent_feed_entries(feed, lookback_hours)
+    except Exception:
+        return 0
 
 
 def build_search_queries(mode: str) -> list[str]:
@@ -1131,6 +1211,77 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         score += 45
         reasons.append(f"RSS tapıldı ({rss_count})")
 
+    if looks_like_commercial_site(name, section_url, html_text):
+        return {
+            "name": name or domain,
+            "url": section_url.rstrip("/"),
+            "enabled": True,
+            "rss_url": rss_url,
+            "selector": None,
+            "xpaths": [],
+            "keywords": KEYWORDS,
+            "limit": 10,
+            "score": 0,
+            "status": "rejected",
+            "reason": "commercial_site_not_news",
+            "analysis": {
+                "rss_count": rss_count,
+                "news_link_count": news_count,
+                "education_keyword_count": edu_keyword_count,
+                "article_block_count": 0,
+                "activity_count": 0,
+                "activity_source": "commercial_filter",
+                "reasons": ["commercial site signals, not a news source"],
+            },
+            "source_type": "rejected_commercial",
+        }
+
+    rss_recent_count = count_recent_rss_entries(
+        session,
+        rss_url,
+        DISCOVERY_ACTIVITY_LOOKBACK_HOURS,
+    ) if rss_url else 0
+    google_recent_count = google_news_activity_count(
+        session,
+        domain,
+        DISCOVERY_ACTIVITY_LOOKBACK_HOURS,
+    )
+    activity_count = max(rss_recent_count, google_recent_count)
+    activity_source = "rss" if rss_recent_count >= google_recent_count else "google_news"
+
+    if DISCOVERY_REQUIRE_ACTIVITY and activity_count < DISCOVERY_MIN_NEWS_PER_HOUR:
+        return {
+            "name": name or domain,
+            "url": section_url.rstrip("/"),
+            "enabled": True,
+            "rss_url": rss_url,
+            "selector": None,
+            "xpaths": [],
+            "keywords": KEYWORDS,
+            "limit": 10,
+            "score": min(score, 20),
+            "status": "rejected",
+            "reason": f"insufficient_news_activity: {activity_count}/{DISCOVERY_MIN_NEWS_PER_HOUR} in last {DISCOVERY_ACTIVITY_LOOKBACK_HOURS}h",
+            "analysis": {
+                "rss_count": rss_count,
+                "news_link_count": news_count,
+                "education_keyword_count": edu_keyword_count,
+                "article_block_count": 0,
+                "activity_count": activity_count,
+                "activity_source": activity_source,
+                "rss_recent_count": rss_recent_count,
+                "google_recent_count": google_recent_count,
+                "reasons": reasons + [f"activity too low ({activity_count}/{DISCOVERY_MIN_NEWS_PER_HOUR})"],
+            },
+            "source_type": "rejected_inactive_news",
+        }
+
+    if activity_count >= DISCOVERY_MIN_NEWS_PER_HOUR:
+        score += 25
+        reasons.append(
+            f"aktiv xəbər axını var ({activity_count}/{DISCOVERY_ACTIVITY_LOOKBACK_HOURS}h, {activity_source})"
+        )
+
     # page_news_stats uğursuzdursa, saytı dərhal reject etmə.
     # Ana səhifə və müasir xəbər saytları üçün yumşaq fallback.
     if not ok:
@@ -1242,6 +1393,10 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
                 "news_link_count": news_count,
                 "education_keyword_count": edu_keyword_count,
                 "article_block_count": 0,
+                "activity_count": activity_count,
+                "activity_source": activity_source,
+                "rss_recent_count": rss_recent_count,
+                "google_recent_count": google_recent_count,
                 "reasons": reasons + fallback_reasons,
             },
             "source_type": "homepage_fallback",
@@ -1320,6 +1475,10 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "news_link_count": news_count,
             "education_keyword_count": edu_keyword_count,
             "article_block_count": article_count,
+            "activity_count": activity_count,
+            "activity_source": activity_source,
+            "rss_recent_count": rss_recent_count,
+            "google_recent_count": google_recent_count,
             "reasons": reasons,
         },
         "source_type": "discovered_news_site_first",
@@ -1490,6 +1649,15 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
 
                 score = int(analyzed.get("score", 0) or 0)
 
+                if is_hard_rejected(analyzed):
+                    rejected_sites.append(analyzed)
+                    print(
+                        f"🔴 HARD REJECT {analyzed.get('score')}: {analyzed.get('name')} | {source_url} | {analyzed.get('reason')}",
+                        flush=True,
+                    )
+                    time.sleep(settings["sleep"])
+                    continue
+
                 # Xüsusi təhlükəsiz fallback: əsas xəbər saytları sıfır balla itməsin.
                 analyzed["status"] = "review"
                 analyzed["score"] = max(score, 35)
@@ -1550,7 +1718,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
                 score = int(analyzed.get("score", 0) or 0)
 
                 # Əgər Google News mənbə veribsə və analiz az bal veribsə belə, onu manual review-də saxlayırıq.
-                if status not in ("approved", "review") and source_name and section_domain.endswith(".az"):
+                if status not in ("approved", "review") and source_name and section_domain.endswith(".az") and not is_hard_rejected(analyzed):
                     analyzed["status"] = "review"
                     analyzed["score"] = max(score, 35)
                     analyzed["reason"] = analyzed.get("reason") or "google_news_section_manual_review"
