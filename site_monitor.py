@@ -35,6 +35,7 @@ REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "10"))
 MONITOR_DATA_RETENTION_DAYS = int(os.getenv("MONITOR_DATA_RETENTION_DAYS", "30"))
 SOURCE_HEALTH_ENABLED = os.getenv("SOURCE_HEALTH_ENABLED", "false").strip().lower() in {"1", "true", "yes"}
 SOURCE_MAX_CONSECUTIVE_FAILS = int(os.getenv("SOURCE_MAX_CONSECUTIVE_FAILS", "5"))
+GOOGLE_NEWS_FALLBACK_HOURS = max(1, int(os.getenv("GOOGLE_NEWS_FALLBACK_HOURS", str(NEWS_TIME_LIMIT_HOURS))))
 
 PATTERNS_FILE = "patterns.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
@@ -610,6 +611,13 @@ def release_reserved_news(link):
     except Exception as exc:
         print(f"Rezerv silmə istisnası: {exc}", flush=True)
         return False
+
+
+def google_news_when_window():
+    if GOOGLE_NEWS_FALLBACK_HOURS < 24:
+        return f"{GOOGLE_NEWS_FALLBACK_HOURS}h"
+    days = max(1, (GOOGLE_NEWS_FALLBACK_HOURS + 23) // 24)
+    return f"{days}d"
 
 
 def get_or_create_monitor_source(site_name, source_domain, page_url):
@@ -1467,8 +1475,9 @@ def fetch_site(site, patterns_data):
             domain = get_domain(base_url or page_url)
 
             if domain:
+                when_window = google_news_when_window()
                 google_rss_urls.append(
-                    f"https://news.google.com/rss/search?q=site%3A{domain}%20when%3A7d&hl=az&gl=AZ&ceid=AZ:az"
+                    f"https://news.google.com/rss/search?q=site%3A{domain}%20when%3A{when_window}&hl=az&gl=AZ&ceid=AZ:az"
                 )
 
         print(
@@ -2079,6 +2088,16 @@ def process_site(index, total, site, patterns_data):
             continue
 
         matched_keywords_text = ", ".join(matched_keywords)
+        target_chat_ids = []
+        seen_target_chats = set()
+        for monitor_match in monitor_matches:
+            if not monitor_match.get("notify_telegram", True):
+                continue
+            chat_id = clean_text(monitor_match.get("telegram_chat_id"))
+            if not chat_id or chat_id in seen_target_chats:
+                continue
+            seen_target_chats.add(chat_id)
+            target_chat_ids.append(chat_id)
 
         message = f"""
 🆕 Yeni uyğun xəbər
@@ -2102,15 +2121,19 @@ def process_site(index, total, site, patterns_data):
             result["reason"] = "duplicate"
             continue
 
+        if not target_chat_ids:
+            result["reason"] = "no_telegram_recipient"
+            print(f"Telegram alıcısı yoxdur, xəbər panel üçün saxlandı: {source} | {clean_title[:70]}", flush=True)
+            update_source_health(site, result)
+            return result
+
         sent_chats = set()
         sent_any = False
         for monitor_match in monitor_matches:
             if not monitor_match.get("notify_telegram", True):
                 continue
             chat_id = clean_text(monitor_match.get("telegram_chat_id"))
-            if not chat_id:
-                continue
-            if chat_id in sent_chats:
+            if not chat_id or chat_id not in seen_target_chats or chat_id in sent_chats:
                 continue
             chat_matches = [match for match in monitor_matches if clean_text(match.get("telegram_chat_id")) == chat_id]
             chat_keywords = clean_matched_keywords([match.get("keyword") for match in chat_matches])
@@ -2169,7 +2192,7 @@ def check_sites():
     print(f"Monitorinq başladı | worker={MAX_WORKERS} | son {NEWS_TIME_LIMIT_HOURS} saat | {datetime.now(BAKU_TZ).strftime('%d.%m.%Y %H:%M:%S')} AZT", flush=True)
 
     sent_count = 0
-    stats = {"sent": 0, "no_candidate": 0, "duplicate": 0, "no_date": 0, "old_news": 0, "no_monitor_match": 0, "site_error": 0, "telegram_error": 0, "unknown": 0}
+    stats = {"sent": 0, "no_candidate": 0, "duplicate": 0, "no_date": 0, "old_news": 0, "no_monitor_match": 0, "no_telegram_recipient": 0, "site_error": 0, "telegram_error": 0, "unknown": 0}
     max_workers = max(1, min(MAX_WORKERS, total or 1))
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -2202,6 +2225,7 @@ def check_sites():
     print(f"🕒 Tarix tapılmayan: {stats.get('no_date', 0)}", flush=True)
     print(f"⏩ Köhnə xəbər: {stats.get('old_news', 0)}", flush=True)
     print(f"🔎 Monitor açar sözünə uyğun olmayan: {stats.get('no_monitor_match', 0)}", flush=True)
+    print(f"📭 Telegram alıcısı olmayan: {stats.get('no_telegram_recipient', 0)}", flush=True)
     print(f"❌ Sayt/worker xətası: {stats.get('site_error', 0)}", flush=True)
     print(f"📨 Telegram xətası: {stats.get('telegram_error', 0)}", flush=True)
     print(f"⏱️ Ümumi vaxt: {elapsed:.1f} saniyə", flush=True)

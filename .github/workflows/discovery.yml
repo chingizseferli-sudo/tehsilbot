@@ -6,7 +6,7 @@ on:
     - cron: "0 */6 * * *"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   discovery:
@@ -34,15 +34,3 @@ jobs:
       - name: Discovery işə sal
         run: |
           python discovery_bot.py --mode fast
-
-      - name: Dəyişiklikləri commit et
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-          git add discovered_sites.json review_sites.json rejected_sites.json patterns.json
-
-          git diff --staged --quiet || git commit -m "Discovery update"
-
-          git pull --rebase origin main
-          git push origin main

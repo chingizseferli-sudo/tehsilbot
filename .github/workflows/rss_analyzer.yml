@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   rss-analyzer:
@@ -26,15 +26,3 @@ jobs:
       - name: RSS-ləri avtomatik tap
         run: |
           python rss_analyzer.py
-
-      - name: Dəyişiklikləri commit et
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-          git add courier_config_clean.json discovered_sites.json rss_analyzer.py
-
-          git diff --staged --quiet || git commit -m "Auto update RSS URLs"
-
-          git pull --rebase origin main
-          git push origin main
