@@ -34,6 +34,7 @@ MAX_WORKERS = int(os.getenv("MAX_WORKERS", "10"))
 REQUEST_TIMEOUT = int(os.getenv("REQUEST_TIMEOUT", "10"))
 MONITOR_DATA_RETENTION_DAYS = int(os.getenv("MONITOR_DATA_RETENTION_DAYS", "7"))
 SOURCE_HEALTH_ENABLED = os.getenv("SOURCE_HEALTH_ENABLED", "false").strip().lower() in {"1", "true", "yes"}
+SOURCE_MAX_CONSECUTIVE_FAILS = int(os.getenv("SOURCE_MAX_CONSECUTIVE_FAILS", "5"))
 
 PATTERNS_FILE = "patterns.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
@@ -1919,6 +1920,9 @@ def load_sites():
 
     all_sites = []
     seen_urls = set()
+    source_select = "id,name,base_url,latest_url,rss_url,status,source_type,trust_level,monitor_method,selector,article_pattern,discovery_status,discovery_score,notes"
+    if SOURCE_HEALTH_ENABLED:
+        source_select += ",last_checked_at,last_success_at,last_article_found_at,last_error,consecutive_fail_count,last_result"
     try:
         offset = 0
         page_size = 1000
@@ -1927,7 +1931,7 @@ def load_sites():
                 f"{SUPABASE_URL}/rest/v1/sources",
                 headers=supabase_headers(),
                 params={
-                    "select": "id,name,base_url,latest_url,rss_url,status,source_type,trust_level,monitor_method,selector,article_pattern,discovery_status,discovery_score,notes",
+                    "select": source_select,
                     "status": "eq.active",
                     "order": "name.asc",
                     "limit": str(page_size),
@@ -1935,6 +1939,21 @@ def load_sites():
                 },
                 timeout=REQUEST_TIMEOUT,
             )
+            if response.status_code != 200 and SOURCE_HEALTH_ENABLED:
+                print("Source health sütunları oxunmadı, köhnə sources select ilə davam edilir.", flush=True)
+                source_select = "id,name,base_url,latest_url,rss_url,status,source_type,trust_level,monitor_method,selector,article_pattern,discovery_status,discovery_score,notes"
+                response = requests.get(
+                    f"{SUPABASE_URL}/rest/v1/sources",
+                    headers=supabase_headers(),
+                    params={
+                        "select": source_select,
+                        "status": "eq.active",
+                        "order": "name.asc",
+                        "limit": str(page_size),
+                        "offset": str(offset),
+                    },
+                    timeout=REQUEST_TIMEOUT,
+                )
             if response.status_code != 200:
                 print(f"Supabase sources oxuma xətası: {response.status_code} | {response.text[:300]}", flush=True)
                 return []
@@ -1953,6 +1972,10 @@ def load_sites():
 
                 # failed/dead mənbələri əsas monitorinqdə keçirik. blocked üçün Google News fallback varsa oxunacaq.
                 if method in {"failed", "dead"}:
+                    continue
+                fail_count = int(row.get("consecutive_fail_count") or 0)
+                if SOURCE_HEALTH_ENABLED and SOURCE_MAX_CONSECUTIVE_FAILS > 0 and fail_count >= SOURCE_MAX_CONSECUTIVE_FAILS:
+                    print(f"Fail limiti keçildi, mənbə müvəqqəti skip: {row.get('name') or row.get('base_url')} | fail={fail_count}", flush=True)
                     continue
 
                 url = latest_url or base_url or rss_url
