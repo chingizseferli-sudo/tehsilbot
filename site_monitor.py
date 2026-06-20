@@ -53,6 +53,11 @@ NEWS_CATEGORIES = {
     "region", "bölgə", "maraqlı", "şou", "sağlamlıq", "texnologiya",
 }
 
+TITLE_NOISE_LABELS = {
+    "video", "foto", "yenilənib", "yeniləndi", "canlı", "son dəqiqə",
+    "açıqlama", "rəsmi", "eksklüziv", "müsahibə", "reportaj",
+}
+
 COMMON_LATEST_PATHS = [
     "/news", "/xeberler", "/xeber", "/az/news", "/az/xeberler", "/az/xeber",
     "/son-xeberler", "/latest", "/lastnews", "/gundem", "/cemiyyet",
@@ -277,13 +282,20 @@ def update_source_health(site, result):
 
     reason = clean_text(result.get("reason") or "unknown")
     candidates = int(result.get("candidates", 0) or 0)
+    sent = int(result.get("sent", 0) or 0)
     now = datetime.now(BAKU_TZ).isoformat()
     payload = {
         "last_checked_at": now,
         "last_result": reason,
     }
 
-    if reason == "site_error":
+    hard_fail_reasons = {"site_error", "blocked", "dead", "failed"}
+    readable_reasons = {
+        "sent", "duplicate", "old_news", "no_date", "no_monitor_match",
+        "no_telegram_recipient", "no_keyword_match",
+    }
+
+    if reason in hard_fail_reasons:
         try:
             response = requests.post(
                 f"{SUPABASE_URL}/rest/v1/rpc/increment_source_fail",
@@ -297,12 +309,14 @@ def update_source_health(site, result):
         except Exception as exc:
             print(f"Source fail saygac istisnasi: {exc}", flush=True)
         payload["last_error"] = reason
-    else:
+    elif candidates > 0 or reason in readable_reasons:
         payload["last_success_at"] = now
         payload["last_error"] = None
         payload["consecutive_fail_count"] = 0
+    else:
+        payload["last_error"] = reason
 
-    if reason == "sent" or candidates > 0:
+    if sent > 0 or candidates > 0:
         payload["last_article_found_at"] = now
 
     try:
@@ -430,26 +444,42 @@ def connect_telegram_users_from_updates():
 
 def clean_title_for_message(title):
     title = clean_text(title)
-    category_pattern = r"^(" + "|".join(re.escape(c) for c in NEWS_CATEGORIES) + r")\s+"
-    title = re.sub(category_pattern, "", title, flags=re.IGNORECASE)
-    category_prefix = r"^(" + "|".join(re.escape(c) for c in NEWS_CATEGORIES) + r")\s*[:|\-–—]\s*"
-    title = re.sub(category_prefix, "", title, flags=re.IGNORECASE)
-    title = re.sub(r"^\d{1,2}[:.]\d{2}\s+", "", title)
-    title = re.sub(r"^[-–—|]+\s*", "", title)
-    title = re.sub(r"^\d{1,2}[:.]\d{2}\s*[-–—|]?\s*", "", title)
-    title = re.sub(
-        r"\s+\d{1,2}\s+[a-zəöğıçşü]+\s+\d{4}\s*,?\s*\d{1,2}[:.]\d{2}$",
-        "",
-        title,
-        flags=re.IGNORECASE,
-    )
-    title = re.sub(r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{4}\s+\d{1,2}[:.]\d{2}$", "", title)
+    if not title:
+        return ""
+
+    separators = r"[-\u2013\u2014|:\u2022\u00bb]+"
+    edge_chars = " \t\n\r-\u2013\u2014|:\u2022\u00bb"
+    category_group = r"(?:" + "|".join(re.escape(c) for c in sorted(NEWS_CATEGORIES, key=len, reverse=True)) + r")"
+    noise_group = r"(?:" + "|".join(re.escape(c) for c in sorted(TITLE_NOISE_LABELS, key=len, reverse=True)) + r")"
+    az_months = r"yanvar|fevral|mart|aprel|may|iyun|iyul|avqust|sentyabr|oktyabr|noyabr|dekabr"
+
+    title = re.sub(r"\s+", " ", title).strip(edge_chars)
+
+    for _ in range(3):
+        before = title
+        title = re.sub(rf"^\s*{category_group}\s*(?:{separators}|/)\s*", "", title, flags=re.IGNORECASE)
+        title = re.sub(rf"^\s*{noise_group}\s*(?:{separators})\s*", "", title, flags=re.IGNORECASE)
+        title = re.sub(r"^\s*\[?\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\]?\s*(?:[-\u2013\u2014|:])?\s*", "", title)
+        title = re.sub(r"^\s*\[?\d{1,2}[:.]\d{2}\]?\s*(?:[-\u2013\u2014|:])?\s*", "", title)
+        title = re.sub(r"^\.\d{2,4}\s*(?:[-\u2013\u2014|:])?\s*", "", title)
+        title = re.sub(r"^\s*\[?\d{4}-\d{2}-\d{2}(?:[T\s]\d{2}:\d{2}(?::\d{2})?(?:[+-]\d{2}:?\d{2})?)?\]?\s*(?:[-\u2013\u2014|:])?\s*", "", title)
+        if title == before:
+            break
+
+    title = re.sub(rf"\s*(?:{separators})\s*{category_group}\s*$", "", title, flags=re.IGNORECASE)
+    title = re.sub(rf"\s*(?:{separators})\s*{noise_group}\s*$", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"\s+\[?(?:VIDEO|FOTO|YEN?L?N?B|CANLI)\]?\s*$", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"\s+\d{1,2}\s+(?:" + az_months + r")\s+\d{4}\s*,?\s*\d{1,2}[:.]\d{2}$", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"\s+\d{1,2}\s+(?:" + az_months + r")\s+\d{4}$", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\s*,?\s*\d{1,2}[:.]\d{2}$", "", title)
     title = re.sub(r"\s+\d{1,2}[./-]\d{1,2}[./-]\d{2,4}$", "", title)
-    title = re.sub(r"^\d{1,2}[./-]\d{1,2}[./-]\d{2,4}\s*[-–—|:]?\s*", "", title)
-    title = re.sub(r"^[./-]\d{2,4}\s*[-–—|:]?\s*", "", title)
-    title = re.sub(r"^\d{4}-\d{2}-\d{2}(?:[T\s]\d{2}:\d{2}(?::\d{2})?)?\s*[-–—|:]?\s*", "", title)
-    title = re.sub(r"\s+\d{4}-\d{2}-\d{2}(?:[T\s]\d{2}:\d{2}(?::\d{2})?)?$", "", title)
-    title = re.sub(r"\s*[-–—|:]\s*$", "", title)
+    title = re.sub(r"\s+\d{4}-\d{2}-\d{2}(?:[T\s]\d{2}:\d{2}(?::\d{2})?(?:[+-]\d{2}:?\d{2})?)?$", "", title)
+    title = re.sub(r"\s*(?:[-\u2013\u2014|])\s*(?:[A-Za-z0-9_-]+\.)?az\s*$", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"\s*(?:[-\u2013\u2014|])\s*(?:Report|Oxu|Qafqazinfo|Trend|APA|Azertac|Unikal|Modern|Publika|Yeni ?a?|Yeni Cag)\s*$", "", title, flags=re.IGNORECASE)
+    title = re.sub(r"\s*[-\u2013\u2014|:\u2022\u00bb]+\s*$", "", title)
+    title = re.sub(r"^[-\u2013\u2014|:\u2022\u00bb]+\s*", "", title)
+    title = re.sub(r"\s+", " ", title).strip()
+
     return clean_text(title)
 
 
@@ -457,13 +487,16 @@ def is_non_news_title(title):
     cleaned = clean_title_for_message(title)
     normalized = normalize_text(cleaned)
     category_values = {normalize_text(item) for item in NEWS_CATEGORIES}
-    if not cleaned or normalized in category_values:
+    noise_values = {normalize_text(item) for item in TITLE_NOISE_LABELS}
+    if not cleaned or normalized in category_values or normalized in noise_values:
         return True
     if len(cleaned) < 12:
         return True
-    if parse_datetime_to_baku(cleaned) and len(cleaned.split()) <= 4:
+    if parse_datetime_to_baku(cleaned) and len(cleaned.split()) <= 5:
         return True
-    if re.fullmatch(r"[\d\s:./,\-|–—]+", cleaned):
+    if re.fullmatch(r"[\d\s:./,\-|\u2013\u2014]+", cleaned):
+        return True
+    if re.fullmatch(r"(?:" + "|".join(re.escape(c) for c in NEWS_CATEGORIES) + r")\s+[\d\s:./,\-|\u2013\u2014]+", cleaned, flags=re.IGNORECASE):
         return True
     return False
 
