@@ -36,6 +36,8 @@ MONITOR_DATA_RETENTION_DAYS = int(os.getenv("MONITOR_DATA_RETENTION_DAYS", "30")
 SOURCE_HEALTH_ENABLED = os.getenv("SOURCE_HEALTH_ENABLED", "false").strip().lower() in {"1", "true", "yes"}
 SOURCE_MAX_CONSECUTIVE_FAILS = int(os.getenv("SOURCE_MAX_CONSECUTIVE_FAILS", "5"))
 GOOGLE_NEWS_FALLBACK_HOURS = max(1, int(os.getenv("GOOGLE_NEWS_FALLBACK_HOURS", str(NEWS_TIME_LIMIT_HOURS))))
+SCHEDULER_DRY_RUN = os.getenv("SCHEDULER_DRY_RUN", "false").strip().lower() in {"1", "true", "yes"}
+SOURCE_DEFAULT_INTERVAL_MINUTES = max(1, int(os.getenv("SOURCE_DEFAULT_INTERVAL_MINUTES", "60")))
 
 PATTERNS_FILE = "patterns.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
@@ -189,6 +191,125 @@ def decode_response_text(response):
     return min(candidates, key=mojibake_score)
 
 
+
+def parse_scheduler_datetime(value):
+    value = clean_text(value)
+    if not value:
+        return None
+    try:
+        normalized = value.replace("Z", "+00:00")
+        dt = datetime.fromisoformat(normalized)
+    except Exception:
+        try:
+            dt = parser.parse(value)
+        except Exception:
+            return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=BAKU_TZ)
+    return dt.astimezone(BAKU_TZ)
+
+
+def get_scheduler_interval_minutes(site):
+    base_interval = SOURCE_DEFAULT_INTERVAL_MINUTES
+    method = clean_text(site.get("monitor_method", "")).lower()
+    method_multiplier = 2 if method == "sitemap" else 1
+    try:
+        fail_count = int(site.get("consecutive_fail_count") or 0)
+    except Exception:
+        fail_count = 0
+    if fail_count >= 5:
+        fail_multiplier = 8
+    elif fail_count >= 3:
+        fail_multiplier = 4
+    elif fail_count >= 1:
+        fail_multiplier = 2
+    else:
+        fail_multiplier = 1
+    return max(1, base_interval * method_multiplier * fail_multiplier)
+
+
+def classify_scheduler_error(last_error):
+    value = clean_text(last_error).lower()
+    if not value:
+        return "none"
+    if "403" in value or "429" in value:
+        return "rate_or_block"
+    if "timeout" in value or "timed out" in value:
+        return "timeout"
+    if any(marker in value for marker in ("dns", "name", "connect", "connection")):
+        return "network"
+    return "error"
+
+
+def evaluate_source_schedule(site, now=None):
+    now = now or datetime.now(BAKU_TZ)
+    interval_minutes = get_scheduler_interval_minutes(site)
+    last_checked = parse_scheduler_datetime(site.get("last_checked_at"))
+    try:
+        fail_count = int(site.get("consecutive_fail_count") or 0)
+    except Exception:
+        fail_count = 0
+    error_type = classify_scheduler_error(site.get("last_error"))
+    if not last_checked:
+        return {
+            "site": site,
+            "due": True,
+            "reason": "never_checked",
+            "interval_minutes": interval_minutes,
+            "remaining_minutes": 0,
+            "fail_count": fail_count,
+            "error_type": error_type,
+        }
+    elapsed_minutes = max(0, int((now - last_checked).total_seconds() // 60))
+    remaining_minutes = max(0, interval_minutes - elapsed_minutes)
+    due = elapsed_minutes >= interval_minutes
+    reason = "interval_elapsed" if due else "recently_checked"
+    if not due and fail_count > 0:
+        reason = "fail_backoff"
+    return {
+        "site": site,
+        "due": due,
+        "reason": reason,
+        "interval_minutes": interval_minutes,
+        "remaining_minutes": remaining_minutes,
+        "fail_count": fail_count,
+        "error_type": error_type,
+        "last_checked_at": last_checked.isoformat(),
+    }
+
+
+def log_scheduler_dry_run_summary(sites, decisions):
+    if not SCHEDULER_DRY_RUN:
+        return
+    total = len(sites)
+    due_count = sum(1 for decision in decisions if decision.get("due"))
+    skip_count = total - due_count
+    reason_counts = {}
+    for decision in decisions:
+        reason = decision.get("reason") or "unknown"
+        reason_counts[reason] = reason_counts.get(reason, 0) + 1
+    reasons_text = " | ".join(f"{key}={value}" for key, value in sorted(reason_counts.items())) or "none"
+    print("🧪 Scheduler dry-run aktivdir. Mənbələr skip edilməyəcək.", flush=True)
+    print(
+        f"🧪 Scheduler dry-run | total={total} | due={due_count} | would_skip={skip_count} | default_interval={SOURCE_DEFAULT_INTERVAL_MINUTES}m",
+        flush=True,
+    )
+    print(f"🧪 Scheduler skip reasons | {reasons_text}", flush=True)
+    shown = 0
+    for decision in decisions:
+        if decision.get("due"):
+            continue
+        site = decision.get("site") or {}
+        print(
+            "🧪 Would skip: "
+            f"{site.get('name') or site.get('url')} | method={site.get('monitor_method') or 'auto'} "
+            f"| interval={decision.get('interval_minutes')}m | remaining={decision.get('remaining_minutes')}m "
+            f"| reason={decision.get('reason')} | fail={decision.get('fail_count')} | error={decision.get('error_type')}",
+            flush=True,
+        )
+        shown += 1
+        if shown >= 10:
+            break
 def normalize_text(text):
     text = str(text or "").lower()
     text = text.replace("i̇", "i")
@@ -2096,6 +2217,11 @@ def load_sites():
                     "monitor_method": method,
                     "discovery_status": row.get("discovery_status"),
                     "discovery_score": row.get("discovery_score"),
+                    "last_checked_at": row.get("last_checked_at"),
+                    "last_success_at": row.get("last_success_at"),
+                    "last_error": row.get("last_error"),
+                    "consecutive_fail_count": row.get("consecutive_fail_count"),
+                    "last_result": row.get("last_result"),
                 })
             if len(rows) < page_size:
                 break
@@ -2266,6 +2392,9 @@ def check_sites():
     connect_telegram_users_from_updates()
     cleanup_old_monitor_data_if_needed()
     sites = load_sites()
+    if SCHEDULER_DRY_RUN:
+        scheduler_decisions = [evaluate_source_schedule(site) for site in sites]
+        log_scheduler_dry_run_summary(sites, scheduler_decisions)
     patterns_data = load_patterns()
     monitor_keywords_cache = load_active_monitor_keywords()
     total = len(sites)
