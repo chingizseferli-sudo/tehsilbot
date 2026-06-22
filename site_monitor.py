@@ -1821,10 +1821,9 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
         return None
 
 
-def find_matching_user_monitors(title):
+def load_active_monitor_keywords():
     if not supabase_ready():
-        return []
-    title_text = normalize_text(title)
+        return None
     try:
         response = requests.get(
             f"{SUPABASE_URL}/rest/v1/monitor_keywords",
@@ -1835,9 +1834,36 @@ def find_matching_user_monitors(title):
             timeout=REQUEST_TIMEOUT,
         )
         if response.status_code != 200:
-            print(f"Monitor keyword oxuma xetasi: {response.status_code} | {response.text[:200]}", flush=True)
-            return []
-        keywords = response.json() or []
+            print(f"Monitor keyword cache oxuma xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+            return None
+        rows = response.json() or []
+        active_rows = [row for row in rows if (row.get("user_monitors") or {}).get("status") == "active"]
+        print(f"Aktiv monitor keyword cache: {len(active_rows)}", flush=True)
+        return active_rows
+    except Exception as exc:
+        print(f"Monitor keyword cache istisnasi: {exc}", flush=True)
+        return None
+
+def find_matching_user_monitors(title, monitor_keywords_cache=None):
+    if not supabase_ready():
+        return []
+    title_text = normalize_text(title)
+    try:
+        if monitor_keywords_cache is None:
+            response = requests.get(
+                f"{SUPABASE_URL}/rest/v1/monitor_keywords",
+                headers=supabase_headers(),
+                params={
+                    "select": "id,keyword,match_type,monitor_id,user_monitors(id,name,user_id,status,notify_telegram,telegram_chat_id)"
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+            if response.status_code != 200:
+                print(f"Monitor keyword oxuma xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+                return []
+            keywords = response.json() or []
+        else:
+            keywords = monitor_keywords_cache
         matched_monitors = []
         seen_matches = set()
         for row in keywords:
@@ -1867,23 +1893,26 @@ def find_matching_user_monitors(title):
         return []
 
 
-def match_user_monitors(item_id, title):
+def match_user_monitors(item_id, title, monitor_keywords_cache=None):
     if not supabase_ready() or not item_id:
         return []
     title_text = normalize_text(title)
     try:
-        response = requests.get(
-            f"{SUPABASE_URL}/rest/v1/monitor_keywords",
-            headers=supabase_headers(),
-            params={
-                "select": "id,keyword,match_type,monitor_id,user_monitors(id,name,user_id,status,notify_telegram,telegram_chat_id)"
-            },
-            timeout=REQUEST_TIMEOUT,
-        )
-        if response.status_code != 200:
-            print(f"Monitor keyword oxuma xətası: {response.status_code} | {response.text[:200]}", flush=True)
-            return []
-        keywords = response.json() or []
+        if monitor_keywords_cache is None:
+            response = requests.get(
+                f"{SUPABASE_URL}/rest/v1/monitor_keywords",
+                headers=supabase_headers(),
+                params={
+                    "select": "id,keyword,match_type,monitor_id,user_monitors(id,name,user_id,status,notify_telegram,telegram_chat_id)"
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+            if response.status_code != 200:
+                print(f"Monitor keyword oxuma xətası: {response.status_code} | {response.text[:200]}", flush=True)
+                return []
+            keywords = response.json() or []
+        else:
+            keywords = monitor_keywords_cache
         matched_monitors = []
         seen_matches = set()
         for row in keywords:
@@ -2060,7 +2089,7 @@ def load_sites():
         return []
 
 
-def process_site(index, total, site, patterns_data):
+def process_site(index, total, site, patterns_data, monitor_keywords_cache=None):
     started = time.time()
     result = {"sent": 0, "site": site.get("name"), "url": site.get("url"), "candidates": 0, "reason": "unknown"}
     print(f"[{index}/{total}] Yoxlanır: {site['name']} | {site['url']}", flush=True)
@@ -2107,13 +2136,13 @@ def process_site(index, total, site, patterns_data):
             continue
 
         clean_title = item.get("clean_title") or clean_title_for_message(title)
-        pre_matches = find_matching_user_monitors(clean_title)
+        pre_matches = find_matching_user_monitors(clean_title, monitor_keywords_cache)
         if not pre_matches:
             result["reason"] = "no_monitor_match"
             continue
 
         monitor_item_id = save_to_vizual_monitor(site, item, clean_title, published_time)
-        monitor_matches = match_user_monitors(monitor_item_id, clean_title) if monitor_item_id else []
+        monitor_matches = match_user_monitors(monitor_item_id, clean_title, monitor_keywords_cache) if monitor_item_id else []
         matched_keywords = clean_matched_keywords([match.get("keyword") for match in monitor_matches])
 
         if not monitor_matches or not matched_keywords:
@@ -2220,6 +2249,7 @@ def check_sites():
     cleanup_old_monitor_data_if_needed()
     sites = load_sites()
     patterns_data = load_patterns()
+    monitor_keywords_cache = load_active_monitor_keywords()
     total = len(sites)
     print(f"Yüklənən sayt sayı: {total}", flush=True)
     print(f"Monitorinq başladı | worker={MAX_WORKERS} | son {NEWS_TIME_LIMIT_HOURS} saat | {datetime.now(BAKU_TZ).strftime('%d.%m.%Y %H:%M:%S')} AZT", flush=True)
@@ -2229,7 +2259,7 @@ def check_sites():
     max_workers = max(1, min(MAX_WORKERS, total or 1))
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = {executor.submit(process_site, index, total, site, patterns_data): site for index, site in enumerate(sites, start=1)}
+        futures = {executor.submit(process_site, index, total, site, patterns_data, monitor_keywords_cache): site for index, site in enumerate(sites, start=1)}
         for future in as_completed(futures):
             try:
                 result = future.result() or {}
