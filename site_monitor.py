@@ -145,6 +145,22 @@ def repair_mojibake(text):
     return min(candidates, key=lambda item: mojibake_score(item, original_length))
 
 
+
+def looks_like_xml_content(text):
+    sample = str(text or "").lstrip()[:500].lower()
+    if not sample:
+        return False
+    return (
+        sample.startswith("<?xml")
+        or sample.startswith("<rss")
+        or sample.startswith("<feed")
+        or sample.startswith("<urlset")
+        or sample.startswith("<sitemapindex")
+        or "<urlset" in sample[:200]
+        or "<sitemapindex" in sample[:200]
+    )
+
+
 def decode_response_text(response):
     raw = response.content or b""
     candidates = []
@@ -1401,7 +1417,8 @@ def extract_links_from_xpath(page_url, page_html, xpaths, keywords):
 
 
 def extract_links_by_patterns(page_url, page_html, keywords, patterns):
-    soup = BeautifulSoup(page_html, "html.parser")
+    parser = "xml" if looks_like_xml_content(page_html) else "html.parser"
+    soup = BeautifulSoup(page_html, parser)
     results = []
     for a in soup.find_all("a", href=True):
         title = clean_text(a.get_text(" ", strip=True))
@@ -1413,7 +1430,8 @@ def extract_links_by_patterns(page_url, page_html, keywords, patterns):
 
 
 def extract_links_fallback(page_url, page_html, keywords):
-    soup = BeautifulSoup(page_html, "html.parser")
+    parser = "xml" if looks_like_xml_content(page_html) else "html.parser"
+    soup = BeautifulSoup(page_html, parser)
     results = []
 
     links = soup.find_all("a", href=True)
