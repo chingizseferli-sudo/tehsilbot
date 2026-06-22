@@ -145,9 +145,6 @@ def repair_mojibake(text):
 
     original_length = len(value)
     return min(candidates, key=lambda item: mojibake_score(item, original_length))
-
-
-
 def looks_like_xml_content(text):
     sample = str(text or "").lstrip()[:500].lower()
     if not sample:
@@ -209,23 +206,71 @@ def parse_scheduler_datetime(value):
     return dt.astimezone(BAKU_TZ)
 
 
-def get_scheduler_interval_minutes(site):
-    base_interval = SOURCE_DEFAULT_INTERVAL_MINUTES
-    method = clean_text(site.get("monitor_method", "")).lower()
-    method_multiplier = 2 if method == "sitemap" else 1
+def normalize_scheduler_method(method):
+    method = clean_text(method).lower()
+    if method == "xpath":
+        return "xpath_pattern"
+    known_methods = {
+        "rss",
+        "rss_discovered",
+        "google_news_fallback",
+        "latest_page",
+        "selector",
+        "xpath_pattern",
+        "homepage",
+        "sitemap",
+        "recoverable",
+    }
+    return method if method in known_methods else "default"
+
+
+def get_scheduler_base_interval_minutes(site):
+    method = normalize_scheduler_method(site.get("monitor_method", ""))
+    method_intervals = {
+        "rss": 10,
+        "rss_discovered": 10,
+        "google_news_fallback": 15,
+        "latest_page": 15,
+        "selector": 20,
+        "xpath_pattern": 20,
+        "homepage": 30,
+        "sitemap": 45,
+        "recoverable": 45,
+        "default": 30,
+    }
+    return method_intervals.get(method, method_intervals["default"])
+
+
+def get_scheduler_fail_count(site):
     try:
-        fail_count = int(site.get("consecutive_fail_count") or 0)
+        return int(site.get("consecutive_fail_count") or 0)
     except Exception:
-        fail_count = 0
+        return 0
+
+
+def get_scheduler_fail_bucket(fail_count):
     if fail_count >= 5:
-        fail_multiplier = 8
-    elif fail_count >= 3:
-        fail_multiplier = 4
-    elif fail_count >= 1:
-        fail_multiplier = 2
-    else:
-        fail_multiplier = 1
-    return max(1, base_interval * method_multiplier * fail_multiplier)
+        return "fail_5_plus"
+    if fail_count >= 3:
+        return "fail_3_4"
+    if fail_count >= 1:
+        return "fail_1_2"
+    return "fail_0"
+
+
+def get_scheduler_fail_multiplier(fail_count):
+    if fail_count >= 5:
+        return 8
+    if fail_count >= 3:
+        return 4
+    if fail_count >= 1:
+        return 2
+    return 1
+
+
+def get_scheduler_interval_minutes(site):
+    fail_count = get_scheduler_fail_count(site)
+    return max(1, get_scheduler_base_interval_minutes(site) * get_scheduler_fail_multiplier(fail_count))
 
 
 def classify_scheduler_error(last_error):
@@ -243,39 +288,65 @@ def classify_scheduler_error(last_error):
 
 def evaluate_source_schedule(site, now=None):
     now = now or datetime.now(BAKU_TZ)
-    interval_minutes = get_scheduler_interval_minutes(site)
+    method = normalize_scheduler_method(site.get("monitor_method", ""))
+    base_interval = get_scheduler_base_interval_minutes(site)
+    fail_count = get_scheduler_fail_count(site)
+    fail_bucket = get_scheduler_fail_bucket(fail_count)
+    fail_multiplier = get_scheduler_fail_multiplier(fail_count)
+    interval_minutes = max(1, base_interval * fail_multiplier)
     last_checked = parse_scheduler_datetime(site.get("last_checked_at"))
-    try:
-        fail_count = int(site.get("consecutive_fail_count") or 0)
-    except Exception:
-        fail_count = 0
     error_type = classify_scheduler_error(site.get("last_error"))
+    decision = {
+        "site": site,
+        "monitor_method": method,
+        "base_interval_minutes": base_interval,
+        "fail_multiplier": fail_multiplier,
+        "fail_bucket": fail_bucket,
+        "interval_minutes": interval_minutes,
+        "final_interval_minutes": interval_minutes,
+        "fail_count": fail_count,
+        "error_type": error_type,
+    }
     if not last_checked:
-        return {
-            "site": site,
+        decision.update({
             "due": True,
             "reason": "never_checked",
-            "interval_minutes": interval_minutes,
             "remaining_minutes": 0,
-            "fail_count": fail_count,
-            "error_type": error_type,
-        }
+        })
+        return decision
     elapsed_minutes = max(0, int((now - last_checked).total_seconds() // 60))
     remaining_minutes = max(0, interval_minutes - elapsed_minutes)
     due = elapsed_minutes >= interval_minutes
     reason = "interval_elapsed" if due else "recently_checked"
     if not due and fail_count > 0:
         reason = "fail_backoff"
-    return {
-        "site": site,
+    decision.update({
         "due": due,
         "reason": reason,
-        "interval_minutes": interval_minutes,
         "remaining_minutes": remaining_minutes,
-        "fail_count": fail_count,
-        "error_type": error_type,
         "last_checked_at": last_checked.isoformat(),
-    }
+    })
+    return decision
+
+
+def summarize_scheduler_group(decisions, key):
+    summary = {}
+    for decision in decisions:
+        group = decision.get(key) or "unknown"
+        bucket = summary.setdefault(group, {"total": 0, "due": 0, "skip": 0})
+        bucket["total"] += 1
+        if decision.get("due"):
+            bucket["due"] += 1
+        else:
+            bucket["skip"] += 1
+    return summary
+
+
+def format_scheduler_summary(summary):
+    return " | ".join(
+        f"{key} total={value['total']} due={value['due']} skip={value['skip']}"
+        for key, value in sorted(summary.items())
+    ) or "none"
 
 
 def log_scheduler_dry_run_summary(sites, decisions):
@@ -289,20 +360,26 @@ def log_scheduler_dry_run_summary(sites, decisions):
         reason = decision.get("reason") or "unknown"
         reason_counts[reason] = reason_counts.get(reason, 0) + 1
     reasons_text = " | ".join(f"{key}={value}" for key, value in sorted(reason_counts.items())) or "none"
-    print("🧪 Scheduler dry-run aktivdir. Mənbələr skip edilməyəcək.", flush=True)
-    print(
-        f"🧪 Scheduler dry-run | total={total} | due={due_count} | would_skip={skip_count} | default_interval={SOURCE_DEFAULT_INTERVAL_MINUTES}m",
-        flush=True,
+    interval_text = (
+        "rss=10m | rss_discovered=10m | google_news_fallback=15m | latest_page=15m | "
+        "selector=20m | xpath_pattern=20m | homepage=30m | sitemap=45m | recoverable=45m | default=30m"
     )
-    print(f"🧪 Scheduler skip reasons | {reasons_text}", flush=True)
+    method_text = format_scheduler_summary(summarize_scheduler_group(decisions, "monitor_method"))
+    fail_bucket_text = format_scheduler_summary(summarize_scheduler_group(decisions, "fail_bucket"))
+    print("[DRY-RUN] Scheduler aktivdir. Menbeler skip edilmeyecek.", flush=True)
+    print(f"[DRY-RUN] Scheduler | total={total} | due={due_count} | would_skip={skip_count}", flush=True)
+    print(f"[DRY-RUN] Scheduler intervals | {interval_text}", flush=True)
+    print(f"[DRY-RUN] Scheduler skip reasons | {reasons_text}", flush=True)
+    print(f"[DRY-RUN] Scheduler methods | {method_text}", flush=True)
+    print(f"[DRY-RUN] Scheduler fail buckets | {fail_bucket_text}", flush=True)
     shown = 0
     for decision in decisions:
         if decision.get("due"):
             continue
         site = decision.get("site") or {}
         print(
-            "🧪 Would skip: "
-            f"{site.get('name') or site.get('url')} | method={site.get('monitor_method') or 'auto'} "
+            "[DRY-RUN] Would skip: "
+            f"{site.get('name') or site.get('url')} | method={decision.get('monitor_method') or 'default'} "
             f"| interval={decision.get('interval_minutes')}m | remaining={decision.get('remaining_minutes')}m "
             f"| reason={decision.get('reason')} | fail={decision.get('fail_count')} | error={decision.get('error_type')}",
             flush=True,
@@ -310,6 +387,8 @@ def log_scheduler_dry_run_summary(sites, decisions):
         shown += 1
         if shown >= 10:
             break
+
+
 def normalize_text(text):
     text = str(text or "").lower()
     text = text.replace("i̇", "i")
