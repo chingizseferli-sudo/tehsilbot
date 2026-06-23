@@ -775,7 +775,6 @@ def exists(link, title=None):
         return False
 
     normalized_link = normalize_link(link)
-    title_key = normalize_title_key(title) if title else ""
     if not normalized_link:
         return False
 
@@ -791,17 +790,10 @@ def exists(link, title=None):
             print(f"⛔ Təkrar xəbər link üzrə bazada var: {normalized_link}", flush=True)
             return True
 
-        if title_key:
-            with DB_LOCK:
-                title_response = requests.get(
-                    f"{SUPABASE_URL}/rest/v1/sent_news",
-                    headers=supabase_headers(),
-                    params={"select": "link,title", "title": f"eq.{title_key}", "limit": "1"},
-                    timeout=REQUEST_TIMEOUT,
-                )
-            if title_response.status_code == 200 and title_response.json():
-                print(f"⛔ Təkrar xəbər başlıq üzrə bazada var: {title_key[:80]}", flush=True)
-                return True
+        # Title is not a safe duplicate key: recurring announcements and
+        # different sources can legitimately publish the same headline.
+        # Keep title as metadata for future story grouping, but block only by
+        # normalized URL/canonical URL.
         return False
     except Exception as exc:
         print(f"Supabase exists istisnası: {exc}", flush=True)
@@ -833,7 +825,11 @@ def reserve_news(link, title, source):
             print(f"✅ Supabase rezerv edildi: {normalized_link}", flush=True)
             return True
         if response.status_code == 409:
-            print(f"⛔ Supabase duplicate rezerv: {normalized_link}", flush=True)
+            print(
+                f"⛔ Supabase duplicate rezerv: {normalized_link} | "
+                "DB constraint yoxlanmalıdır: title təkbaşına duplicate açarı olmamalıdır.",
+                flush=True,
+            )
             return False
         print(f"Supabase reserve xətası: {response.status_code} | {response.text[:300]}", flush=True)
         return False
