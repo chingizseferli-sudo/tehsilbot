@@ -435,17 +435,59 @@ def classify_fetch_exception(exc):
     return "site_error"
 
 
+def normalize_read_method(method):
+    method = clean_text(method).lower()
+    if method == "xpath":
+        return "xpath"
+    if method == "rss_discovered":
+        return "rss"
+    return method
+
+
+def empty_reason_for_method(method):
+    method = normalize_read_method(method)
+    if method == "rss":
+        return "rss_empty"
+    if method == "sitemap":
+        return "sitemap_empty"
+    if method == "selector":
+        return "selector_empty"
+    if method in {"xpath", "xpath_pattern"}:
+        return "xpath_empty"
+    if method == "homepage":
+        return "homepage_empty"
+    if method == "latest_page":
+        return "latest_page_empty"
+    if method in {"fallback", "recoverable"}:
+        return "fallback_empty"
+    if method == "google_news":
+        return "rss_empty"
+    return "no_article"
+
+
+def record_method_attempt(site, method):
+    method = normalize_read_method(method)
+    if not method:
+        return
+    attempts = site.setdefault("_method_attempted", [])
+    if method not in attempts:
+        attempts.append(method)
+
+
 def set_read_diagnostic(site, reason=None, method=None, fallback_used=None):
+    if method:
+        record_method_attempt(site, method)
+        site["_read_method"] = normalize_read_method(method)
     if reason:
         site["_read_failure_reason"] = clean_text(reason)
-    if method:
-        site["_read_method"] = clean_text(method)
     if fallback_used is not None:
         site["_fallback_used"] = bool(fallback_used)
 
 
 def mark_read_success(site, method, fallback_used=False):
+    method = normalize_read_method(method)
     site.pop("_read_failure_reason", None)
+    site["_method_succeeded"] = method
     set_read_diagnostic(site, None, method, fallback_used)
 
 
@@ -453,14 +495,18 @@ def get_read_failure_reason(site, default="no_article"):
     return clean_text(site.get("_read_failure_reason") or default)
 
 
-def merge_bot_diagnostic_notes(existing_notes, reason, method, fallback_used):
+def merge_bot_diagnostic_notes(existing_notes, reason, method, fallback_used, attempted_methods=None, succeeded_method=None):
     raw_notes = str(existing_notes or "").strip()
     lines = [
         line for line in raw_notes.splitlines()
         if not line.strip().startswith("[bot_diagnostic]")
     ]
+    attempted = ",".join(attempted_methods or []) or clean_text(method) or "unknown"
+    succeeded = clean_text(succeeded_method) or (clean_text(method) if clean_text(reason) == "sent" else "")
     diagnostic = (
         f"[bot_diagnostic] result={clean_text(reason) or 'unknown'}; "
+        f"method_attempted={attempted}; "
+        f"method_succeeded={succeeded or 'none'}; "
         f"method={clean_text(method) or 'unknown'}; "
         f"fallback_used={'true' if fallback_used else 'false'}"
     )
@@ -574,24 +620,34 @@ def update_source_health(site, result):
     candidates = int(result.get("candidates", 0) or 0)
     sent = int(result.get("sent", 0) or 0)
     read_method = clean_text(result.get("read_method") or site.get("_read_method") or "")
+    attempted_methods = site.get("_method_attempted") or []
+    succeeded_method = clean_text(site.get("_method_succeeded") or "")
     fallback_used = bool(result.get("fallback_used") or site.get("_fallback_used"))
     now = datetime.now(BAKU_TZ).isoformat()
     payload = {
         "last_checked_at": now,
         "last_result": reason,
-        "notes": merge_bot_diagnostic_notes(site.get("notes"), reason, read_method, fallback_used),
+        "notes": merge_bot_diagnostic_notes(
+            site.get("notes"),
+            reason,
+            read_method,
+            fallback_used,
+            attempted_methods=attempted_methods,
+            succeeded_method=succeeded_method,
+        ),
     }
 
     hard_fail_reasons = {
         "site_error", "blocked", "dead", "failed",
         "http_403", "http_404", "http_429", "timeout",
         "dns_failure", "ssl_failure", "rss_empty", "invalid_xml",
-        "selector_empty", "unsafe_url",
+        "selector_empty", "xpath_empty", "sitemap_empty", "unsafe_url",
     }
     readable_reasons = {
         "sent", "duplicate", "old_news", "future_date", "no_date",
         "date_parse_failed", "no_monitor_match", "no_telegram_recipient",
-        "no_keyword_match", "no_article", "forbidden", "chat_not_found",
+        "no_keyword_match", "no_article", "latest_page_empty",
+        "homepage_empty", "fallback_empty", "forbidden", "chat_not_found",
         "bot_blocked", "bad_request", "network_error", "telegram_429",
         "chat_migrated",
     }
@@ -1852,7 +1908,7 @@ def extract_links_from_sitemap(site):
             set_read_diagnostic(site, "invalid_xml", "sitemap")
             return []
         if not urls:
-            set_read_diagnostic(site, "no_article", "sitemap")
+            set_read_diagnostic(site, "sitemap_empty", "sitemap")
             return []
         for url in urls[:300]:
             if not any(pattern in url.lower() for pattern in ARTICLE_URL_PATTERNS):
@@ -1881,7 +1937,7 @@ def extract_links_from_sitemap(site):
     if results:
         mark_read_success(site, "sitemap", site.get("_fallback_used", False))
     elif not site.get("_read_failure_reason"):
-        set_read_diagnostic(site, "no_article", "sitemap")
+        set_read_diagnostic(site, "sitemap_empty", "sitemap")
     return results
 
 def fetch_page(url):
@@ -2001,7 +2057,7 @@ def fetch_site(site, patterns_data):
             return unique_items(items)
 
         if not site.get("_read_failure_reason"):
-            set_read_diagnostic(site, "no_article", "sitemap")
+            set_read_diagnostic(site, "sitemap_empty", "sitemap")
         return []
 
     # 5) HTML əsaslı metodlar
@@ -2049,7 +2105,7 @@ def fetch_site(site, patterns_data):
     # 7) XPath metodu
     if monitor_method == "xpath_pattern":
         if not xpaths:
-            set_read_diagnostic(site, "selector_empty", "xpath")
+            set_read_diagnostic(site, "xpath_empty", "xpath")
         else:
             items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
 
@@ -2058,7 +2114,7 @@ def fetch_site(site, patterns_data):
                 return unique_items(items)
 
             print("XPath nəticə vermədi, fallback yoxlanacaq.", flush=True)
-            set_read_diagnostic(site, "selector_empty", "xpath")
+            set_read_diagnostic(site, "xpath_empty", "xpath")
 
     # 8) Latest/Homepage/Recoverable/Auto metodları
     if monitor_method in {
@@ -2115,11 +2171,14 @@ def fetch_site(site, patterns_data):
                 mark_read_success(site, method, fallback_used=method == "fallback")
 
         items = unique_items(items)
-        if not items and not site.get("_read_failure_reason"):
-            set_read_diagnostic(site, "no_article", monitor_method or "latest_page")
+        if not items:
+            final_method = "fallback" if site.get("_fallback_used") else (monitor_method or "latest_page")
+            final_reason = empty_reason_for_method(final_method)
+            if not site.get("_read_failure_reason") or final_reason in {"homepage_empty", "latest_page_empty", "fallback_empty"}:
+                set_read_diagnostic(site, final_reason, final_method)
         return items
 
-    set_read_diagnostic(site, "no_article", monitor_method or "latest_page")
+    set_read_diagnostic(site, empty_reason_for_method(monitor_method or "latest_page"), monitor_method or "latest_page")
     return []
 
 def get_existing_monitor_match_id(monitor_id, item_id):
@@ -2747,6 +2806,8 @@ def check_sites():
         "http_403": 0, "http_404": 0,
         "http_429": 0, "timeout": 0, "dns_failure": 0, "ssl_failure": 0,
         "rss_empty": 0, "invalid_xml": 0, "selector_empty": 0,
+        "xpath_empty": 0, "sitemap_empty": 0, "homepage_empty": 0,
+        "latest_page_empty": 0, "fallback_empty": 0,
         "unsafe_url": 0, "unknown": 0,
     }
     max_workers = max(1, min(MAX_WORKERS, total or 1))
@@ -2777,7 +2838,7 @@ def check_sites():
     print(f"⚙️ Worker sayı: {max_workers}", flush=True)
     print(f"📤 Göndərilən xəbər: {sent_count}", flush=True)
     print(f"🔎 Məqalə tapılmayan sayt: {stats.get('no_article', 0)}", flush=True)
-    print(f"🧭 Oxuma diaqnostikası: http_403={stats.get('http_403', 0)} | http_404={stats.get('http_404', 0)} | http_429={stats.get('http_429', 0)} | timeout={stats.get('timeout', 0)} | dns={stats.get('dns_failure', 0)} | ssl={stats.get('ssl_failure', 0)} | rss_empty={stats.get('rss_empty', 0)} | invalid_xml={stats.get('invalid_xml', 0)} | selector_empty={stats.get('selector_empty', 0)} | unsafe_url={stats.get('unsafe_url', 0)}", flush=True)
+    print(f"🧭 Oxuma diaqnostikası: http_403={stats.get('http_403', 0)} | http_404={stats.get('http_404', 0)} | http_429={stats.get('http_429', 0)} | timeout={stats.get('timeout', 0)} | dns={stats.get('dns_failure', 0)} | ssl={stats.get('ssl_failure', 0)} | rss_empty={stats.get('rss_empty', 0)} | invalid_xml={stats.get('invalid_xml', 0)} | selector_empty={stats.get('selector_empty', 0)} | xpath_empty={stats.get('xpath_empty', 0)} | sitemap_empty={stats.get('sitemap_empty', 0)} | latest_page_empty={stats.get('latest_page_empty', 0)} | homepage_empty={stats.get('homepage_empty', 0)} | fallback_empty={stats.get('fallback_empty', 0)} | unsafe_url={stats.get('unsafe_url', 0)}", flush=True)
     print(f"🔁 Təkrar keçilən: {stats.get('duplicate', 0) + stats.get('duplicate_url', 0)}", flush=True)
     print(f"🔗 URL dedup: duplicate_url={stats.get('duplicate_url', 0)} | db_conflict={stats.get('db_dedup_conflict', 0)}", flush=True)
     print(f"🕒 Tarix tapılmayan: {stats.get('no_date', 0)}", flush=True)
