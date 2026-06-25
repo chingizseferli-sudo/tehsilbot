@@ -496,6 +496,16 @@ def get_read_failure_reason(site, default="no_article"):
     return clean_text(site.get("_read_failure_reason") or default)
 
 
+def final_source_health_reason(site, result):
+    result_reason = clean_text((result or {}).get("reason"))
+    runtime_reason = get_read_failure_reason(site, "")
+    if result_reason and result_reason != "unknown":
+        return result_reason
+    if runtime_reason:
+        return runtime_reason
+    return "unknown"
+
+
 def merge_bot_diagnostic_notes(existing_notes, reason, method, fallback_used, attempted_methods=None, succeeded_method=None):
     raw_notes = str(existing_notes or "").strip()
     lines = [
@@ -513,6 +523,83 @@ def merge_bot_diagnostic_notes(existing_notes, reason, method, fallback_used, at
     )
     lines.append(diagnostic)
     return "\n".join(line for line in lines if line.strip())
+
+
+def build_source_health_payload(site, result, now):
+    result = result or {}
+    reason = final_source_health_reason(site, result)
+    candidates = int(result.get("candidates", 0) or 0)
+    sent = int(result.get("sent", 0) or 0)
+    read_method = clean_text(result.get("read_method") or site.get("_read_method") or "")
+    attempted_methods = site.get("_method_attempted") or []
+    succeeded_method = clean_text(site.get("_method_succeeded") or "")
+    fallback_used = bool(result.get("fallback_used") or site.get("_fallback_used"))
+
+    payload = {
+        "last_checked_at": now,
+        "last_result": reason,
+        "notes": merge_bot_diagnostic_notes(
+            site.get("notes"),
+            reason,
+            read_method,
+            fallback_used,
+            attempted_methods=attempted_methods,
+            succeeded_method=succeeded_method,
+        ),
+    }
+
+    hard_fail_reasons = {
+        "site_error", "blocked", "dead", "failed",
+        "http_403", "http_404", "http_429", "timeout",
+        "dns_failure", "ssl_failure", "rss_empty", "invalid_xml",
+        "selector_empty", "xpath_empty", "sitemap_empty", "unsafe_url",
+    }
+    readable_reasons = {
+        "sent", "duplicate", "old_news", "future_date", "no_date",
+        "date_parse_failed", "no_monitor_match", "no_telegram_recipient",
+        "no_keyword_match", "no_article", "latest_page_empty",
+        "homepage_empty", "fallback_empty", "forbidden", "chat_not_found",
+        "bot_blocked", "bad_request", "network_error", "telegram_429",
+        "chat_migrated", "telegram_disabled", "duplicate_url",
+    }
+
+    if reason in hard_fail_reasons:
+        payload["last_error"] = reason
+    elif candidates > 0 or reason in readable_reasons:
+        payload["last_success_at"] = now
+        payload["last_error"] = None
+        payload["consecutive_fail_count"] = 0
+    else:
+        payload["last_error"] = reason
+
+    if sent > 0 or candidates > 0:
+        payload["last_article_found_at"] = now
+
+    return payload, reason, hard_fail_reasons
+
+
+def patch_source_health(source_id, payload):
+    last_error = None
+    for attempt in range(2):
+        try:
+            response = requests.patch(
+                f"{SUPABASE_URL}/rest/v1/sources",
+                headers=supabase_headers({"Prefer": "return=minimal"}),
+                params={"id": f"eq.{source_id}"},
+                json=payload,
+                timeout=REQUEST_TIMEOUT,
+            )
+            if response.status_code in {200, 204}:
+                return True
+            last_error = f"{response.status_code} | {response.text[:200]}"
+            print(f"Source health update xetasi: {last_error}", flush=True)
+        except Exception as exc:
+            last_error = str(exc)
+            print(f"Source health update istisnasi: {exc}", flush=True)
+        if attempt == 0:
+            time.sleep(0.5)
+    print(f"Source health update alinmadi: source={source_id} | {last_error}", flush=True)
+    return False
 
 def get_base_url(url):
     parsed = urlparse(url or "")
@@ -617,41 +704,8 @@ def update_source_health(site, result):
     if not source_id:
         return
 
-    reason = clean_text(result.get("reason") or "unknown")
-    candidates = int(result.get("candidates", 0) or 0)
-    sent = int(result.get("sent", 0) or 0)
-    read_method = clean_text(result.get("read_method") or site.get("_read_method") or "")
-    attempted_methods = site.get("_method_attempted") or []
-    succeeded_method = clean_text(site.get("_method_succeeded") or "")
-    fallback_used = bool(result.get("fallback_used") or site.get("_fallback_used"))
     now = datetime.now(BAKU_TZ).isoformat()
-    payload = {
-        "last_checked_at": now,
-        "last_result": reason,
-        "notes": merge_bot_diagnostic_notes(
-            site.get("notes"),
-            reason,
-            read_method,
-            fallback_used,
-            attempted_methods=attempted_methods,
-            succeeded_method=succeeded_method,
-        ),
-    }
-
-    hard_fail_reasons = {
-        "site_error", "blocked", "dead", "failed",
-        "http_403", "http_404", "http_429", "timeout",
-        "dns_failure", "ssl_failure", "rss_empty", "invalid_xml",
-        "selector_empty", "xpath_empty", "sitemap_empty", "unsafe_url",
-    }
-    readable_reasons = {
-        "sent", "duplicate", "old_news", "future_date", "no_date",
-        "date_parse_failed", "no_monitor_match", "no_telegram_recipient",
-        "no_keyword_match", "no_article", "latest_page_empty",
-        "homepage_empty", "fallback_empty", "forbidden", "chat_not_found",
-        "bot_blocked", "bad_request", "network_error", "telegram_429",
-        "chat_migrated", "telegram_disabled",
-    }
+    payload, reason, hard_fail_reasons = build_source_health_payload(site, result, now)
 
     if reason in hard_fail_reasons:
         try:
@@ -665,29 +719,18 @@ def update_source_health(site, result):
                 print(f"Source fail saygac xetasi: {response.status_code} | {response.text[:200]}", flush=True)
         except Exception as exc:
             print(f"Source fail saygac istisnasi: {exc}", flush=True)
-        payload["last_error"] = reason
-    elif candidates > 0 or reason in readable_reasons:
-        payload["last_success_at"] = now
-        payload["last_error"] = None
-        payload["consecutive_fail_count"] = 0
-    else:
-        payload["last_error"] = reason
 
-    if sent > 0 or candidates > 0:
-        payload["last_article_found_at"] = now
-
-    try:
-        response = requests.patch(
-            f"{SUPABASE_URL}/rest/v1/sources",
-            headers=supabase_headers({"Prefer": "return=minimal"}),
-            params={"id": f"eq.{source_id}"},
-            json=payload,
-            timeout=REQUEST_TIMEOUT,
-        )
-        if response.status_code not in {200, 204}:
-            print(f"Source health update xetasi: {response.status_code} | {response.text[:200]}", flush=True)
-    except Exception as exc:
-        print(f"Source health update istisnasi: {exc}", flush=True)
+    if patch_source_health(source_id, payload):
+        site["last_checked_at"] = payload.get("last_checked_at")
+        site["last_result"] = payload.get("last_result")
+        site["last_error"] = payload.get("last_error")
+        site["notes"] = payload.get("notes")
+        if "last_success_at" in payload:
+            site["last_success_at"] = payload.get("last_success_at")
+        if "last_article_found_at" in payload:
+            site["last_article_found_at"] = payload.get("last_article_found_at")
+        if "consecutive_fail_count" in payload:
+            site["consecutive_fail_count"] = payload.get("consecutive_fail_count")
 
 def parse_telegram_response(response):
     status_code = getattr(response, "status_code", 0) or 0
