@@ -98,6 +98,8 @@ def main():
         ("https://bdu-qazax.edu.az/index.php/az/kheberler", "https://bdu-qazax.edu.az/index.php/az/kheberler/425-maarif26"),
         ("https://www.atu.edu.az/xeberler/1", "https://www.atu.edu.az/xeber/1505"),
         ("https://gsaz.az/articles", "https://gsaz.az/articles/view/16/EKITABLAR"),
+        ("https://afn.az", "https://afn.az/173683-prezidentden-silahli-quvveler-gunu-ile-bagli-paylasim.html"),
+        ("https://big.az", "https://big.az/587466-tramp-ve-sepah-hedeleyir-hormuz-duyunu.html"),
     ]
     rejected = [
         ("https://asoiu.edu.az", "https://asoiu.edu.az/allNews"),
@@ -105,6 +107,8 @@ def main():
         ("https://bmtk.edu.az", "https://bmtk.edu.az/kateqoriya/xeberler/"),
         ("https://gsaz.az", "https://gsaz.az/articles"),
         ("https://gsaz.az", "https://gsaz.az/articles/category/5"),
+        ("https://edusinaq.az", "https://edusinaq.az/education/"),
+        ("https://example.az", "https://example.az/about.html"),
         ("https://example.az", "https://example.az/archive/2026"),
         ("https://example.az", "https://example.az/tag/tehsil"),
         ("https://example.az", "https://example.az/search?q=tehsil"),

@@ -93,6 +93,10 @@ ARTICLE_URL_PATTERNS = [
     "/education/", "/elm/", "/tehsil/", "/2024/", "/2025/", "/2026/",
 ]
 
+ARTICLE_URL_REGEX_PATTERNS = [
+    re.compile(r"/\d{4,}[-_][^/?#]+\.html$"),
+]
+
 DB_LOCK = threading.Lock()
 TELEGRAM_LOCK = threading.Lock()
 
@@ -1676,7 +1680,7 @@ def is_probably_section_url(link):
         "kateqoriya", "archive", "arxiv", "allnews", "all-news", "newsarchive", "latest",
         "lastnews", "son-xeberler", "az/news", "az/xeber", "az/xeberler", "az/xəbərlər",
         "az/metbuat/xeberler", "az/page/media/news", "az/news-and-updates", "p/news",
-        "tehsil", "elm", "elm-ve-tehsil",
+        "tehsil", "elm", "elm-ve-tehsil", "education",
     ]
     if path in section_paths:
         return True
@@ -1696,7 +1700,13 @@ def is_article_like_link(link):
     link_lower = link.lower()
     if "news.google.com/" in link_lower:
         return True
-    return any(pattern in link_lower for pattern in ARTICLE_URL_PATTERNS)
+    if is_probably_section_url(link_lower):
+        return False
+    if any(pattern in link_lower for pattern in ARTICLE_URL_PATTERNS):
+        return True
+    parsed = urlparse(link_lower)
+    path = parsed.path or ""
+    return any(pattern.search(path) for pattern in ARTICLE_URL_REGEX_PATTERNS)
 
 
 def is_bad_link(title, link):
@@ -1960,7 +1970,7 @@ def extract_links_from_sitemap(site):
             set_read_diagnostic(site, "sitemap_empty", "sitemap")
             return []
         for url in urls[:300]:
-            if not any(pattern in url.lower() for pattern in ARTICLE_URL_PATTERNS):
+            if not is_article_like_link(url):
                 continue
             # Sitemap-də başlıq yoxdur; məqaləni açıb title/meta alırıq.
             try:
