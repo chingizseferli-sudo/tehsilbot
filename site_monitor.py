@@ -479,7 +479,7 @@ def normalize_link(link):
         return ""
     parsed = urlparse(link)
     if not parsed.scheme or not parsed.netloc:
-        return link.split("#")[0].rstrip("/").lower()
+        return link.split("#")[0].rstrip("/")
 
     tracking_prefixes = ("utm_",)
     tracking_params = {
@@ -493,12 +493,22 @@ def normalize_link(link):
             continue
         kept_query.append((key, value))
 
-    netloc = parsed.netloc.lower()
-    if netloc.startswith("www."):
-        netloc = netloc[4:]
-    path = parsed.path.rstrip("/")
+    scheme = parsed.scheme.lower()
+    hostname = (parsed.hostname or "").lower()
+    if hostname.startswith("www."):
+        hostname = hostname[4:]
+    try:
+        port = parsed.port
+    except ValueError:
+        port = None
+    include_port = port and not ((scheme == "http" and port == 80) or (scheme == "https" and port == 443))
+    netloc = f"{hostname}:{port}" if include_port else hostname
+
+    # Title is not a safe duplicate key, and URL paths/query values can be
+    # case-sensitive. Normalize only safe URL parts; keep meaningful casing.
+    path = parsed.path.rstrip("/") if parsed.path != "/" else ""
     query = urlencode(kept_query, doseq=True)
-    return urlunparse((parsed.scheme.lower(), netloc, path, "", query, "")).lower()
+    return urlunparse((scheme, netloc, path, "", query, ""))
 
 
 def normalize_title_key(title):
@@ -857,13 +867,17 @@ def exists(link, title=None):
                 timeout=REQUEST_TIMEOUT,
             )
         if response.status_code == 200 and response.json():
-            print(f"⛔ Təkrar xəbər link üzrə bazada var: {normalized_link}", flush=True)
+            print(f"⛔ duplicate_url: {normalized_link}", flush=True)
             return True
 
         # Title is not a safe duplicate key: recurring announcements and
         # different sources can legitimately publish the same headline.
         # Keep title as metadata for future story grouping, but block only by
         # normalized URL/canonical URL.
+        if title:
+            print(f"✅ title_duplicate_allowed: {normalize_title_key(title)[:80]} | new_url={normalized_link}", flush=True)
+        else:
+            print(f"✅ new_url: {normalized_link}", flush=True)
         return False
     except Exception as exc:
         print(f"Supabase exists istisnası: {exc}", flush=True)
@@ -882,7 +896,8 @@ def reserve_news(link, title, source):
     if exists(normalized_link, title_key):
         return False
 
-    payload = {"link": normalized_link, "title": title_key or clean_text(title), "source": source}
+    source_name = source.get("name") if isinstance(source, dict) else source
+    payload = {"link": normalized_link, "title": title_key or clean_text(title), "source": source_name}
     try:
         with DB_LOCK:
             response = requests.post(
@@ -895,8 +910,12 @@ def reserve_news(link, title, source):
             print(f"✅ Supabase rezerv edildi: {normalized_link}", flush=True)
             return True
         if response.status_code == 409:
+            conflict_is_url = exists(normalized_link, title_key)
+            conflict_reason = "duplicate_url" if conflict_is_url else "db_dedup_conflict"
+            if isinstance(source, dict):
+                source["_reserve_failure_reason"] = conflict_reason
             print(
-                f"⛔ Supabase duplicate rezerv: {normalized_link} | "
+                f"⛔ {conflict_reason}: {normalized_link} | "
                 "DB constraint yoxlanmalıdır: title təkbaşına duplicate açarı olmamalıdır.",
                 flush=True,
             )
@@ -2510,7 +2529,7 @@ def process_site(index, total, site, patterns_data, monitor_keywords_cache=None)
         matched_keywords = item.get("matched_keywords", [])
 
         if exists(link, title):
-            result["reason"] = "duplicate"
+            result["reason"] = "duplicate_url"
             continue
 
         raw_title = item.get("raw_title") or title
@@ -2569,8 +2588,8 @@ def process_site(index, total, site, patterns_data, monitor_keywords_cache=None)
 🔗 Link:
 {link}
 """
-        if not reserve_news(link, clean_title, source):
-            result["reason"] = "duplicate"
+        if not reserve_news(link, clean_title, site):
+            result["reason"] = site.pop("_reserve_failure_reason", "duplicate_url")
             continue
 
         if not target_chat_ids:
@@ -2649,8 +2668,9 @@ def check_sites():
 
     sent_count = 0
     stats = {
-        "sent": 0, "no_article": 0, "duplicate": 0, "no_date": 0,
-        "date_parse_failed": 0, "future_date": 0, "old_news": 0,
+        "sent": 0, "no_article": 0, "duplicate": 0, "duplicate_url": 0,
+        "db_dedup_conflict": 0, "no_date": 0, "date_parse_failed": 0,
+        "future_date": 0, "old_news": 0,
         "no_monitor_match": 0, "no_telegram_recipient": 0,
         "site_error": 0, "telegram_error": 0, "http_403": 0, "http_404": 0,
         "http_429": 0, "timeout": 0, "dns_failure": 0, "ssl_failure": 0,
@@ -2686,7 +2706,8 @@ def check_sites():
     print(f"📤 Göndərilən xəbər: {sent_count}", flush=True)
     print(f"🔎 Məqalə tapılmayan sayt: {stats.get('no_article', 0)}", flush=True)
     print(f"🧭 Oxuma diaqnostikası: http_403={stats.get('http_403', 0)} | http_404={stats.get('http_404', 0)} | http_429={stats.get('http_429', 0)} | timeout={stats.get('timeout', 0)} | dns={stats.get('dns_failure', 0)} | ssl={stats.get('ssl_failure', 0)} | rss_empty={stats.get('rss_empty', 0)} | invalid_xml={stats.get('invalid_xml', 0)} | selector_empty={stats.get('selector_empty', 0)} | unsafe_url={stats.get('unsafe_url', 0)}", flush=True)
-    print(f"🔁 Təkrar keçilən: {stats.get('duplicate', 0)}", flush=True)
+    print(f"🔁 Təkrar keçilən: {stats.get('duplicate', 0) + stats.get('duplicate_url', 0)}", flush=True)
+    print(f"🔗 URL dedup: duplicate_url={stats.get('duplicate_url', 0)} | db_conflict={stats.get('db_dedup_conflict', 0)}", flush=True)
     print(f"🕒 Tarix tapılmayan: {stats.get('no_date', 0)}", flush=True)
     print(f"⚠️ Tarix parse alınmayan: {stats.get('date_parse_failed', 0)}", flush=True)
     print(f"🔮 Gələcək tarixli keçilən: {stats.get('future_date', 0)}", flush=True)
