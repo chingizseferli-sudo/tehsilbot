@@ -43,6 +43,7 @@ PATTERNS_FILE = "patterns.json"
 BAKU_TZ = ZoneInfo("Asia/Baku")
 USER_TELEGRAM_CACHE = {}
 LAST_MONITOR_CLEANUP = None
+TELEGRAM_LAST_ERROR = ""
 
 STRICT_WORDS = {
     "dim", "tkta", "arti", "pisa", "timss", "pirls", "bağça", "magistr",
@@ -590,7 +591,9 @@ def update_source_health(site, result):
     readable_reasons = {
         "sent", "duplicate", "old_news", "future_date", "no_date",
         "date_parse_failed", "no_monitor_match", "no_telegram_recipient",
-        "no_keyword_match", "no_article",
+        "no_keyword_match", "no_article", "forbidden", "chat_not_found",
+        "bot_blocked", "bad_request", "network_error", "telegram_429",
+        "chat_migrated",
     }
 
     if reason in hard_fail_reasons:
@@ -629,40 +632,106 @@ def update_source_health(site, result):
     except Exception as exc:
         print(f"Source health update istisnasi: {exc}", flush=True)
 
+def parse_telegram_response(response):
+    status_code = getattr(response, "status_code", 0) or 0
+    data = {}
+    try:
+        data = response.json() or {}
+    except Exception:
+        data = {}
+
+    parameters = data.get("parameters") or {}
+    description = clean_text(data.get("description") or getattr(response, "text", ""))
+    description_lower = description.lower()
+    try:
+        retry_after = int(parameters.get("retry_after") or 0)
+    except (TypeError, ValueError):
+        retry_after = 0
+    result = {
+        "ok": status_code == 200,
+        "status_code": status_code,
+        "reason": "",
+        "retry_after": retry_after,
+        "migrate_to_chat_id": clean_text(parameters.get("migrate_to_chat_id")),
+        "description": description,
+    }
+
+    if status_code == 200:
+        return result
+    if status_code == 429:
+        result["reason"] = "telegram_429"
+        if result["retry_after"] <= 0:
+            result["retry_after"] = 30
+        return result
+    if result["migrate_to_chat_id"] or "migrate_to_chat_id" in description_lower:
+        result["reason"] = "chat_migrated"
+        return result
+    if status_code == 403:
+        if "bot was blocked" in description_lower or "blocked by the user" in description_lower:
+            result["reason"] = "bot_blocked"
+        else:
+            result["reason"] = "forbidden"
+        return result
+    if status_code == 400:
+        if "chat not found" in description_lower:
+            result["reason"] = "chat_not_found"
+        else:
+            result["reason"] = "bad_request"
+        return result
+
+    result["reason"] = "bad_request" if 400 <= status_code < 500 else "network_error"
+    return result
+
+
 def send_telegram(message, chat_id=None):
+    global TELEGRAM_LAST_ERROR
+    TELEGRAM_LAST_ERROR = ""
     target_chat_id = clean_text(chat_id or CHAT_ID)
     if not BOT_TOKEN or not target_chat_id:
+        TELEGRAM_LAST_ERROR = "bad_request"
         print("BOT_TOKEN və ya CHAT_ID yoxdur.", flush=True)
         return False
 
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-    try:
-        with TELEGRAM_LOCK:
-            response = requests.post(
-                url,
-                data={
-                    "chat_id": target_chat_id,
-                    "text": message,
-                    "disable_web_page_preview": False,
-                },
-                timeout=15,
-            )
-        print("Telegram:", response.status_code, flush=True)
-        if response.status_code != 200:
-            print(f"Telegram cavabi: {response.text[:500]}", flush=True)
+    payload = {
+        "chat_id": target_chat_id,
+        "text": message,
+        "disable_web_page_preview": False,
+    }
 
-        if response.status_code == 429:
-            retry_after = response.json().get("parameters", {}).get("retry_after", 30)
-            time.sleep(retry_after + 2)
+    for attempt in range(2):
+        try:
+            with TELEGRAM_LOCK:
+                response = requests.post(url, data=payload, timeout=15)
+        except Exception as exc:
+            TELEGRAM_LAST_ERROR = "network_error"
+            print(f"Telegram network_error: chat={target_chat_id} | {exc}", flush=True)
             return False
 
-        if response.status_code == 400 and "migrate_to_chat_id" in response.text:
-            print("Telegram qrupu supergroup-a keçib. CHAT_ID-ni yenilə.", flush=True)
+        parsed = parse_telegram_response(response)
+        print(f"Telegram: {parsed['status_code']} | reason={parsed['reason'] or 'sent'}", flush=True)
+        if parsed["ok"]:
+            TELEGRAM_LAST_ERROR = ""
+            return True
 
-        return response.status_code == 200
-    except Exception as exc:
-        print("Telegram xətası:", exc, flush=True)
+        TELEGRAM_LAST_ERROR = parsed["reason"] or "network_error"
+        print(f"Telegram cavabi: {parsed['description'][:500]}", flush=True)
+
+        if TELEGRAM_LAST_ERROR == "chat_migrated":
+            print(
+                f"Telegram chat_migrated: old_chat={target_chat_id} | "
+                f"new_chat={parsed.get('migrate_to_chat_id') or 'unknown'}",
+                flush=True,
+            )
+
+        if TELEGRAM_LAST_ERROR == "telegram_429" and attempt == 0:
+            retry_after = max(1, min(parsed.get("retry_after") or 30, 120))
+            print(f"Telegram 429 retry_after={retry_after}s | eyni mesaj bir dəfə təkrar göndəriləcək.", flush=True)
+            time.sleep(retry_after)
+            continue
         return False
+
+    return False
 
 
 def load_telegram_offset():
@@ -2645,7 +2714,7 @@ Link:
             return result
 
         release_reserved_news(link)
-        result["reason"] = "telegram_error"
+        result["reason"] = TELEGRAM_LAST_ERROR or "telegram_error"
 
     print(f"📊 [{index}/{total}] {site['name']} | namizəd={len(items)} | göndərildi=0 | nəticə={result['reason']} | vaxt={time.time() - started:.1f}s", flush=True)
     update_source_health(site, result)
@@ -2672,7 +2741,10 @@ def check_sites():
         "db_dedup_conflict": 0, "no_date": 0, "date_parse_failed": 0,
         "future_date": 0, "old_news": 0,
         "no_monitor_match": 0, "no_telegram_recipient": 0,
-        "site_error": 0, "telegram_error": 0, "http_403": 0, "http_404": 0,
+        "site_error": 0, "telegram_error": 0, "telegram_429": 0,
+        "forbidden": 0, "chat_not_found": 0, "bot_blocked": 0,
+        "bad_request": 0, "network_error": 0, "chat_migrated": 0,
+        "http_403": 0, "http_404": 0,
         "http_429": 0, "timeout": 0, "dns_failure": 0, "ssl_failure": 0,
         "rss_empty": 0, "invalid_xml": 0, "selector_empty": 0,
         "unsafe_url": 0, "unknown": 0,
@@ -2716,6 +2788,7 @@ def check_sites():
     print(f"📭 Telegram alıcısı olmayan: {stats.get('no_telegram_recipient', 0)}", flush=True)
     print(f"❌ Sayt/worker xətası: {stats.get('site_error', 0)}", flush=True)
     print(f"📨 Telegram xətası: {stats.get('telegram_error', 0)}", flush=True)
+    print(f"📨 Telegram diaqnostikası: 429={stats.get('telegram_429', 0)} | forbidden={stats.get('forbidden', 0)} | blocked={stats.get('bot_blocked', 0)} | chat_not_found={stats.get('chat_not_found', 0)} | bad_request={stats.get('bad_request', 0)} | network={stats.get('network_error', 0)} | migrated={stats.get('chat_migrated', 0)}", flush=True)
     print(f"⏱️ Ümumi vaxt: {elapsed:.1f} saniyə", flush=True)
     print("=" * 60, flush=True)
 
