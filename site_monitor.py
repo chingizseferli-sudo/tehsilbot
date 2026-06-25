@@ -38,6 +38,7 @@ SOURCE_MAX_CONSECUTIVE_FAILS = int(os.getenv("SOURCE_MAX_CONSECUTIVE_FAILS", "5"
 GOOGLE_NEWS_FALLBACK_HOURS = max(1, int(os.getenv("GOOGLE_NEWS_FALLBACK_HOURS", str(NEWS_TIME_LIMIT_HOURS))))
 SCHEDULER_DRY_RUN = os.getenv("SCHEDULER_DRY_RUN", "false").strip().lower() in {"1", "true", "yes"}
 DISABLE_TELEGRAM_SEND = os.getenv("DISABLE_TELEGRAM_SEND", "false").strip().lower() in {"1", "true", "yes"}
+VERIFY_RELEASE_REPAIR_ONLY = os.getenv("VERIFY_RELEASE_REPAIR_ONLY", "false").strip().lower() in {"1", "true", "yes"}
 SOURCE_DEFAULT_INTERVAL_MINUTES = max(1, int(os.getenv("SOURCE_DEFAULT_INTERVAL_MINUTES", "60")))
 
 PATTERNS_FILE = "patterns.json"
@@ -2576,6 +2577,7 @@ def load_sites():
                 params={
                     "select": source_select,
                     "status": "eq.active",
+                    **({"notes": "ilike.*[release_repair]*"} if VERIFY_RELEASE_REPAIR_ONLY else {}),
                     "order": "name.asc",
                     "limit": str(page_size),
                     "offset": str(offset),
@@ -2591,6 +2593,7 @@ def load_sites():
                     params={
                         "select": source_select,
                         "status": "eq.active",
+                        **({"notes": "ilike.*[release_repair]*"} if VERIFY_RELEASE_REPAIR_ONLY else {}),
                         "order": "name.asc",
                         "limit": str(page_size),
                         "offset": str(offset),
@@ -2660,6 +2663,8 @@ def load_sites():
             if len(rows) < page_size:
                 break
             offset += page_size
+        if VERIFY_RELEASE_REPAIR_ONLY:
+            print(f"Release repair verification mode: selected {len(all_sites)} repaired active sources.", flush=True)
         print(f"Supabase active readable sources sayı: {len(all_sites)}", flush=True)
         return all_sites
     except Exception as exc:
@@ -2907,6 +2912,9 @@ def main():
     print("🚀 Sayt monitorinq botu işə düşdü.", flush=True)
     if supabase_ready():
         print("✅ Supabase bağlantı məlumatları yükləndi", flush=True)
+
+    if VERIFY_RELEASE_REPAIR_ONLY and not DISABLE_TELEGRAM_SEND:
+        raise SystemExit("VERIFY_RELEASE_REPAIR_ONLY requires DISABLE_TELEGRAM_SEND=true. Aborting to prevent Telegram sends.")
 
     run_once = os.getenv("RUN_ONCE", "1").strip().lower() in {"1", "true", "yes"}
     notify_start = os.getenv("NOTIFY_START", "0").strip().lower() in {"1", "true", "yes"}
