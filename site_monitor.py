@@ -578,8 +578,9 @@ def update_source_health(site, result):
         "selector_empty", "unsafe_url",
     }
     readable_reasons = {
-        "sent", "duplicate", "old_news", "no_date", "no_monitor_match",
-        "no_telegram_recipient", "no_keyword_match", "no_article",
+        "sent", "duplicate", "old_news", "future_date", "no_date",
+        "date_parse_failed", "no_monitor_match", "no_telegram_recipient",
+        "no_keyword_match", "no_article",
     }
 
     if reason in hard_fail_reasons:
@@ -1215,6 +1216,18 @@ def has_strong_date_signal(text):
     return False
 
 
+def has_any_date_signal(*values):
+    for value in values:
+        text = clean_text(value)
+        if not text:
+            continue
+        if has_strong_date_signal(text) or contains_known_az_month(text):
+            return True
+        if re.search(r"\b\d{1,2}\s*[:.]\s*\d{2}\b", text):
+            return True
+    return False
+
+
 def is_realistic_publish_datetime(dt):
     if not dt:
         return False
@@ -1314,20 +1327,24 @@ def is_today_news(published_time):
     return True
 
 
-def is_recent_news(published_time):
+def get_freshness_status(published_time):
     dt = parse_datetime_to_baku(published_time)
     if not dt:
-        return False
+        return "date_parse_failed"
     now_baku = datetime.now(BAKU_TZ)
     diff = now_baku - dt
     if diff.total_seconds() < 0:
         print(f"Gələcək tarix kimi göründü, keçildi: {published_time}", flush=True)
-        return False
+        return "future_date"
     if diff <= timedelta(hours=NEWS_TIME_LIMIT_HOURS):
         print(f"Tarix uyğundur: {published_time} | fərq: {diff.total_seconds() / 3600:.2f} saat", flush=True)
-        return True
+        return "fresh"
     print(f"Köhnə xəbər keçildi: {published_time} | fərq: {diff.total_seconds() / 3600:.2f} saat", flush=True)
-    return False
+    return "old_news"
+
+
+def is_recent_news(published_time):
+    return get_freshness_status(published_time) == "fresh"
 
 
 def choose_publish_time(title, article_time):
@@ -1345,6 +1362,14 @@ def choose_publish_time(title, article_time):
     if title_dt:
         return title_dt.strftime("%d.%m.%Y %H:%M")
     return None
+
+
+def evaluate_publish_freshness(title_text, article_time):
+    published_time = choose_publish_time(title_text, article_time)
+    if not published_time:
+        reason = "date_parse_failed" if has_any_date_signal(title_text, article_time) else "no_date"
+        return None, reason
+    return published_time, get_freshness_status(published_time)
 
 
 def extract_publish_time_from_html(page_html):
@@ -2492,15 +2517,12 @@ def process_site(index, total, site, patterns_data, monitor_keywords_cache=None)
         title_time = parse_datetime_to_baku(raw_title)
         rss_time = item.get("rss_published")
         article_time = extract_publish_time_from_article(link) or rss_time
-        published_time = choose_publish_time(title, article_time)
+        published_time, freshness_status = evaluate_publish_freshness(raw_title, article_time)
 
-        print(f"[{index}/{total}] Xəbər: {title[:80]} | title_tarix: {title_time} | rss_tarix: {rss_time} | article_tarix: {article_time} | seçilən tarix: {published_time} | Link: {link}", flush=True)
+        print(f"[{index}/{total}] Xəbər: {title[:80]} | title_tarix: {title_time} | rss_tarix: {rss_time} | article_tarix: {article_time} | seçilən tarix: {published_time} | freshness={freshness_status} | Link: {link}", flush=True)
 
-        if not published_time:
-            result["reason"] = "no_date"
-            continue
-        if not is_recent_news(published_time):
-            result["reason"] = "old_news"
+        if freshness_status != "fresh":
+            result["reason"] = freshness_status
             continue
 
         clean_title = item.get("clean_title") or clean_title_for_message(title)
@@ -2628,7 +2650,8 @@ def check_sites():
     sent_count = 0
     stats = {
         "sent": 0, "no_article": 0, "duplicate": 0, "no_date": 0,
-        "old_news": 0, "no_monitor_match": 0, "no_telegram_recipient": 0,
+        "date_parse_failed": 0, "future_date": 0, "old_news": 0,
+        "no_monitor_match": 0, "no_telegram_recipient": 0,
         "site_error": 0, "telegram_error": 0, "http_403": 0, "http_404": 0,
         "http_429": 0, "timeout": 0, "dns_failure": 0, "ssl_failure": 0,
         "rss_empty": 0, "invalid_xml": 0, "selector_empty": 0,
@@ -2665,6 +2688,8 @@ def check_sites():
     print(f"🧭 Oxuma diaqnostikası: http_403={stats.get('http_403', 0)} | http_404={stats.get('http_404', 0)} | http_429={stats.get('http_429', 0)} | timeout={stats.get('timeout', 0)} | dns={stats.get('dns_failure', 0)} | ssl={stats.get('ssl_failure', 0)} | rss_empty={stats.get('rss_empty', 0)} | invalid_xml={stats.get('invalid_xml', 0)} | selector_empty={stats.get('selector_empty', 0)} | unsafe_url={stats.get('unsafe_url', 0)}", flush=True)
     print(f"🔁 Təkrar keçilən: {stats.get('duplicate', 0)}", flush=True)
     print(f"🕒 Tarix tapılmayan: {stats.get('no_date', 0)}", flush=True)
+    print(f"⚠️ Tarix parse alınmayan: {stats.get('date_parse_failed', 0)}", flush=True)
+    print(f"🔮 Gələcək tarixli keçilən: {stats.get('future_date', 0)}", flush=True)
     print(f"⏩ Köhnə xəbər: {stats.get('old_news', 0)}", flush=True)
     print(f"🔎 Monitor açar sözünə uyğun olmayan: {stats.get('no_monitor_match', 0)}", flush=True)
     print(f"📭 Telegram alıcısı olmayan: {stats.get('no_telegram_recipient', 0)}", flush=True)
