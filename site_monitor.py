@@ -37,6 +37,7 @@ SOURCE_HEALTH_ENABLED = os.getenv("SOURCE_HEALTH_ENABLED", "false").strip().lowe
 SOURCE_MAX_CONSECUTIVE_FAILS = int(os.getenv("SOURCE_MAX_CONSECUTIVE_FAILS", "5"))
 GOOGLE_NEWS_FALLBACK_HOURS = max(1, int(os.getenv("GOOGLE_NEWS_FALLBACK_HOURS", str(NEWS_TIME_LIMIT_HOURS))))
 SCHEDULER_DRY_RUN = os.getenv("SCHEDULER_DRY_RUN", "false").strip().lower() in {"1", "true", "yes"}
+DISABLE_TELEGRAM_SEND = os.getenv("DISABLE_TELEGRAM_SEND", "false").strip().lower() in {"1", "true", "yes"}
 SOURCE_DEFAULT_INTERVAL_MINUTES = max(1, int(os.getenv("SOURCE_DEFAULT_INTERVAL_MINUTES", "60")))
 
 PATTERNS_FILE = "patterns.json"
@@ -649,7 +650,7 @@ def update_source_health(site, result):
         "no_keyword_match", "no_article", "latest_page_empty",
         "homepage_empty", "fallback_empty", "forbidden", "chat_not_found",
         "bot_blocked", "bad_request", "network_error", "telegram_429",
-        "chat_migrated",
+        "chat_migrated", "telegram_disabled",
     }
 
     if reason in hard_fail_reasons:
@@ -743,6 +744,10 @@ def send_telegram(message, chat_id=None):
     global TELEGRAM_LAST_ERROR
     TELEGRAM_LAST_ERROR = ""
     target_chat_id = clean_text(chat_id or CHAT_ID)
+    if DISABLE_TELEGRAM_SEND:
+        TELEGRAM_LAST_ERROR = "telegram_disabled"
+        print("Telegram send disabled by DISABLE_TELEGRAM_SEND; message skipped safely.", flush=True)
+        return False
     if not BOT_TOKEN or not target_chat_id:
         TELEGRAM_LAST_ERROR = "bad_request"
         print("BOT_TOKEN və ya CHAT_ID yoxdur.", flush=True)
@@ -2803,6 +2808,7 @@ def check_sites():
         "site_error": 0, "telegram_error": 0, "telegram_429": 0,
         "forbidden": 0, "chat_not_found": 0, "bot_blocked": 0,
         "bad_request": 0, "network_error": 0, "chat_migrated": 0,
+        "telegram_disabled": 0,
         "http_403": 0, "http_404": 0,
         "http_429": 0, "timeout": 0, "dns_failure": 0, "ssl_failure": 0,
         "rss_empty": 0, "invalid_xml": 0, "selector_empty": 0,
@@ -2849,7 +2855,7 @@ def check_sites():
     print(f"📭 Telegram alıcısı olmayan: {stats.get('no_telegram_recipient', 0)}", flush=True)
     print(f"❌ Sayt/worker xətası: {stats.get('site_error', 0)}", flush=True)
     print(f"📨 Telegram xətası: {stats.get('telegram_error', 0)}", flush=True)
-    print(f"📨 Telegram diaqnostikası: 429={stats.get('telegram_429', 0)} | forbidden={stats.get('forbidden', 0)} | blocked={stats.get('bot_blocked', 0)} | chat_not_found={stats.get('chat_not_found', 0)} | bad_request={stats.get('bad_request', 0)} | network={stats.get('network_error', 0)} | migrated={stats.get('chat_migrated', 0)}", flush=True)
+    print(f"📨 Telegram diaqnostikası: 429={stats.get('telegram_429', 0)} | forbidden={stats.get('forbidden', 0)} | blocked={stats.get('bot_blocked', 0)} | chat_not_found={stats.get('chat_not_found', 0)} | bad_request={stats.get('bad_request', 0)} | network={stats.get('network_error', 0)} | migrated={stats.get('chat_migrated', 0)} | disabled={stats.get('telegram_disabled', 0)}", flush=True)
     print(f"⏱️ Ümumi vaxt: {elapsed:.1f} saniyə", flush=True)
     print("=" * 60, flush=True)
 
