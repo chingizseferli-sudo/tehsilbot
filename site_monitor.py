@@ -404,6 +404,68 @@ def is_local_only_url(url):
     return domain in LOCAL_ONLY_DOMAINS
 
 
+
+def http_status_reason(status_code):
+    try:
+        status = int(status_code)
+    except Exception:
+        return "site_error"
+    if status == 403:
+        return "http_403"
+    if status == 404:
+        return "http_404"
+    if status == 429:
+        return "http_429"
+    if status >= 400:
+        return f"http_{status}"
+    return ""
+
+
+def classify_fetch_exception(exc):
+    if isinstance(exc, requests.Timeout):
+        return "timeout"
+    if isinstance(exc, requests.exceptions.SSLError):
+        return "ssl_failure"
+    if isinstance(exc, requests.exceptions.ConnectionError):
+        value = str(exc).lower()
+        if any(marker in value for marker in ("dns", "name resolution", "getaddrinfo", "nodename", "name or service not known")):
+            return "dns_failure"
+        return "dns_failure"
+    return "site_error"
+
+
+def set_read_diagnostic(site, reason=None, method=None, fallback_used=None):
+    if reason:
+        site["_read_failure_reason"] = clean_text(reason)
+    if method:
+        site["_read_method"] = clean_text(method)
+    if fallback_used is not None:
+        site["_fallback_used"] = bool(fallback_used)
+
+
+def mark_read_success(site, method, fallback_used=False):
+    site.pop("_read_failure_reason", None)
+    set_read_diagnostic(site, None, method, fallback_used)
+
+
+def get_read_failure_reason(site, default="no_article"):
+    return clean_text(site.get("_read_failure_reason") or default)
+
+
+def merge_bot_diagnostic_notes(existing_notes, reason, method, fallback_used):
+    raw_notes = str(existing_notes or "").strip()
+    lines = [
+        line for line in raw_notes.splitlines()
+        if not line.strip().startswith("[bot_diagnostic]")
+    ]
+    diagnostic = (
+        f"[bot_diagnostic] result={clean_text(reason) or 'unknown'}; "
+        f"method={clean_text(method) or 'unknown'}; "
+        f"fallback_used={'true' if fallback_used else 'false'}"
+    )
+    lines.append(diagnostic)
+    return "\n".join(line for line in lines if line.strip())
+
 def get_base_url(url):
     parsed = urlparse(url or "")
     if not parsed.scheme or not parsed.netloc:
@@ -488,6 +550,7 @@ def update_site_health(domain, status):
     save_health(health)
 
 
+
 def update_source_health(site, result):
     if not SOURCE_HEALTH_ENABLED or not supabase_ready():
         return
@@ -499,16 +562,24 @@ def update_source_health(site, result):
     reason = clean_text(result.get("reason") or "unknown")
     candidates = int(result.get("candidates", 0) or 0)
     sent = int(result.get("sent", 0) or 0)
+    read_method = clean_text(result.get("read_method") or site.get("_read_method") or "")
+    fallback_used = bool(result.get("fallback_used") or site.get("_fallback_used"))
     now = datetime.now(BAKU_TZ).isoformat()
     payload = {
         "last_checked_at": now,
         "last_result": reason,
+        "notes": merge_bot_diagnostic_notes(site.get("notes"), reason, read_method, fallback_used),
     }
 
-    hard_fail_reasons = {"site_error", "blocked", "dead", "failed"}
+    hard_fail_reasons = {
+        "site_error", "blocked", "dead", "failed",
+        "http_403", "http_404", "http_429", "timeout",
+        "dns_failure", "ssl_failure", "rss_empty", "invalid_xml",
+        "selector_empty", "unsafe_url",
+    }
     readable_reasons = {
         "sent", "duplicate", "old_news", "no_date", "no_monitor_match",
-        "no_telegram_recipient", "no_keyword_match",
+        "no_telegram_recipient", "no_keyword_match", "no_article",
     }
 
     if reason in hard_fail_reasons:
@@ -519,9 +590,8 @@ def update_source_health(site, result):
                 json={"p_source_id": source_id, "p_reason": reason},
                 timeout=REQUEST_TIMEOUT,
             )
-            if response.status_code in {200, 204}:
-                return
-            print(f"Source fail saygac xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+            if response.status_code not in {200, 204}:
+                print(f"Source fail saygac xetasi: {response.status_code} | {response.text[:200]}", flush=True)
         except Exception as exc:
             print(f"Source fail saygac istisnasi: {exc}", flush=True)
         payload["last_error"] = reason
@@ -544,10 +614,9 @@ def update_source_health(site, result):
             timeout=REQUEST_TIMEOUT,
         )
         if response.status_code not in {200, 204}:
-            print(f"Source health yazma xetasi: {response.status_code} | {response.text[:200]}", flush=True)
+            print(f"Source health update xetasi: {response.status_code} | {response.text[:200]}", flush=True)
     except Exception as exc:
-        print(f"Source health istisnasi: {exc}", flush=True)
-
+        print(f"Source health update istisnasi: {exc}", flush=True)
 
 def send_telegram(message, chat_id=None):
     target_chat_id = clean_text(chat_id or CHAT_ID)
@@ -1501,6 +1570,7 @@ def discover_rss_links(page_url, page_html):
     ]))[:8]
 
 
+
 def extract_links_from_rss(site, rss_urls):
     results = []
     keywords = site.get("keywords", [])
@@ -1510,6 +1580,7 @@ def extract_links_from_rss(site, rss_urls):
             continue
         if is_local_only_url(rss_url):
             print(f"RSS local URL keçildi: {rss_url}", flush=True)
+            set_read_diagnostic(site, "unsafe_url", "rss")
             continue
         try:
             response = requests.get(
@@ -1519,9 +1590,14 @@ def extract_links_from_rss(site, rss_urls):
                 allow_redirects=True,
             )
             if response.status_code != 200:
+                set_read_diagnostic(site, http_status_reason(response.status_code), "rss")
                 continue
             feed = feedparser.parse(response.content)
+            if getattr(feed, "bozo", False) and not feed.entries:
+                set_read_diagnostic(site, "invalid_xml", "rss")
+                continue
             if not feed.entries:
+                set_read_diagnostic(site, "rss_empty", "rss")
                 continue
             site["_rss_feed_had_entries"] = True
             print(f"RSS tapıldı: {rss_url} | xəbər sayı: {len(feed.entries)}", flush=True)
@@ -1535,13 +1611,16 @@ def extract_links_from_rss(site, rss_urls):
                     break
             added = len(results) - before_count
             if added > 0:
+                mark_read_success(site, "rss", site.get("_fallback_used", False))
                 print(f"RSS uyğun namizəd verdi: {site.get('name')} | {added}", flush=True)
                 break
+            set_read_diagnostic(site, "no_article", "rss")
         except Exception as exc:
-            print(f"RSS oxuma xətası: {rss_url} | {exc}", flush=True)
+            reason = classify_fetch_exception(exc)
+            set_read_diagnostic(site, reason, "rss")
+            print(f"RSS oxuma xətası: {rss_url} | {reason} | {exc}", flush=True)
             continue
     return unique_items(results)[:MAX_LINKS_PER_SITE]
-
 
 def extract_links_by_selector(page_url, page_html, selector, keywords):
     soup = BeautifulSoup(page_html, "html.parser")
@@ -1645,6 +1724,7 @@ def extract_links_fallback(page_url, page_html, keywords):
     return unique_items(results)
 
 
+
 def extract_links_from_sitemap(site):
     sitemap_url = site.get("latest_url") or urljoin(site.get("base_url", "").rstrip("/") + "/", "sitemap.xml")
     keywords = site.get("keywords", [])
@@ -1652,8 +1732,15 @@ def extract_links_from_sitemap(site):
     try:
         response = requests.get(sitemap_url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT)
         if response.status_code != 200:
+            set_read_diagnostic(site, http_status_reason(response.status_code), "sitemap")
             return []
         urls = re.findall(r"<loc>(.*?)</loc>", response.text, flags=re.IGNORECASE)
+        if looks_like_xml_content(response.text) and not urls:
+            set_read_diagnostic(site, "invalid_xml", "sitemap")
+            return []
+        if not urls:
+            set_read_diagnostic(site, "no_article", "sitemap")
+            return []
         for url in urls[:300]:
             if not any(pattern in url.lower() for pattern in ARTICLE_URL_PATTERNS):
                 continue
@@ -1674,9 +1761,15 @@ def extract_links_from_sitemap(site):
             except Exception:
                 continue
     except Exception as exc:
-        print(f"Sitemap oxuma xətası: {sitemap_url} | {exc}", flush=True)
-    return unique_items(results)[:MAX_LINKS_PER_SITE]
-
+        reason = classify_fetch_exception(exc)
+        set_read_diagnostic(site, reason, "sitemap")
+        print(f"Sitemap oxuma xətası: {sitemap_url} | {reason} | {exc}", flush=True)
+    results = unique_items(results)[:MAX_LINKS_PER_SITE]
+    if results:
+        mark_read_success(site, "sitemap", site.get("_fallback_used", False))
+    elif not site.get("_read_failure_reason"):
+        set_read_diagnostic(site, "no_article", "sitemap")
+    return results
 
 def fetch_page(url):
     headers = REQUEST_HEADERS
@@ -1690,6 +1783,7 @@ def fetch_page(url):
     except Exception as exc:
         print(f"Sayt xətası: {url} | {exc}", flush=True)
         return None
+
 
 
 def fetch_site(site, patterns_data):
@@ -1709,6 +1803,11 @@ def fetch_site(site, patterns_data):
         f"Metod: {monitor_method or 'auto'} | {site.get('name')} | {page_url}",
         flush=True,
     )
+
+    if is_local_only_url(page_url):
+        set_read_diagnostic(site, "unsafe_url", monitor_method or "latest_page")
+        print(f"Unsafe/local URL keçildi: {page_url}", flush=True)
+        return []
 
     # 1) Google News fallback:
     # Bu metodda əsas sayt açılmır. Yalnız Google News RSS oxunur.
@@ -1733,14 +1832,19 @@ def fetch_site(site, patterns_data):
         )
 
         if google_rss_urls:
-            return extract_links_from_rss(site, google_rss_urls)
+            items = extract_links_from_rss(site, google_rss_urls)
+            if items:
+                mark_read_success(site, "google_news")
+            return items
 
+        set_read_diagnostic(site, "rss_empty", "google_news")
         return []
 
     # 2) Blocked/dead/failed:
     # Bu metodlarda əsas sayta girmirik ki, 403/404 spam və vaxt itkisi olmasın.
     if monitor_method in {"blocked", "dead", "failed"}:
         print(f"Metod {monitor_method}: əsas sayt əlavə gəzilmir.", flush=True)
+        set_read_diagnostic(site, monitor_method, monitor_method)
         return []
 
     # 3) RSS metodları:
@@ -1763,12 +1867,13 @@ def fetch_site(site, patterns_data):
 
         items = extract_links_from_rss(site, rss_candidates)
 
-
         if items:
+            mark_read_success(site, "rss")
             return unique_items(items)
 
         if site.pop("_rss_feed_had_entries", False):
             print("RSS feed oxundu, amma keyword uygun namized tapilmadi. HTML fallback edilmir.", flush=True)
+            set_read_diagnostic(site, "no_article", "rss")
             return []
 
         print("RSS nəticə vermədi, HTML fallback yoxlanacaq.", flush=True)
@@ -1779,8 +1884,11 @@ def fetch_site(site, patterns_data):
         items = extract_links_from_sitemap(site)
 
         if items:
+            mark_read_success(site, "sitemap")
             return unique_items(items)
 
+        if not site.get("_read_failure_reason"):
+            set_read_diagnostic(site, "no_article", "sitemap")
         return []
 
     # 5) HTML əsaslı metodlar
@@ -1797,34 +1905,47 @@ def fetch_site(site, patterns_data):
         print(f"Status: {r.status_code}", flush=True)
 
         if r.status_code != 200:
+            set_read_diagnostic(site, http_status_reason(r.status_code), monitor_method or "latest_page")
             return []
 
         page_html = decode_response_text(r)
 
     except Exception as e:
-        print(f"Sayt xətası: {page_url} | {e}", flush=True)
+        reason = classify_fetch_exception(e)
+        set_read_diagnostic(site, reason, monitor_method or "latest_page")
+        print(f"Sayt xətası: {page_url} | {reason} | {e}", flush=True)
         return []
 
     domain = get_domain(page_url)
     site_patterns = patterns_data.get(domain, [])
 
     # 6) Selector metodu
-    if monitor_method == "selector" and selector:
-        items = extract_links_by_selector(page_url, page_html, selector, keywords)
+    if monitor_method == "selector":
+        if not selector:
+            set_read_diagnostic(site, "selector_empty", "selector")
+        else:
+            items = extract_links_by_selector(page_url, page_html, selector, keywords)
 
-        if items:
-            return unique_items(items)
+            if items:
+                mark_read_success(site, "selector")
+                return unique_items(items)
 
-        print("Selector nəticə vermədi, fallback yoxlanacaq.", flush=True)
+            print("Selector nəticə vermədi, fallback yoxlanacaq.", flush=True)
+            set_read_diagnostic(site, "selector_empty", "selector")
 
     # 7) XPath metodu
-    if monitor_method == "xpath_pattern" and xpaths:
-        items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
+    if monitor_method == "xpath_pattern":
+        if not xpaths:
+            set_read_diagnostic(site, "selector_empty", "xpath")
+        else:
+            items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
 
-        if items:
-            return unique_items(items)
+            if items:
+                mark_read_success(site, "xpath")
+                return unique_items(items)
 
-        print("XPath nəticə vermədi, fallback yoxlanacaq.", flush=True)
+            print("XPath nəticə vermədi, fallback yoxlanacaq.", flush=True)
+            set_read_diagnostic(site, "selector_empty", "xpath")
 
     # 8) Latest/Homepage/Recoverable/Auto metodları
     if monitor_method in {
@@ -1841,18 +1962,24 @@ def fetch_site(site, patterns_data):
             discovered_rss = discover_rss_links(page_url, page_html)
 
             if discovered_rss:
+                site["_fallback_used"] = True
                 items = extract_links_from_rss(site, discovered_rss)
 
                 if items:
+                    mark_read_success(site, "rss", fallback_used=True)
                     return unique_items(items)
 
         items = []
 
         if selector and monitor_method != "selector":
             items = extract_links_by_selector(page_url, page_html, selector, keywords)
+            if items:
+                mark_read_success(site, "selector", fallback_used=monitor_method not in {"selector", ""})
 
         if not items and xpaths and monitor_method != "xpath_pattern":
             items = extract_links_from_xpath(page_url, page_html, xpaths, keywords)
+            if items:
+                mark_read_success(site, "xpath", fallback_used=monitor_method not in {"xpath_pattern", ""})
 
         if not items and site_patterns:
             print(f"Pattern fallback işləyir: {domain}", flush=True)
@@ -1862,13 +1989,24 @@ def fetch_site(site, patterns_data):
                 keywords,
                 site_patterns,
             )
+            if items:
+                mark_read_success(site, "fallback", fallback_used=True)
 
         if not items:
             print("HTML fallback işləyir...", flush=True)
             items = extract_links_fallback(page_url, page_html, keywords)
+            if items:
+                method = "homepage" if monitor_method == "homepage" else "latest_page"
+                if monitor_method in {"recoverable", "selector", "xpath_pattern", "rss", "rss_discovered"}:
+                    method = "fallback"
+                mark_read_success(site, method, fallback_used=method == "fallback")
 
-        return unique_items(items)
+        items = unique_items(items)
+        if not items and not site.get("_read_failure_reason"):
+            set_read_diagnostic(site, "no_article", monitor_method or "latest_page")
+        return items
 
+    set_read_diagnostic(site, "no_article", monitor_method or "latest_page")
     return []
 
 def get_existing_monitor_match_id(monitor_id, item_id):
@@ -2297,6 +2435,7 @@ def load_sites():
                     "last_error": row.get("last_error"),
                     "consecutive_fail_count": row.get("consecutive_fail_count"),
                     "last_result": row.get("last_result"),
+                    "notes": row.get("notes"),
                 })
             if len(rows) < page_size:
                 break
@@ -2310,7 +2449,15 @@ def load_sites():
 
 def process_site(index, total, site, patterns_data, monitor_keywords_cache=None):
     started = time.time()
-    result = {"sent": 0, "site": site.get("name"), "url": site.get("url"), "candidates": 0, "reason": "unknown"}
+    result = {
+        "sent": 0,
+        "site": site.get("name"),
+        "url": site.get("url"),
+        "candidates": 0,
+        "reason": "unknown",
+        "read_method": "",
+        "fallback_used": False,
+    }
     print(f"[{index}/{total}] Yoxlanır: {site['name']} | {site['url']}", flush=True)
     try:
         items = fetch_site(site, patterns_data)
@@ -2321,11 +2468,13 @@ def process_site(index, total, site, patterns_data, monitor_keywords_cache=None)
         return result
 
     result["candidates"] = len(items)
-    print(f"[{index}/{total}] {site['name']} | uyğun link sayı: {len(items)}", flush=True)
+    result["read_method"] = clean_text(site.get("_read_method"))
+    result["fallback_used"] = bool(site.get("_fallback_used"))
+    print(f"[{index}/{total}] {site['name']} | uyğun link sayı: {len(items)} | metod={result['read_method'] or 'unknown'} | fallback={result['fallback_used']}", flush=True)
 
     if not items:
-        result["reason"] = "no_candidate"
-        print(f"📊 [{index}/{total}] {site['name']} | namizəd=0 | göndərildi=0 | nəticə=uyğun xəbər yoxdur | vaxt={time.time() - started:.1f}s", flush=True)
+        result["reason"] = get_read_failure_reason(site, "no_article")
+        print(f"📊 [{index}/{total}] {site['name']} | namizəd=0 | göndərildi=0 | nəticə={result['reason']} | vaxt={time.time() - started:.1f}s", flush=True)
         update_source_health(site, result)
         return result
 
@@ -2477,7 +2626,14 @@ def check_sites():
     print(f"Monitorinq başladı | worker={MAX_WORKERS} | son {NEWS_TIME_LIMIT_HOURS} saat | {datetime.now(BAKU_TZ).strftime('%d.%m.%Y %H:%M:%S')} AZT", flush=True)
 
     sent_count = 0
-    stats = {"sent": 0, "no_candidate": 0, "duplicate": 0, "no_date": 0, "old_news": 0, "no_monitor_match": 0, "no_telegram_recipient": 0, "site_error": 0, "telegram_error": 0, "unknown": 0}
+    stats = {
+        "sent": 0, "no_article": 0, "duplicate": 0, "no_date": 0,
+        "old_news": 0, "no_monitor_match": 0, "no_telegram_recipient": 0,
+        "site_error": 0, "telegram_error": 0, "http_403": 0, "http_404": 0,
+        "http_429": 0, "timeout": 0, "dns_failure": 0, "ssl_failure": 0,
+        "rss_empty": 0, "invalid_xml": 0, "selector_empty": 0,
+        "unsafe_url": 0, "unknown": 0,
+    }
     max_workers = max(1, min(MAX_WORKERS, total or 1))
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -2505,7 +2661,8 @@ def check_sites():
     print(f"🌐 Sayt sayı: {total}", flush=True)
     print(f"⚙️ Worker sayı: {max_workers}", flush=True)
     print(f"📤 Göndərilən xəbər: {sent_count}", flush=True)
-    print(f"🔎 Uyğun xəbər olmayan sayt: {stats.get('no_candidate', 0)}", flush=True)
+    print(f"🔎 Məqalə tapılmayan sayt: {stats.get('no_article', 0)}", flush=True)
+    print(f"🧭 Oxuma diaqnostikası: http_403={stats.get('http_403', 0)} | http_404={stats.get('http_404', 0)} | http_429={stats.get('http_429', 0)} | timeout={stats.get('timeout', 0)} | dns={stats.get('dns_failure', 0)} | ssl={stats.get('ssl_failure', 0)} | rss_empty={stats.get('rss_empty', 0)} | invalid_xml={stats.get('invalid_xml', 0)} | selector_empty={stats.get('selector_empty', 0)} | unsafe_url={stats.get('unsafe_url', 0)}", flush=True)
     print(f"🔁 Təkrar keçilən: {stats.get('duplicate', 0)}", flush=True)
     print(f"🕒 Tarix tapılmayan: {stats.get('no_date', 0)}", flush=True)
     print(f"⏩ Köhnə xəbər: {stats.get('old_news', 0)}", flush=True)
