@@ -97,11 +97,14 @@ def main():
         ("https://asoiu.edu.az/allNews", "https://asoiu.edu.az/single_news/3992"),
         ("https://bdu-qazax.edu.az/index.php/az/kheberler", "https://bdu-qazax.edu.az/index.php/az/kheberler/425-maarif26"),
         ("https://www.atu.edu.az/xeberler/1", "https://www.atu.edu.az/xeber/1505"),
+        ("https://gsaz.az/articles", "https://gsaz.az/articles/view/16/EKITABLAR"),
     ]
     rejected = [
         ("https://asoiu.edu.az", "https://asoiu.edu.az/allNews"),
         ("https://bdu-qazax.edu.az", "https://bdu-qazax.edu.az/index.php/az/kheberler"),
         ("https://bmtk.edu.az", "https://bmtk.edu.az/kateqoriya/xeberler/"),
+        ("https://gsaz.az", "https://gsaz.az/articles"),
+        ("https://gsaz.az", "https://gsaz.az/articles/category/5"),
         ("https://example.az", "https://example.az/archive/2026"),
         ("https://example.az", "https://example.az/tag/tehsil"),
         ("https://example.az", "https://example.az/search?q=tehsil"),
