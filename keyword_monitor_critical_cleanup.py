@@ -2,6 +2,7 @@
 import os
 from collections import Counter
 from datetime import datetime, timezone
+from urllib.parse import urlparse
 
 import requests
 
@@ -14,6 +15,23 @@ TOP_LIMIT = int(os.getenv("KEYWORD_CLEANUP_TOP_LIMIT", "20"))
 TARGET_REASONS = {"http_404", "dns_failure", "http_403", "sitemap_empty", "invalid_xml"}
 DEACTIVATE_REASONS = {"http_404", "dns_failure"}
 MANAGED_PREFIX = "[release_cleanup]"
+HIGH_VALUE_DOMAIN_SUFFIXES = (
+    ".edu.az",
+    ".gov.az",
+    ".gov.cz",
+)
+HIGH_VALUE_DOMAINS = {
+    "e-qanun.az",
+    "azertag.az",
+    "marja.az",
+    "news.milli.az",
+    "sputnik.az",
+    "static.bsu.az",
+    "ships.asco.az",
+    "airport.az",
+    "mia.az",
+}
+HIGH_VALUE_SOURCE_TYPES = {"education", "government", "university"}
 
 SOURCE_SELECT = (
     "id,name,base_url,latest_url,rss_url,status,source_type,trust_level,"
@@ -45,6 +63,30 @@ def source_label(source):
 
 def source_url(source):
     return clean_text(source.get("latest_url")) or clean_text(source.get("base_url")) or clean_text(source.get("rss_url"))
+
+
+def source_host(source):
+    for value in (source.get("latest_url"), source.get("base_url"), source.get("rss_url")):
+        value = clean_text(value)
+        if not value:
+            continue
+        parsed = urlparse(value if "://" in value else f"https://{value}")
+        if parsed.hostname:
+            return parsed.hostname.lower().removeprefix("www.")
+    return ""
+
+
+def is_high_value_source(source):
+    host = source_host(source)
+    source_type = clean_text(source.get("source_type")).lower()
+    trust_level = clean_text(source.get("trust_level")).lower()
+    if source_type in HIGH_VALUE_SOURCE_TYPES:
+        return True
+    if trust_level == "high":
+        return True
+    if host in HIGH_VALUE_DOMAINS:
+        return True
+    return any(host.endswith(suffix) for suffix in HIGH_VALUE_DOMAIN_SUFFIXES)
 
 
 def get_reason(source):
@@ -99,6 +141,14 @@ def classify_source(source):
     fails = fail_count(source)
 
     if reason in DEACTIVATE_REASONS and fails >= 5:
+        if is_high_value_source(source):
+            return {
+                "category": "review",
+                "action": "keep active; high-value source needs manual repair/replacement review",
+                "reason": reason,
+                "risk": "medium",
+                "why": "Repeated hard failure, but source is official/education/major/strategic.",
+            }
         return {
             "category": "deactivate",
             "action": "set status=inactive",
@@ -158,6 +208,19 @@ def managed_notes(existing_notes, decision):
     return "\n".join(line for line in lines if line.strip())
 
 
+def patch_source_notes(source, decision):
+    payload = {"notes": managed_notes(source.get("notes"), decision)}
+    response = requests.patch(
+        f"{SUPABASE_URL}/rest/v1/sources",
+        headers=headers({"Prefer": "return=minimal"}),
+        params={"id": f"eq.{source['id']}"},
+        json=payload,
+        timeout=REQUEST_TIMEOUT,
+    )
+    if response.status_code not in {200, 204}:
+        raise RuntimeError(f"review note failed: {source_label(source)} | {response.status_code} | {response.text[:300]}")
+
+
 def apply_deactivation(source, decision):
     payload = {
         "status": "inactive",
@@ -195,7 +258,7 @@ def main():
     print("Keyword Monitor Critical Source Cleanup")
     print(f"Mode: {'APPLY' if apply_mode else 'DRY-RUN'}")
     print("Scope: active sources with http_404, dns_failure, http_403, sitemap_empty, invalid_xml")
-    print("Safety: no deletes; no method changes; apply only deactivates repeated http_404/dns_failure.")
+    print("Safety: no deletes; no method changes; high-value sources are kept active and marked review.")
 
     sources = fetch_sources()
     target_rows = []
@@ -227,24 +290,31 @@ def main():
         print(f"- method={method} | reason={reason}: {value}")
 
     deactivate = [(s, d) for s, d in target_rows if d["category"] == "deactivate"]
+    review = [(s, d) for s, d in target_rows if d["category"] == "review"]
     repair = [(s, d) for s, d in target_rows if d["category"] == "repair"]
     accept = [(s, d) for s, d in target_rows if d["category"] == "accept/monitor"]
 
     print_examples("Deactivate candidates", deactivate)
+    print_examples("High-value review candidates", review)
     print_examples("Repair candidates", repair)
     print_examples("Accept/monitor candidates", accept)
 
     if not apply_mode:
         print("\nDRY-RUN complete. No Supabase writes performed.")
-        print("To apply safe deactivations only, run with --apply or KEYWORD_CLEANUP_APPLY=true.")
+        print("To apply safe deactivations and review notes, run with --apply or KEYWORD_CLEANUP_APPLY=true.")
         return
 
     changed = 0
+    reviewed = 0
+    for source, decision in review:
+        patch_source_notes(source, decision)
+        reviewed += 1
+        print(f"review-marked: {source_label(source)} | reason={decision['reason']}")
     for source, decision in deactivate:
         apply_deactivation(source, decision)
         changed += 1
         print(f"deactivated: {source_label(source)} | reason={decision['reason']}")
-    print(f"\nAPPLY complete. Deactivated sources: {changed}. No deletes performed.")
+    print(f"\nAPPLY complete. Deactivated sources: {changed}. Review-marked high-value sources: {reviewed}. No deletes performed.")
 
 
 if __name__ == "__main__":
