@@ -88,7 +88,7 @@ REQUEST_HEADERS = {
 ARTICLE_URL_PATTERNS = [
     "/news/", "/xeber/", "/xeberler/", "/xəbərlər/", "/az/news/",
     "/az/xeber/", "/az/xeberler/", "/az/xəbərlər/", "/post/",
-    "/article/", "/read/", "/item/", "/son-xeber/", "/sosial/",
+    "/article/", "/read/", "/item/", "/posts/detail/", "/writers/detail/", "/son-xeber/", "/sosial/",
     "/resmi-xeber/", "/hadise/", "/politic/", "/world/", "/economy/",
     "/education/", "/elm/", "/tehsil/", "/2024/", "/2025/", "/2026/",
 ]
