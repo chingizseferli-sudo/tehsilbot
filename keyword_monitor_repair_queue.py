@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 import os
 from collections import Counter
 from datetime import datetime, timezone
@@ -14,6 +14,7 @@ TOP_LIMIT = int(os.getenv("KEYWORD_REPAIR_TOP_LIMIT", "200"))
 
 TARGET_REASONS = {"sitemap_empty", "invalid_xml"}
 MANAGED_PREFIX = "[release_repair]"
+APPLY_ALLOWED_METHODS = {"selector", "latest_page"}
 
 HIGH_VALUE_DOMAIN_SUFFIXES = (
     ".edu.az",
@@ -323,7 +324,7 @@ def main():
     print("Keyword Monitor Sitemap/XML Repair Queue")
     print(f"Mode: {'APPLY' if apply_mode else 'DRY-RUN'}")
     print("Scope: active sources with sitemap_empty or invalid_xml")
-    print("Safety: no deletes; no deactivation; no Telegram changes; high-value sources are review_required.")
+    print("Safety: no deletes; no deactivation; no Telegram changes; apply is limited to selector/latest_page.")
 
     sources = fetch_sources()
     target_rows = []
@@ -360,10 +361,17 @@ def main():
         print(f"- method={method} | reason={reason}: {value}")
 
     repair = [(s, d) for s, d in target_rows if d["category"] == "repair_candidate"]
+    apply_eligible = [(s, d) for s, d in repair if d["proposed_method"] in APPLY_ALLOWED_METHODS]
+    apply_skipped = [(s, d) for s, d in repair if d["proposed_method"] not in APPLY_ALLOWED_METHODS]
     review = [(s, d) for s, d in target_rows if d["category"] == "review_required"]
     accept = [(s, d) for s, d in target_rows if d["category"] == "accept_monitor"]
 
+    print(f"\n## Apply eligibility")
+    print(f"- apply_eligible_selector_latest_page: {len(apply_eligible)}")
+    print(f"- skipped_homepage_or_other: {len(apply_skipped)}")
+
     print_rows("Repair candidates", repair)
+    print_rows("Apply skipped", apply_skipped)
     print_rows("Review required", review)
     print_rows("Accept/monitor", accept)
 
@@ -373,14 +381,14 @@ def main():
         return
 
     changed = 0
-    for source, decision in repair:
+    for source, decision in apply_eligible:
         patch_source(source, decision)
         changed += 1
         print(
             f"repaired: {source_label(source)} | {decision['current_method']} -> "
             f"{decision['proposed_method']} | reason={decision['reason']}"
         )
-    print(f"\nAPPLY complete. Repaired sources: {changed}. No deletes or deactivations performed.")
+    print(f"\nAPPLY complete. Repaired sources: {changed}. Skipped homepage/other proposals: {len(apply_skipped)}. No deletes or deactivations performed.")
 
 
 if __name__ == "__main__":
