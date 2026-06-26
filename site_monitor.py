@@ -97,6 +97,16 @@ ARTICLE_URL_REGEX_PATTERNS = [
     re.compile(r"/\d{4,}[-_][^/?#]+\.html$"),
 ]
 
+ROOT_SLUG_ARTICLE_DOMAINS = {
+    "7times.az",
+    "busaat.az",
+    "editor.az",
+    "ulusal.az",
+    "yenicag.az",
+}
+
+ROOT_SLUG_ARTICLE_RE = re.compile(r"^/[a-z0-9%_-]{18,}/?$")
+
 DB_LOCK = threading.Lock()
 TELEGRAM_LOCK = threading.Lock()
 
@@ -1696,6 +1706,24 @@ def is_probably_section_url(link):
     return False
 
 
+def is_allowed_root_slug_article(link):
+    parsed = urlparse(link.lower())
+    domain = parsed.netloc.replace("www.", "")
+    path = parsed.path or ""
+    if domain not in ROOT_SLUG_ARTICLE_DOMAINS:
+        return False
+    if not ROOT_SLUG_ARTICLE_RE.match(path):
+        return False
+    slug = path.strip("/")
+    if slug.count("-") < 2:
+        return False
+    blocked_words = {
+        "about", "haqqimizda", "elaqe", "contact", "privacy", "category",
+        "kateqoriya", "tag", "archive", "arxiv", "search", "author",
+    }
+    return not any(word in slug for word in blocked_words)
+
+
 def is_article_like_link(link):
     link_lower = link.lower()
     if "news.google.com/" in link_lower:
@@ -1706,7 +1734,9 @@ def is_article_like_link(link):
         return True
     parsed = urlparse(link_lower)
     path = parsed.path or ""
-    return any(pattern.search(path) for pattern in ARTICLE_URL_REGEX_PATTERNS)
+    if any(pattern.search(path) for pattern in ARTICLE_URL_REGEX_PATTERNS):
+        return True
+    return is_allowed_root_slug_article(link_lower)
 
 
 def is_bad_link(title, link):

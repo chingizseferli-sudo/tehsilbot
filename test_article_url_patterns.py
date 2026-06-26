@@ -100,6 +100,9 @@ def main():
         ("https://gsaz.az/articles", "https://gsaz.az/articles/view/16/EKITABLAR"),
         ("https://afn.az", "https://afn.az/173683-prezidentden-silahli-quvveler-gunu-ile-bagli-paylasim.html"),
         ("https://big.az", "https://big.az/587466-tramp-ve-sepah-hedeleyir-hormuz-duyunu.html"),
+        ("https://editor.az", "https://editor.az/pasinyan-azerbaycanla-bagli-sehve-yol-vermisem/"),
+        ("https://busaat.az", "https://busaat.az/azerbaycan-silahli-quvvelerinin-yaranma-gunudur"),
+        ("https://yenicag.az", "https://yenicag.az/azerbaycanda-hebsde-evlenenlerin-sayi-aciqlandi"),
     ]
     rejected = [
         ("https://asoiu.edu.az", "https://asoiu.edu.az/allNews"),
@@ -109,6 +112,10 @@ def main():
         ("https://gsaz.az", "https://gsaz.az/articles/category/5"),
         ("https://edusinaq.az", "https://edusinaq.az/education/"),
         ("https://example.az", "https://example.az/about.html"),
+        ("https://editor.az", "https://editor.az/elaqe"),
+        ("https://editor.az", "https://editor.az/privacy-policy"),
+        ("https://editor.az", "https://editor.az/category/siyaset"),
+        ("https://example.az", "https://example.az/azerbaycanda-hebsde-evlenenlerin-sayi-aciqlandi"),
         ("https://example.az", "https://example.az/archive/2026"),
         ("https://example.az", "https://example.az/tag/tehsil"),
         ("https://example.az", "https://example.az/search?q=tehsil"),
