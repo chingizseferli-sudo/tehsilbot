@@ -101,11 +101,21 @@ ROOT_SLUG_ARTICLE_DOMAINS = {
     "7times.az",
     "busaat.az",
     "editor.az",
+    "ekosu.az",
+    "aem.az",
+    "ayna.az",
     "ulusal.az",
     "yenicag.az",
 }
 
 ROOT_SLUG_ARTICLE_RE = re.compile(r"^/[a-z0-9%_-]{18,}/?$")
+
+DOMAIN_DETAIL_ARTICLE_PATTERNS = {
+    "embawood.az": [re.compile(r"/blog/[^/?#]{8,}/?$")],
+    "deazmed.az": [re.compile(r"/az/melumat-ve-xeberler/[^/?#]{8,}/?$")],
+    "bqu.edu.az": [re.compile(r"/announcement_single/\d+/?$")],
+    "airport.az": [re.compile(r"/press-release/[^/?#]{8,}/?$")],
+}
 
 DB_LOCK = threading.Lock()
 TELEGRAM_LOCK = threading.Lock()
@@ -1724,6 +1734,16 @@ def is_allowed_root_slug_article(link):
     return not any(word in slug for word in blocked_words)
 
 
+def is_allowed_domain_detail_article(link):
+    parsed = urlparse(link.lower())
+    domain = parsed.netloc.replace("www.", "")
+    path = parsed.path or ""
+    for pattern in DOMAIN_DETAIL_ARTICLE_PATTERNS.get(domain, []):
+        if pattern.search(path):
+            return True
+    return False
+
+
 def is_article_like_link(link):
     link_lower = link.lower()
     if "news.google.com/" in link_lower:
@@ -1735,6 +1755,8 @@ def is_article_like_link(link):
     parsed = urlparse(link_lower)
     path = parsed.path or ""
     if any(pattern.search(path) for pattern in ARTICLE_URL_REGEX_PATTERNS):
+        return True
+    if is_allowed_domain_detail_article(link_lower):
         return True
     return is_allowed_root_slug_article(link_lower)
 
