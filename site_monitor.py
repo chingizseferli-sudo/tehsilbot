@@ -102,6 +102,7 @@ ROOT_SLUG_ARTICLE_DOMAINS = {
     "busaat.az",
     "editor.az",
     "globalinfo.az",
+    "muallim.edu.az",
     "ekosu.az",
     "aem.az",
     "ayna.az",
