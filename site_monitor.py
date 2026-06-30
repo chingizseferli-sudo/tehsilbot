@@ -1750,6 +1750,22 @@ def is_allowed_root_slug_article(link):
     return not any(word in slug for word in blocked_words)
 
 
+def is_feed_root_slug_article(link):
+    parsed = urlparse(link.lower())
+    path = parsed.path or ""
+    if not ROOT_SLUG_ARTICLE_RE.match(path):
+        return False
+    slug = path.strip("/")
+    if slug.count("-") < 2:
+        return False
+    blocked_words = {
+        "about", "haqqimizda", "elaqe", "contact", "privacy", "category",
+        "kateqoriya", "tag", "archive", "arxiv", "search", "author",
+        "login", "register", "profile", "rss", "feed",
+    }
+    return not any(word in slug for word in blocked_words)
+
+
 def is_allowed_domain_detail_article(link):
     parsed = urlparse(link.lower())
     domain = parsed.netloc.replace("www.", "")
@@ -1823,7 +1839,8 @@ def add_item(results, page_url, title, link, keywords, extra=None):
     if is_bad_link(title, link):
         return
     if not is_article_like_link(link):
-        return
+        if not (extra and extra.get("source_context") == "rss" and is_feed_root_slug_article(link)):
+            return
     item = {
         "title": title_for_keyword,
         "raw_title": raw_title,
@@ -1902,7 +1919,7 @@ def extract_links_from_rss(site, rss_urls):
                 title = clean_text(entry.get("title", ""))
                 link = entry.get("link", "")
                 published = entry.get("published") or entry.get("updated") or entry.get("created") or ""
-                add_item(results, page_url or rss_url, title, link, keywords, {"rss_published": published})
+                add_item(results, page_url or rss_url, title, link, keywords, {"rss_published": published, "source_context": "rss"})
                 if len(results) >= MAX_LINKS_PER_SITE:
                     break
             added = len(results) - before_count

@@ -78,6 +78,32 @@ def assert_accepted(page_url, link):
     assert len(results) == 1, link
 
 
+def assert_rss_accepted(page_url, link):
+    results = []
+    site_monitor.add_item(
+        results,
+        page_url,
+        "MİQ imtahanlarının vaxtı açıqlandı",
+        link,
+        [],
+        {"source_context": "rss"},
+    )
+    assert len(results) == 1, link
+
+
+def assert_rss_rejected(page_url, link):
+    results = []
+    site_monitor.add_item(
+        results,
+        page_url,
+        "Əlaqə və xidmət məlumatları",
+        link,
+        [],
+        {"source_context": "rss"},
+    )
+    assert results == [], link
+
+
 def assert_rejected(page_url, link):
     results = []
     site_monitor.add_item(
@@ -146,6 +172,9 @@ def main():
 
     for page_url, link in rejected:
         assert_rejected(page_url, link)
+
+    assert_rss_accepted("https://example-news.az/rss", "https://example-news.az/miq-imtahanlarinin-vaxti-aciqlandi")
+    assert_rss_rejected("https://example-news.az/rss", "https://example-news.az/elaqe")
 
     print("article url pattern fixtures ok")
 
