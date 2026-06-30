@@ -1096,7 +1096,7 @@ def exists(link, title=None):
         return False
 
 
-def reserve_news(link, title, source):
+def reserve_news(link, title, source, source_id=None):
     if not supabase_ready():
         return True
 
@@ -1109,15 +1109,32 @@ def reserve_news(link, title, source):
         return False
 
     source_name = source.get("name") if isinstance(source, dict) else source
+    resolved_source_id = source_id or (source.get("id") if isinstance(source, dict) else None)
     payload = {"link": normalized_link, "title": title_key or clean_text(title), "source": source_name}
-    try:
+    if resolved_source_id:
+        payload["source_id"] = resolved_source_id
+
+    def post_payload(next_payload):
         with DB_LOCK:
-            response = requests.post(
+            return requests.post(
                 f"{SUPABASE_URL}/rest/v1/sent_news",
                 headers=supabase_headers({"Prefer": "return=minimal"}),
-                json=payload,
+                json=next_payload,
                 timeout=REQUEST_TIMEOUT,
             )
+
+    try:
+        response = post_payload(payload)
+        if (
+            response.status_code in (400, 404)
+            and "source_id" in payload
+            and "source_id" in response.text
+            and ("schema" in response.text.lower() or "column" in response.text.lower())
+        ):
+            legacy_payload = dict(payload)
+            legacy_payload.pop("source_id", None)
+            response = post_payload(legacy_payload)
+
         if response.status_code in (200, 201, 204):
             print(f"✅ Supabase rezerv edildi: {normalized_link}", flush=True)
             return True
@@ -2466,6 +2483,7 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
     if not source_id:
         print("Vizual Monitor: source_id tapılmadı", flush=True)
         return None
+    item["_source_id"] = source_id
     dt = parse_datetime_to_baku(published_time)
     payload = {
         "source_id": source_id,
@@ -2891,7 +2909,7 @@ def process_site(index, total, site, patterns_data, monitor_keywords_cache=None)
 🔗 Link:
 {link}
 """
-        if not reserve_news(link, clean_title, site):
+        if not reserve_news(link, clean_title, site, source_id=item.get("_source_id") or site.get("id")):
             result["reason"] = site.pop("_reserve_failure_reason", "duplicate_url")
             continue
 
