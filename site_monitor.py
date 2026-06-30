@@ -1153,7 +1153,9 @@ def google_news_when_window():
     return f"{days}d"
 
 
-def get_or_create_monitor_source(site_name, source_domain, page_url):
+def get_or_create_monitor_source(site_name, source_domain, page_url, existing_source_id=None):
+    if existing_source_id:
+        return existing_source_id
     if not supabase_ready():
         return None
 
@@ -2416,7 +2418,12 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
     link = normalize_link(item.get("link"))
     if not link:
         return None
-    source_id = get_or_create_monitor_source(site.get("name"), item.get("source"), site.get("url"))
+    source_id = get_or_create_monitor_source(
+        site.get("name"),
+        item.get("source"),
+        site.get("url"),
+        site.get("id"),
+    )
     if not source_id:
         print("Vizual Monitor: source_id tapılmadı", flush=True)
         return None
@@ -2445,11 +2452,24 @@ def save_to_vizual_monitor(site, item, clean_title, published_time):
             existing = requests.get(
                 f"{SUPABASE_URL}/rest/v1/monitored_items",
                 headers=supabase_headers(),
-                params={"select": "id", "url": f"eq.{link}", "limit": "1"},
+                params={"select": "id,source_id", "url": f"eq.{link}", "limit": "1"},
                 timeout=REQUEST_TIMEOUT,
             )
             if existing.status_code == 200 and existing.json():
-                return existing.json()[0].get("id")
+                existing_item = existing.json()[0]
+                existing_item_id = existing_item.get("id")
+                existing_source_id = existing_item.get("source_id")
+                if existing_item_id and existing_source_id != source_id:
+                    patch_response = requests.patch(
+                        f"{SUPABASE_URL}/rest/v1/monitored_items",
+                        headers=supabase_headers({"Prefer": "return=minimal"}),
+                        params={"id": f"eq.{existing_item_id}"},
+                        json={"source_id": source_id},
+                        timeout=REQUEST_TIMEOUT,
+                    )
+                    if patch_response.status_code in (200, 204):
+                        print(f"Vizual Monitor source_id düzəldildi: item={existing_item_id} | source={source_id}", flush=True)
+                return existing_item_id
         print(f"Vizual Monitor yazma xətası: {response.status_code} | {response.text[:300]}", flush=True)
         return None
     except Exception as exc:
