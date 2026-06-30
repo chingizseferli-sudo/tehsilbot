@@ -101,6 +101,7 @@ ROOT_SLUG_ARTICLE_DOMAINS = {
     "7times.az",
     "busaat.az",
     "editor.az",
+    "globalinfo.az",
     "ekosu.az",
     "aem.az",
     "ayna.az",
