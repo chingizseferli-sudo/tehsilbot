@@ -70,8 +70,8 @@ COMMON_LATEST_PATHS = [
 ]
 
 COMMON_RSS_PATHS = [
-    "/rss", "/rss.xml", "/feed", "/feed.xml", "/atom.xml",
-    "/az/rss", "/az/rss.xml", "/az/feed", "/az/feed.xml",
+    "/feed/", "/feed", "/rss", "/rss.xml", "/feed.xml", "/atom.xml",
+    "/az/feed/", "/az/feed", "/az/rss", "/az/rss.xml", "/az/feed.xml",
     "/xeberler/rss", "/news/rss",
 ]
 
@@ -2151,12 +2151,21 @@ def fetch_site(site, patterns_data):
             rss_candidates.append(rss_url)
 
         if not rss_candidates:
-            rss_candidates.extend([
-                urljoin(base_url.rstrip("/") + "/", "rss"),
-                urljoin(base_url.rstrip("/") + "/", "rss.xml"),
-                urljoin(base_url.rstrip("/") + "/", "feed"),
-                urljoin(base_url.rstrip("/") + "/", "feed.xml"),
-            ])
+            try:
+                discovery_response = requests.get(
+                    base_url,
+                    headers=REQUEST_HEADERS,
+                    timeout=REQUEST_TIMEOUT,
+                    allow_redirects=True,
+                )
+                if discovery_response.status_code == 200:
+                    rss_candidates.extend(discover_rss_links(discovery_response.url or base_url, discovery_response.text))
+            except Exception as exc:
+                print(f"RSS discovery homepage xetasi: {base_url} | {classify_fetch_exception(exc)} | {exc}", flush=True)
+
+            root = base_url.rstrip("/") + "/"
+            rss_candidates.extend([urljoin(root, path.lstrip("/")) for path in COMMON_RSS_PATHS])
+            rss_candidates = list(dict.fromkeys(rss_candidates))
 
         print(f"RSS-only yoxlanır: {rss_candidates[:3]}", flush=True)
 
