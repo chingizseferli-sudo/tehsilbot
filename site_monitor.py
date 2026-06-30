@@ -551,6 +551,15 @@ def merge_bot_diagnostic_notes(existing_notes, reason, method, fallback_used, at
     return "\n".join(line for line in lines if line.strip())
 
 
+def merge_telegram_success_notes(existing_notes, sent_at):
+    lines = [
+        line for line in str(existing_notes or "").splitlines()
+        if not line.strip().startswith("[telegram_success]")
+    ]
+    lines.append(f"[telegram_success] sent_at={sent_at}")
+    return "\n".join(line for line in lines if line.strip())
+
+
 def build_source_health_payload(site, result, now):
     result = result or {}
     reason = final_source_health_reason(site, result)
@@ -597,6 +606,9 @@ def build_source_health_payload(site, result, now):
         payload["consecutive_fail_count"] = 0
     else:
         payload["last_error"] = reason
+
+    if sent > 0:
+        payload["notes"] = merge_telegram_success_notes(payload.get("notes"), now)
 
     if sent > 0 or candidates > 0:
         payload["last_article_found_at"] = now
