@@ -2289,12 +2289,11 @@ def fetch_site(site, patterns_data):
             return unique_items(items)
 
         if site.pop("_rss_feed_had_entries", False):
-            print("RSS feed oxundu, amma keyword uygun namized tapilmadi. HTML fallback edilmir.", flush=True)
-            set_read_diagnostic(site, "no_article", "rss")
-            return []
-
-        print("RSS nəticə vermədi, HTML fallback yoxlanacaq.", flush=True)
-
+            print("RSS feed oxundu, amma qebul edilen meqale linki tapilmadi. HTML fallback yoxlanacaq.", flush=True)
+            set_read_diagnostic(site, "no_article", "rss", fallback_used=True)
+            site["_fallback_used"] = True
+        else:
+            print("RSS netice vermedi, HTML fallback yoxlanacaq.", flush=True)
     # 4) Sitemap:
     # Səndə olan extract_links_from_sitemap(site) funksiyasından istifadə edir.
     if monitor_method == "sitemap":
@@ -2305,9 +2304,11 @@ def fetch_site(site, patterns_data):
             return unique_items(items)
 
         if not site.get("_read_failure_reason"):
-            set_read_diagnostic(site, "sitemap_empty", "sitemap")
-        return []
-
+            set_read_diagnostic(site, "sitemap_empty", "sitemap", fallback_used=True)
+        site["_fallback_used"] = True
+        if base_url:
+            page_url = base_url
+        print("Sitemap netice vermedi, HTML fallback yoxlanacaq.", flush=True)
     # 5) HTML əsaslı metodlar
     try:
         print(f"Sayt açılır: {page_url}", flush=True)
@@ -2373,6 +2374,7 @@ def fetch_site(site, patterns_data):
         "xpath_pattern",
         "rss",
         "rss_discovered",
+        "sitemap",
         "",
     }:
         if not rss_url and monitor_method not in {"rss", "rss_discovered"}:
