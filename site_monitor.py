@@ -111,6 +111,8 @@ ROOT_SLUG_ARTICLE_DOMAINS = {
 }
 
 ROOT_SLUG_ARTICLE_RE = re.compile(r"^/[a-z0-9%_-]{18,}/?$")
+LANG_SLUG_ARTICLE_RE = re.compile(r"^/(az|en|ru|tr)/[a-z0-9%_-]{18,}/?$")
+CATEGORY_SLUG_ARTICLE_RE = re.compile(r"^/[a-z0-9%_-]{3,}/[a-z0-9%_-]{18,}/?$")
 
 DOMAIN_DETAIL_ARTICLE_PATTERNS = {
     "embawood.az": [re.compile(r"/blog/[^/?#]{8,}/?$")],
@@ -1793,6 +1795,36 @@ def is_allowed_domain_detail_article(link):
     return False
 
 
+def is_slug_article_path(path, pattern):
+    if not pattern.match(path):
+        return False
+    parts = [part for part in path.strip("/").split("/") if part]
+    if len(parts) < 2:
+        return False
+    slug = parts[-1]
+    section = parts[-2] if len(parts) > 1 else ""
+    if slug.count("-") < 2:
+        return False
+    blocked_words = {
+        "about", "haqqimizda", "elaqe", "contact", "privacy", "category",
+        "kateqoriya", "tag", "archive", "arxiv", "search", "author",
+        "login", "register", "profile", "rss", "feed",
+    }
+    if section in blocked_words:
+        return False
+    return not any(word in slug for word in blocked_words)
+
+
+def is_language_slug_article(link):
+    parsed = urlparse(link.lower())
+    return is_slug_article_path(parsed.path or "", LANG_SLUG_ARTICLE_RE)
+
+
+def is_category_slug_article(link):
+    parsed = urlparse(link.lower())
+    return is_slug_article_path(parsed.path or "", CATEGORY_SLUG_ARTICLE_RE)
+
+
 def is_article_like_link(link):
     link_lower = link.lower()
     if "news.google.com/" in link_lower:
@@ -1806,6 +1838,10 @@ def is_article_like_link(link):
     if any(pattern.search(path) for pattern in ARTICLE_URL_REGEX_PATTERNS):
         return True
     if is_allowed_domain_detail_article(link_lower):
+        return True
+    if is_language_slug_article(link_lower):
+        return True
+    if is_category_slug_article(link_lower):
         return True
     return is_allowed_root_slug_article(link_lower)
 
@@ -2055,45 +2091,87 @@ def extract_links_fallback(page_url, page_html, keywords):
 
 
 
+def extract_sitemap_locs(xml_text, base_url):
+    locs = re.findall(r"<loc[^>]*>(.*?)</loc>", xml_text, flags=re.IGNORECASE | re.DOTALL)
+    cleaned = []
+    for loc in locs:
+        value = clean_text(unescape(re.sub(r"<[^>]+>", "", loc)))
+        if value:
+            cleaned.append(urljoin(base_url, value))
+    return list(dict.fromkeys(cleaned))
+
+
+def collect_sitemap_article_urls(sitemap_url, site, depth=0, seen=None):
+    if seen is None:
+        seen = set()
+    if not sitemap_url or sitemap_url in seen or depth > 2:
+        return []
+    seen.add(sitemap_url)
+
+    try:
+        response = requests.get(sitemap_url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+        if response.status_code != 200:
+            if depth == 0:
+                set_read_diagnostic(site, http_status_reason(response.status_code), "sitemap")
+            return []
+
+        xml_text = decode_response_text(response)
+        urls = extract_sitemap_locs(xml_text, response.url or sitemap_url)
+        if looks_like_xml_content(xml_text) and not urls:
+            if depth == 0:
+                set_read_diagnostic(site, "invalid_xml", "sitemap")
+            return []
+        if not urls:
+            return []
+
+        article_urls = [url for url in urls if is_article_like_link(url)]
+        if len(article_urls) >= MAX_LINKS_PER_SITE or depth >= 2:
+            return article_urls
+
+        child_sitemaps = [
+            url for url in urls
+            if re.search(r"sitemap|\.xml(?:$|[?#])", url, flags=re.IGNORECASE)
+            and not is_article_like_link(url)
+        ][:8]
+        for child_url in child_sitemaps:
+            article_urls.extend(collect_sitemap_article_urls(child_url, site, depth + 1, seen))
+            if len(article_urls) >= MAX_LINKS_PER_SITE * 3:
+                break
+        return list(dict.fromkeys(article_urls))
+    except Exception as exc:
+        if depth == 0:
+            reason = classify_fetch_exception(exc)
+            set_read_diagnostic(site, reason, "sitemap")
+            print(f"Sitemap oxuma xetasi: {sitemap_url} | {reason} | {exc}", flush=True)
+        return []
+
+
 def extract_links_from_sitemap(site):
     sitemap_url = site.get("latest_url") or urljoin(site.get("base_url", "").rstrip("/") + "/", "sitemap.xml")
     keywords = site.get("keywords", [])
     results = []
-    try:
-        response = requests.get(sitemap_url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT)
-        if response.status_code != 200:
-            set_read_diagnostic(site, http_status_reason(response.status_code), "sitemap")
-            return []
-        urls = re.findall(r"<loc>(.*?)</loc>", response.text, flags=re.IGNORECASE)
-        if looks_like_xml_content(response.text) and not urls:
-            set_read_diagnostic(site, "invalid_xml", "sitemap")
-            return []
-        if not urls:
-            set_read_diagnostic(site, "sitemap_empty", "sitemap")
-            return []
-        for url in urls[:300]:
-            if not is_article_like_link(url):
+    urls = collect_sitemap_article_urls(sitemap_url, site)
+    if not urls and not site.get("_read_failure_reason"):
+        set_read_diagnostic(site, "sitemap_empty", "sitemap")
+        return []
+
+    for url in urls[:300]:
+        try:
+            article = requests.get(url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True)
+            if article.status_code != 200:
                 continue
-            # Sitemap-də başlıq yoxdur; məqaləni açıb title/meta alırıq.
-            try:
-                article = requests.get(url, headers=REQUEST_HEADERS, timeout=REQUEST_TIMEOUT)
-                if article.status_code != 200:
-                    continue
-                soup = BeautifulSoup(decode_response_text(article), "html.parser")
-                title = ""
-                if soup.find("meta", property="og:title"):
-                    title = soup.find("meta", property="og:title").get("content", "")
-                if not title and soup.find("title"):
-                    title = soup.find("title").get_text(" ", strip=True)
-                add_item(results, url, title, url, keywords)
-                if len(results) >= MAX_LINKS_PER_SITE:
-                    break
-            except Exception:
-                continue
-    except Exception as exc:
-        reason = classify_fetch_exception(exc)
-        set_read_diagnostic(site, reason, "sitemap")
-        print(f"Sitemap oxuma xətası: {sitemap_url} | {reason} | {exc}", flush=True)
+            soup = BeautifulSoup(decode_response_text(article), "html.parser")
+            title = ""
+            if soup.find("meta", property="og:title"):
+                title = soup.find("meta", property="og:title").get("content", "")
+            if not title and soup.find("title"):
+                title = soup.find("title").get_text(" ", strip=True)
+            add_item(results, url, title, url, keywords)
+            if len(results) >= MAX_LINKS_PER_SITE:
+                break
+        except Exception:
+            continue
+
     results = unique_items(results)[:MAX_LINKS_PER_SITE]
     if results:
         mark_read_success(site, "sitemap", site.get("_fallback_used", False))
