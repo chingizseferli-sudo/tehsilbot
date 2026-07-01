@@ -22,9 +22,9 @@ PATTERNS_FILE = "patterns.json"
 KEYWORDS_FILE = "keywords.json"
 
 REQUEST_TIMEOUT = 12
-DISCOVERY_VERSION = "5.0-final-safe-review"
-DISCOVERY_MIN_NEWS_PER_HOUR = int(os.getenv("DISCOVERY_MIN_NEWS_PER_HOUR", "2"))
-DISCOVERY_ACTIVITY_LOOKBACK_HOURS = int(os.getenv("DISCOVERY_ACTIVITY_LOOKBACK_HOURS", "1"))
+DISCOVERY_VERSION = "5.1-az-news-candidates"
+DISCOVERY_ACTIVITY_LOOKBACK_HOURS = int(os.getenv("DISCOVERY_ACTIVITY_LOOKBACK_HOURS", "24"))
+DISCOVERY_MIN_NEWS_PER_PERIOD = int(os.getenv("DISCOVERY_MIN_NEWS_PER_PERIOD", "15"))
 DISCOVERY_REQUIRE_ACTIVITY = os.getenv("DISCOVERY_REQUIRE_ACTIVITY", "true").lower() != "false"
 
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").strip().rstrip("/")
@@ -117,6 +117,14 @@ NEWS_SECTION_WORDS = [
     "post", "articles", "article", "publications", "publication",
     "research", "researches", "projects", "project", "conference",
     "conferences", "seminars", "seminar", "science", "education",
+]
+
+
+AZ_NEWS_LANGUAGE_WORDS = [
+    "azərbaycan", "azerbaycan", "xəbər", "xeber", "gündəm", "gundem",
+    "cəmiyyət", "cemiyyet", "siyasət", "siyaset", "iqtisadiyyat",
+    "ölkə", "olke", "dünya", "dunya", "təhsil", "tehsil",
+    "mədəniyyət", "medeniyyet", "hadisə", "hadise", "bugün", "bugun",
 ]
 
 COMMON_NEWS_PATHS_FAST = [
@@ -330,7 +338,7 @@ def build_source_payload(site: dict) -> dict:
         "latest_url": url,
         "rss_url": site.get("rss_url"),
         "source_type": "news_site",
-        "status": "active" if site.get("status") in ("approved", "review") else "inactive",
+        "status": "inactive",
         "trust_level": source_trust_level(score),
         "monitor_method": method,
         "selector": site.get("selector"),
@@ -653,6 +661,11 @@ def looks_like_commercial_site(name: str | None, url: str, html_text: str = "") 
         return True
     return False
 
+
+
+def count_az_news_language_signals(html_text: str) -> int:
+    value = clean_text((html_text or "")[:12000]).lower()
+    return sum(1 for word in AZ_NEWS_LANGUAGE_WORDS if word in value)
 
 def entry_datetime(entry) -> datetime | None:
     parsed = entry.get("published_parsed") or entry.get("updated_parsed")
@@ -1211,6 +1224,13 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         score += 45
         reasons.append(f"RSS tapıldı ({rss_count})")
 
+    az_language_signals = count_az_news_language_signals(html_text)
+    if az_language_signals >= 8:
+        score += 10
+        reasons.append(f"Azərbaycan xəbər dili siqnalı güclüdür ({az_language_signals})")
+    elif az_language_signals >= 3:
+        score += 5
+        reasons.append(f"Azərbaycan xəbər dili siqnalı var ({az_language_signals})")
     if looks_like_commercial_site(name, section_url, html_text):
         return {
             "name": name or domain,
@@ -1249,7 +1269,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
     activity_count = max(rss_recent_count, google_recent_count)
     activity_source = "rss" if rss_recent_count >= google_recent_count else "google_news"
 
-    if DISCOVERY_REQUIRE_ACTIVITY and activity_count < DISCOVERY_MIN_NEWS_PER_HOUR:
+    if DISCOVERY_REQUIRE_ACTIVITY and activity_count < DISCOVERY_MIN_NEWS_PER_PERIOD:
         return {
             "name": name or domain,
             "url": section_url.rstrip("/"),
@@ -1261,7 +1281,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "limit": 10,
             "score": min(score, 20),
             "status": "rejected",
-            "reason": f"insufficient_news_activity: {activity_count}/{DISCOVERY_MIN_NEWS_PER_HOUR} in last {DISCOVERY_ACTIVITY_LOOKBACK_HOURS}h",
+            "reason": f"insufficient_news_activity: {activity_count}/{DISCOVERY_MIN_NEWS_PER_PERIOD} in last {DISCOVERY_ACTIVITY_LOOKBACK_HOURS}h",
             "analysis": {
                 "rss_count": rss_count,
                 "news_link_count": news_count,
@@ -1271,12 +1291,12 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
                 "activity_source": activity_source,
                 "rss_recent_count": rss_recent_count,
                 "google_recent_count": google_recent_count,
-                "reasons": reasons + [f"activity too low ({activity_count}/{DISCOVERY_MIN_NEWS_PER_HOUR})"],
+                "reasons": reasons + [f"activity too low ({activity_count}/{DISCOVERY_MIN_NEWS_PER_PERIOD})"],
             },
             "source_type": "rejected_inactive_news",
         }
 
-    if activity_count >= DISCOVERY_MIN_NEWS_PER_HOUR:
+    if activity_count >= DISCOVERY_MIN_NEWS_PER_PERIOD:
         score += 25
         reasons.append(
             f"aktiv xəbər axını var ({activity_count}/{DISCOVERY_ACTIVITY_LOOKBACK_HOURS}h, {activity_source})"

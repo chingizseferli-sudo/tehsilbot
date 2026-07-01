@@ -201,7 +201,7 @@ def build_payload(site, source_file):
         "latest_url": clean_text(site.get("latest_url")) or url,
         "rss_url": rss_url,
         "source_type": site.get("source_type") or "news_site",
-        "status": site.get("status") if site.get("status") in ["active", "inactive"] else "active",
+        "status": site.get("status") if site.get("status") in ["active", "inactive"] else "inactive",
         "trust_level": site.get("trust_level") or ("high" if score >= 80 else "medium"),
         "monitor_method": monitor_method,
         "selector": site.get("selector"),
