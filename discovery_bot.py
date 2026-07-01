@@ -19,10 +19,9 @@ CONFIG_FILE = "courier_config_clean.json"
 REVIEW_FILE = "review_sites.json"
 REJECTED_FILE = "rejected_sites.json"
 PATTERNS_FILE = "patterns.json"
-KEYWORDS_FILE = "keywords.json"
 
 REQUEST_TIMEOUT = 12
-DISCOVERY_VERSION = "5.2-deep-discovery-safe-test"
+DISCOVERY_VERSION = "5.3-general-news-discovery"
 DISCOVERY_ACTIVITY_LOOKBACK_HOURS = int(os.getenv("DISCOVERY_ACTIVITY_LOOKBACK_HOURS", "24"))
 DISCOVERY_MIN_NEWS_PER_PERIOD = int(os.getenv("DISCOVERY_MIN_NEWS_PER_PERIOD", "15"))
 DISCOVERY_REQUIRE_ACTIVITY = os.getenv("DISCOVERY_REQUIRE_ACTIVITY", "true").lower() != "false"
@@ -39,6 +38,7 @@ DISCOVERY_SYNC_SUPABASE = os.getenv("DISCOVERY_SYNC_SUPABASE", "true").lower() !
 DISCOVERY_MAX_QUERIES = int(os.getenv("DISCOVERY_MAX_QUERIES", "0") or "0")
 DISCOVERY_MAX_ENTRIES_PER_QUERY = int(os.getenv("DISCOVERY_MAX_ENTRIES_PER_QUERY", "0") or "0")
 DISCOVERY_BUILD_PATTERNS = os.getenv("DISCOVERY_BUILD_PATTERNS", "true").lower() != "false"
+DISCOVERY_INCLUDE_EDU_SPECIALIZED = os.getenv("DISCOVERY_INCLUDE_EDU_SPECIALIZED", "false").lower() == "true"
 DISCOVERY_SUBDOMAIN_ALLOWLIST = {
     item.strip().lower().lstrip(".")
     for item in os.getenv("DISCOVERY_SUBDOMAIN_ALLOWLIST", "").split(",")
@@ -52,63 +52,64 @@ HEADERS = {
 }
 
 DEFAULT_KEYWORDS = [
-    "təhsil", "elm", "məktəb", "şagird", "müəllim", "universitet",
-    "imtahan", "tələbə", "magistratura", "sertifikasiya", "olimpiada",
-    "dim", "tkta", "arti", "kurikulum", "dərs", "sinif", "miq",
+    "xəbər", "son xəbər", "gündəm", "siyasət", "cəmiyyət", "iqtisadiyyat",
+    "dünya", "ölkə", "region", "hadisə", "idman", "mədəniyyət",
+    "media", "mətbuat", "reportaj", "açıqlama", "rəsmi", "agentlik",
 ]
 
-# Məqsəd: əvvəlcə xəbər saytını tapmaq. Açar söz ikinci mərhələdir.
+# Məqsəd: konkret mövzu yox, gündəlik aktiv Azərbaycan xəbər mənbələri tapmaq.
 GENERAL_NEWS_QUERIES_FAST = [
     "Azərbaycan xəbər saytı",
     "Azərbaycan xəbər portalı",
+    "Azərbaycan media portalları",
     "son xəbərlər Azərbaycan",
+    "gündəlik xəbərlər Azərbaycan",
+    "ölkə xəbərləri Azərbaycan",
+    "cəmiyyət xəbərləri Azərbaycan",
+    "siyasət xəbərləri Azərbaycan",
+    "iqtisadiyyat xəbərləri Azərbaycan",
+    "region xəbərləri Azərbaycan",
+    "dünya xəbərləri Azərbaycan",
+    "idman xəbərləri Azərbaycan",
+    "mədəniyyət xəbərləri Azərbaycan",
     "site:.az xəbər",
     "site:.az xəbərlər",
     "site:.az xeber",
     "site:.az xeberler",
     "site:.az son xeberler",
+    "site:.az gündəm",
     "site:.az media",
     "site:.az news",
-    "site:.az latest news",
     "site:.az RSS xəbər",
 ]
 
 GENERAL_NEWS_QUERIES_DEEP = GENERAL_NEWS_QUERIES_FAST + [
-    "site:.az gündəm xəbərləri",
+    "site:.az xəbər lenti",
+    "site:.az son xəbərlər",
+    "site:.az bütün xəbərlər",
+    "site:.az ölkə xəbərləri",
     "site:.az sosial xəbərlər",
     "site:.az cəmiyyət xəbərləri",
     "site:.az region xəbərləri",
-    "site:.az ölkə xəbərləri",
     "site:.az dünya xəbərləri",
     "site:.az iqtisadiyyat xəbərləri",
-    "site:.az science news",
-    "site:.az education news",
-    "site:.edu.az xəbərlər",
-    "site:.edu.az news",
-    "site:.edu.az media",
-    "site:.edu.az tələbə",
-    "site:.edu.az universitet xəbərləri",
+    "site:.az siyasət xəbərləri",
+    "site:.az idman xəbərləri",
+    "site:.az kriminal xəbərlər",
+    "site:.az mədəniyyət xəbərləri",
+    "site:.az press news",
+    "site:.az newsroom",
+    "site:.az latest news",
 ]
 
 EDU_CHECK_QUERIES_FAST = [
     "təhsil xəbərləri Azərbaycan",
-    "məktəb xəbərləri Azərbaycan",
-    "müəllim xəbərləri Azərbaycan",
-    "şagird xəbərləri Azərbaycan",
-    "imtahan xəbərləri Azərbaycan",
     "universitet xəbərləri Azərbaycan",
 ]
 
 EDU_CHECK_QUERIES_DEEP = EDU_CHECK_QUERIES_FAST + [
-    "DİM xəbərləri",
-    "MİQ xəbərləri",
-    "sertifikasiya müəllim xəbərləri",
-    "ali təhsil xəbərləri",
-    "peşə təhsili xəbərləri",
-    "tələbə xəbərləri",
     "elm xəbərləri Azərbaycan",
 ]
-
 NEWS_SECTION_WORDS = [
     "xəbərlər", "xeberler", "xəbər", "xeber", "xəbər lenti", "xeber lenti",
     "son xəbərlər", "son xeberler", "bütün xəbərlər", "butun xeberler",
@@ -542,20 +543,6 @@ def clean_text(text: str) -> str:
     return re.sub(r"\s+", " ", str(text or "")).strip()
 
 
-def load_keywords() -> list[str]:
-    data = read_json(KEYWORDS_FILE, {"keywords": DEFAULT_KEYWORDS})
-    keywords = data.get("keywords", DEFAULT_KEYWORDS) if isinstance(data, dict) else DEFAULT_KEYWORDS
-    cleaned = []
-    for keyword in keywords:
-        keyword = clean_text(keyword).lower()
-        if keyword and keyword not in cleaned:
-            cleaned.append(keyword)
-    return cleaned or DEFAULT_KEYWORDS
-
-
-KEYWORDS = load_keywords()
-
-
 def clean_domain(url: str) -> str:
     try:
         value = clean_text(url).lower()
@@ -609,7 +596,7 @@ def build_rejected_subdomain_site(name: str | None, url: str, parent_domain: str
         "rss_url": None,
         "selector": None,
         "xpaths": [],
-        "keywords": KEYWORDS,
+        "keywords": DEFAULT_KEYWORDS,
         "limit": 0,
         "score": 0,
         "status": "rejected",
@@ -617,7 +604,7 @@ def build_rejected_subdomain_site(name: str | None, url: str, parent_domain: str
         "analysis": {
             "rss_count": 0,
             "news_link_count": 0,
-            "education_keyword_count": 0,
+            "topic_keyword_count": 0,
             "article_block_count": 0,
             "reasons": [reason],
         },
@@ -725,17 +712,12 @@ def build_search_queries(mode: str) -> list[str]:
     base_queries = GENERAL_NEWS_QUERIES_DEEP if mode == "deep" else GENERAL_NEWS_QUERIES_FAST
     edu_queries = EDU_CHECK_QUERIES_DEEP if mode == "deep" else EDU_CHECK_QUERIES_FAST
 
-    # 1) Birinci hədəf: xəbər saytları.
+    # 1) Default hədəf: gündəlik Azərbaycan xəbər saytları.
     queries.extend(base_queries)
 
-    # 2) İkinci hədəf: təhsil xəbəri verən saytları da qaçırmamaq.
-    queries.extend(edu_queries)
-
-    # 3) Açar sözlərin bəzilərindən əlavə sorğular düzəldirik, amma saytı yox, xəbər infrastrukturunu tapmaq üçün.
-    if mode == "deep":
-        for keyword in KEYWORDS[:40]:
-            queries.append(f"site:.az {keyword} xəbər")
-            queries.append(f"site:.az {keyword} xəbərlər")
+    # 2) Təhsil/elm xüsusi axtarışı artıq default deyil; yalnız lazım olanda env ilə açılır.
+    if DISCOVERY_INCLUDE_EDU_SPECIALIZED:
+        queries.extend(edu_queries)
 
     out = []
     seen = set()
@@ -750,8 +732,6 @@ def build_search_queries(mode: str) -> list[str]:
         seen.add(q.lower())
         out.append(q)
     return out
-
-
 def looks_like_news_url(url: str) -> bool:
     u = url.lower()
 
@@ -1045,7 +1025,7 @@ def page_news_stats(session: requests.Session, url: str) -> tuple[bool, int, int
             ):
                 news_links.add(normalize_url(href))
 
-            if any(k in combined for k in KEYWORDS):
+            if any(k in combined for k in DEFAULT_KEYWORDS):
                 edu_links.add(normalize_url(href))
 
             if len(news_links) >= 25 and len(edu_links) >= 3:
@@ -1249,7 +1229,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "rss_url": rss_url,
             "selector": None,
             "xpaths": [],
-            "keywords": KEYWORDS,
+            "keywords": DEFAULT_KEYWORDS,
             "limit": 10,
             "score": 0,
             "status": "rejected",
@@ -1257,7 +1237,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "analysis": {
                 "rss_count": rss_count,
                 "news_link_count": news_count,
-                "education_keyword_count": edu_keyword_count,
+                "topic_keyword_count": edu_keyword_count,
                 "article_block_count": 0,
                 "activity_count": 0,
                 "activity_source": "commercial_filter",
@@ -1287,7 +1267,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "rss_url": rss_url,
             "selector": None,
             "xpaths": [],
-            "keywords": KEYWORDS,
+            "keywords": DEFAULT_KEYWORDS,
             "limit": 10,
             "score": min(score, 20),
             "status": "rejected",
@@ -1295,7 +1275,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "analysis": {
                 "rss_count": rss_count,
                 "news_link_count": news_count,
-                "education_keyword_count": edu_keyword_count,
+                "topic_keyword_count": edu_keyword_count,
                 "article_block_count": 0,
                 "activity_count": activity_count,
                 "activity_source": activity_source,
@@ -1413,7 +1393,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "rss_url": rss_url,
             "selector": None,
             "xpaths": [],
-            "keywords": KEYWORDS,
+            "keywords": DEFAULT_KEYWORDS,
             "limit": 10,
             "score": total_fallback_score,
             "status": status,
@@ -1421,7 +1401,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
             "analysis": {
                 "rss_count": rss_count,
                 "news_link_count": news_count,
-                "education_keyword_count": edu_keyword_count,
+                "topic_keyword_count": edu_keyword_count,
                 "article_block_count": 0,
                 "activity_count": activity_count,
                 "activity_source": activity_source,
@@ -1461,18 +1441,10 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         score += 7
         reasons.append("generic xpath əlavə edildi")
 
-    # Açar söz yalnız bonusdur, saytın qəbul olunması üçün əsas şərt deyil.
-    if edu_keyword_count >= 3:
-        score += 15
-        reasons.append(f"təhsil açar sözləri var ({edu_keyword_count})")
-    elif edu_keyword_count >= 1:
-        score += 6
-        reasons.append(f"az sayda təhsil açar sözü var ({edu_keyword_count})")
-
-    if domain.endswith(".edu.az"):
-        score += 8
-        reasons.append("edu.az domeni")
-
+    # Mövzu açar sözləri yalnız zəif bonusdur; discovery üçün əsas meyar gündəlik xəbər axınıdır.
+    if edu_keyword_count >= 5:
+        score += 5
+        reasons.append(f"mövzu siqnalları var ({edu_keyword_count})")
     if score >= 70:
         status = "approved"
     elif score >= 40:
@@ -1495,7 +1467,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         "rss_url": rss_url,
         "selector": selector,
         "xpaths": xpaths,
-        "keywords": KEYWORDS,
+        "keywords": DEFAULT_KEYWORDS,
         "limit": 10,
         "score": score,
         "status": status,
@@ -1503,7 +1475,7 @@ def analyze_section(session: requests.Session, name: str, section_url: str) -> d
         "analysis": {
             "rss_count": rss_count,
             "news_link_count": news_count,
-            "education_keyword_count": edu_keyword_count,
+            "topic_keyword_count": edu_keyword_count,
             "article_block_count": article_count,
             "activity_count": activity_count,
             "activity_source": activity_source,
@@ -1602,7 +1574,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
     print("🔍 Discovery 2.0 başladı", flush=True)
     print("Versiya:", DISCOVERY_VERSION, flush=True)
     print("Rejim:", mode, flush=True)
-    print(f"Açar söz sayı: {len(KEYWORDS)}", flush=True)
+    print(f"Discovery siqnal sayı: {len(DEFAULT_KEYWORDS)}", flush=True)
 
     known_domains = collect_existing_domains()
     processed_domains = set()
@@ -1693,7 +1665,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
                 analyzed["score"] = max(score, 35)
                 analyzed["reason"] = analyzed.get("reason") or "google_news_source_manual_review"
                 analyzed["source_type"] = analyzed.get("source_type") or "google_news_source"
-                analyzed.setdefault("keywords", KEYWORDS)
+                analyzed.setdefault("keywords", DEFAULT_KEYWORDS)
                 analyzed.setdefault("limit", 10)
                 analyzed.setdefault("rss_url", None)
                 analyzed.setdefault("selector", None)
@@ -1704,7 +1676,7 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
                     analysis = {
                         "rss_count": 0,
                         "news_link_count": 0,
-                        "education_keyword_count": 0,
+                        "topic_keyword_count": 0,
                         "article_block_count": 0,
                         "reasons": [],
                     }
