@@ -22,7 +22,7 @@ PATTERNS_FILE = "patterns.json"
 KEYWORDS_FILE = "keywords.json"
 
 REQUEST_TIMEOUT = 12
-DISCOVERY_VERSION = "5.1-az-news-candidates"
+DISCOVERY_VERSION = "5.2-deep-discovery-safe-test"
 DISCOVERY_ACTIVITY_LOOKBACK_HOURS = int(os.getenv("DISCOVERY_ACTIVITY_LOOKBACK_HOURS", "24"))
 DISCOVERY_MIN_NEWS_PER_PERIOD = int(os.getenv("DISCOVERY_MIN_NEWS_PER_PERIOD", "15"))
 DISCOVERY_REQUIRE_ACTIVITY = os.getenv("DISCOVERY_REQUIRE_ACTIVITY", "true").lower() != "false"
@@ -35,6 +35,10 @@ BAKU_TZ = ZoneInfo("Asia/Baku")
 # izləmək lazım ola bilər. İstəsən Railway-də DISCOVERY_BLOCK_GOV=true qoyub yenə bloklaya bilərsən.
 DISCOVERY_BLOCK_GOV = os.getenv("DISCOVERY_BLOCK_GOV", "true").lower() != "false"
 DISCOVERY_WRITE_JSON = os.getenv("DISCOVERY_WRITE_JSON", "false").lower() == "true"
+DISCOVERY_SYNC_SUPABASE = os.getenv("DISCOVERY_SYNC_SUPABASE", "true").lower() != "false"
+DISCOVERY_MAX_QUERIES = int(os.getenv("DISCOVERY_MAX_QUERIES", "0") or "0")
+DISCOVERY_MAX_ENTRIES_PER_QUERY = int(os.getenv("DISCOVERY_MAX_ENTRIES_PER_QUERY", "0") or "0")
+DISCOVERY_BUILD_PATTERNS = os.getenv("DISCOVERY_BUILD_PATTERNS", "true").lower() != "false"
 DISCOVERY_SUBDOMAIN_ALLOWLIST = {
     item.strip().lower().lstrip(".")
     for item in os.getenv("DISCOVERY_SUBDOMAIN_ALLOWLIST", "").split(",")
@@ -248,7 +252,7 @@ BAD_PATTERNS = [
 
 def get_mode_settings(mode: str) -> dict:
     if mode == "deep":
-        return {
+        settings = {
             "max_queries": 140,
             "max_entries_per_query": 80,
             "max_sections_per_source": 5,
@@ -256,15 +260,21 @@ def get_mode_settings(mode: str) -> dict:
             "paths": COMMON_NEWS_PATHS_DEEP,
             "build_patterns": True,
         }
+    else:
+        settings = {
+            "max_queries": 55,
+            "max_entries_per_query": 40,
+            "max_sections_per_source": 3,
+            "sleep": 0.10,
+            "paths": COMMON_NEWS_PATHS_FAST,
+            "build_patterns": False,
+        }
 
-    return {
-        "max_queries": 55,
-        "max_entries_per_query": 40,
-        "max_sections_per_source": 3,
-        "sleep": 0.10,
-        "paths": COMMON_NEWS_PATHS_FAST,
-        "build_patterns": False,
-    }
+    if DISCOVERY_MAX_QUERIES > 0:
+        settings["max_queries"] = DISCOVERY_MAX_QUERIES
+    if DISCOVERY_MAX_ENTRIES_PER_QUERY > 0:
+        settings["max_entries_per_query"] = DISCOVERY_MAX_ENTRIES_PER_QUERY
+    return settings
 
 
 def supabase_ready() -> bool:
@@ -1799,7 +1809,10 @@ def discover_sites(mode: str = "fast", add_to_config: bool = False):
     else:
         print("JSON cache yazilmir: DISCOVERY_WRITE_JSON=false", flush=True)
 
-    sync_discovery_results_to_supabase(approved_sites, review_sites, rejected_sites)
+    if DISCOVERY_SYNC_SUPABASE:
+        sync_discovery_results_to_supabase(approved_sites, review_sites, rejected_sites)
+    else:
+        print("Supabase sync ötürüldü: DISCOVERY_SYNC_SUPABASE=false", flush=True)
 
     print("\n===== DISCOVERY 2.0 YEKUNU =====", flush=True)
     print(f"✅ Approved: {len(approved_sites)} | config-ə əlavə: {config_added}", flush=True)
@@ -1906,7 +1919,7 @@ def main():
     new_sites = discover_sites(mode=args.mode, add_to_config=args.add_to_config)
     settings = get_mode_settings(args.mode)
 
-    if args.patterns or settings["build_patterns"]:
+    if args.patterns or (settings["build_patterns"] and DISCOVERY_BUILD_PATTERNS):
         build_patterns()
 
     print("✅ Discovery tamamlandı", flush=True)
